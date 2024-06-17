@@ -76,7 +76,7 @@ A comprehensive tool designed for developers and designers to create, manage, an
 1. Select `File` > `Open Palette`.
 2. Navigate to the `.cpb` file and open it.
 
-### Exporting a Palette
+### (UPCOMING) Exporting a Palette
 
 1. Select `File` > `Export Palette`.
 2. Choose the desired format (e.g., .ase, .gpl) and save the file.
@@ -110,7 +110,7 @@ See LICENSE for more information.
 
 For inquiries, please contact:
 
-- **Email:** extensions@force5dev.com
+- **Email:** apps@force5dev.com
 - **Website:** [Force5Dev](https://www.force5dev.com)
 
 ## Roadmap
@@ -142,12 +142,12 @@ For inquiries, please contact:
 
 ### How do I report a bug?
 
-Please report bugs by creating an issue in the GitHub repository with detailed information about the problem and steps to reproduce it.
+Please report bugs by creating an issue in the DevOps repository with detailed information about the problem and steps to reproduce it. or Send email to apps@force5dev.com
 
 ### Can I use this tool commercially?
 
-No, commercial use is prohibited without a separate license agreement. Please contact us for more information on commercial licensing.
+Yes, using the tool commercially or in any manner is allowed. Utilizing the code to release your own version under your name is NOT allowed.
 
 ### How do I request a new feature?
 
-Feature requests can be submitted by creating an issue in the GitHub repository. Please provide as much detail as possible to help us understand and prioritize your request.
+Feature requests can be submitted by creating an issue in the DevOps repository. Please provide as much detail as possible to help us understand and prioritize your request. Or email apps@force5dev.com

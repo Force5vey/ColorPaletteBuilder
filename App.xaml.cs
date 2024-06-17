@@ -26,6 +26,10 @@ namespace ColorPaletteBuilder
     /// </summary>
     public partial class App : Application
     {
+        private Window m_window;
+
+        private const string ThemeSettingKey = "AppTheme";
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -33,6 +37,9 @@ namespace ColorPaletteBuilder
         public App()
         {
             this.InitializeComponent();
+
+            
+            ApplyTheme();
         }
 
         /// <summary>
@@ -45,6 +52,30 @@ namespace ColorPaletteBuilder
             m_window.Activate();
         }
 
-        private Window m_window;
+ 
+        public void ApplyTheme()
+        {
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var themeSetting = localSettings.Values[ThemeSettingKey] as string;
+
+            if (string.IsNullOrEmpty(themeSetting))
+            {
+                //Default or system if no theme selected
+                themeSetting = "Light";
+                localSettings.Values[ThemeSettingKey] = themeSetting;
+            }
+            else
+            {
+                RequestedTheme = (ApplicationTheme)Enum.Parse(typeof(ApplicationTheme), themeSetting);
+            }
+
+        }
+
+        public void SetTheme(ApplicationTheme theme)
+        {
+            RequestedTheme = theme;
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            localSettings.Values[ThemeSettingKey] = theme.ToString();
+        }
     }
 }

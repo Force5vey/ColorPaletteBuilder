@@ -1,0 +1,98 @@
+<Window
+    x:Class="ColorPaletteBuilder.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:ColorPaletteBuilder"
+    mc:Ignorable="d"
+    Title="Color Palette Builder">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Navigation Menu -->
+        <NavigationView PaneDisplayMode="Top" IsBackButtonVisible="Collapsed">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Icon="OpenFile" Content="Open" Tag="OpenPalette"/>
+                <NavigationViewItem Icon="Save" Content="Save" Tag="SavePalette"/>
+                <NavigationViewItem Icon="Copy" Content="Save Copy As" Tag="SavePaletteAs"/>
+                <NavigationViewItem >
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="Light" GroupName="Theme" Checked="ThemeRadioButton_Checked"/>
+                        <RadioButton Content="Dark" GroupName="Theme" Checked="ThemeRadioButton_Checked"/>
+                        <RadioButton Content="System" GroupName="Theme" Checked="ThemeRadioButton_Checked"/>
+                    </StackPanel>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+        </NavigationView>
+
+
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+
+            <!-- Left Column: Color Selector and Tools -->
+            <StackPanel Grid.Column="0" Padding="10">
+                <TextBlock Text="Color Selector" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                <Button Content="Select Color" Click="SelectColor_Click" Margin="0,0,0,10"/>
+                <Button Content="Activate Eye Dropper" Click="ActivateEyeDropper_Click" Margin="0,10"/>
+
+                <TextBlock Text="Hex Code" Margin="0,20,0,5"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBox x:Name="tbHexCode" Width="200"/>
+                    <Button Content="Copy" Click="CopyHexCode_Click" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <TextBlock Text="RGBA" Margin="0,10,0,5"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBox x:Name="tbRGBA" Width="200"/>
+                    <Button Content="Copy" Click="CopyRGBA_Click" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <TextBlock Text="C# Code" Margin="0,10,0,5"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBox x:Name="tbCSharp" Width="200"/>
+                    <Button Content="Copy" Click="CopyCSharpCode_Click" Margin="5,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+
+
+            <!-- Right Column: List View/Data View -->
+            <ListView x:Name="ColorPaletteListView" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:ColorEntry">
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{x:Bind Name}" VerticalAlignment="Center"/>
+                            <ComboBox Grid.Column="1" SelectedItem="{x:Bind State}" VerticalAlignment="Center">
+                                <!-- Add ComboBox items here -->
+                            </ComboBox>
+                            <ComboBox Grid.Column="2" SelectedItem="{x:Bind ElementGroup}" VerticalAlignment="Center">
+                                <!-- Add ComboBox items here -->
+                            </ComboBox>
+                            <TextBlock Grid.Column="3" Text="{x:Bind HexCode}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="{x:Bind Alpha}" VerticalAlignment="Center"/>
+                            <Border Grid.Column="5" Background="{x:Bind SelectedColor}" Width="20" Height="20" VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</Window>
