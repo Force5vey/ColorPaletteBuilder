@@ -15,6 +15,8 @@ using Windows.Foundation.Collections;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using Microsoft.UI;
+using Windows.Storage.Pickers;
+using Windows.Storage;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -29,12 +31,16 @@ namespace ColorPaletteBuilder
     {
         public ColorPalette ColorPaletteData { get; set; } = new ColorPalette();
 
+
+
         public MainWindow()
         {
             this.InitializeComponent();
             this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1000, 800));
 
-            LoadSampleData();
+            //LoadSampleData();
+
+            ColorPaletteListView.DataContext = this;
 
             ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
 
@@ -45,40 +51,32 @@ namespace ColorPaletteBuilder
             ColorPaletteData = new ColorPalette
             {
                 ColorPaletteName = "Default",
+                ElementGroups = new List<string> { "UI", "Game Play", "Level", "Designer", "Background", "Text" },
+                ElementStates = new List<string> { "Enabled", "Disabled", "Selected", "No Focus" },
                 ColorEntries = new ObservableCollection<ColorEntry>
-            {
-                new ColorEntry { ElementName = "Main UI Screen Accent", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = .5, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
-                new ColorEntry { ElementName = "Secondary UI Screen Item Selection", ElementState = "Enabled", ElementGroup = "Game Play", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
-                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
-                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
-                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
-                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) },
-                new ColorEntry { ElementName = "Red", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
-                new ColorEntry { ElementName = "Green", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
-                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
-                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
-                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
-                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) },
-                new ColorEntry { ElementName = "Red", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
-                new ColorEntry { ElementName = "Green", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
-                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
-                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
-                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
-                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) },
-                new ColorEntry { ElementName = "Red", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
-                new ColorEntry { ElementName = "Green", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
-                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
-                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
-                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
-                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) }
-            },
-                ElementGroups = new List<string> { "UI", "Game Play", "Level", "Designer" },
-                ElementStates = new List<string> { "Enabled", "Disabled", "Selected", "No Focus" }
+                {
+                    new ColorEntry {ElementName = "Button", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#FF0000", Alpha = 1.0, DisplayColor = "PlaceHolder"},
+                    new ColorEntry { ElementName = "Main Background Page Color Accent", ElementGroup= "Game Play", ElementState = "Enabled", HexCode = "#00FF00", Alpha = 1.0, DisplayColor = "PlaceHolder" },
+                    new ColorEntry { ElementName = "Header Text", ElementGroup = "UI", ElementState = "Selected", HexCode = "#0000FF", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Footer Background", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#FFFF00", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Sidebar", ElementGroup = "UI", ElementState = "No Focus", HexCode = "#FF00FF", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Link Text", ElementGroup = "Text", ElementState = "Selected", HexCode = "#00FFFF", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Warning Text", ElementGroup = "Text", ElementState = "Enabled", HexCode = "#FFA500", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Success Text", ElementGroup = "Text", ElementState = "Enabled", HexCode = "#008000", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Info Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#ADD8E6", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Alert Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#FF4500", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Primary Button Text", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#FFFFFF", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Secondary Button Text", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#000000", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Card Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#F0E68C", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Primary Button Background", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#1E90FF", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Secondary Button Background", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#D3D3D3", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Modal Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#2F4F4F", Alpha = 1.0 },
+                    new ColorEntry { ElementName = "Modal Text", ElementGroup = "Text", ElementState = "Enabled", HexCode = "#F5F5F5", Alpha = 1.0 }
+
+                }
             };
 
-
         }
-
 
 
         private void CopyToClipboard(string text)
@@ -91,16 +89,52 @@ namespace ColorPaletteBuilder
             }
         }
 
-        private void OpenPalette_Click(object sender, RoutedEventArgs e)
+        private async void OpenPalette_Click(object sender, RoutedEventArgs e)
         {
+            var picker = new FileOpenPicker();
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+            picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            picker.FileTypeFilter.Add(".cpb");
+
+            StorageFile file = await picker.PickSingleFileAsync();
+            if (file != null)
+            {
+                ColorPalette colorPalette = await FileService.LoadPaletteAsync(file.Path);
+                ColorPaletteData.ColorEntries.Clear();
+                ColorPaletteData = colorPalette;
+            }
         }
 
-        private void SavePalette_Click(object sender, RoutedEventArgs e)
+        private async void SavePalette_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(ColorPaletteData.ColorPaletteFile) || ColorPaletteData.ColorPaletteFile == "New Palette")
+            {
+                SavePaletteAs_Click(sender, e);
+                return;
+            }
+
+            StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
+            if (file != null)
+            {
+                await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
+            }
         }
 
-        private void SavePaletteAs_Click(object sender, RoutedEventArgs e)
+        private async void SavePaletteAs_Click(object sender, RoutedEventArgs e)
         {
+            var picker = new FileSavePicker();
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+            picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            picker.FileTypeChoices.Add("Color Palette Builder", new List<string> { ".cpb" });
+            picker.DefaultFileExtension = ".cpb";
+
+            StorageFile file = picker.PickSaveFileAsync().AsTask().Result;
+            if (file != null)
+            {
+                await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
+            }
         }
 
         private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
@@ -125,10 +159,20 @@ namespace ColorPaletteBuilder
         private void ElementGroupComboBox_Loaded(object sender, RoutedEventArgs e)
         {
             var comboBox = sender as ComboBox;
-            if(comboBox != null)
+            if (comboBox != null)
             {
                 comboBox.ItemsSource = ColorPaletteData.ElementGroups;
-            }   
+            }
+        }
+
+        private void NewPalette_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuExit_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

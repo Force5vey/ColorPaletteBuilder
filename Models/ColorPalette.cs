@@ -1,19 +1,65 @@
-﻿using System;
+﻿using ColorPaletteBuilder;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace ColorPaletteBuilder
 {
-    public class ColorPalette
+    public class ColorPalette : INotifyPropertyChanged
     {
-        public string ColorPaletteName { get; set; }
-        public ObservableCollection<ColorEntry> ColorEntries { get; set; }
-        public List<string> ElementStates { get; set; }
-        public List<string> ElementGroups { get; set; }
+        private string colorPaletteName;
+        private string colorPaletteFile;
+        private List<string> elementStates;
+        private List<string> elementGroups;
+        private ObservableCollection<ColorEntry> colorEntries;
 
+
+        public string ColorPaletteName
+        {
+            get => colorPaletteName;
+            set => SetProperty(ref colorPaletteName, value);
+        }
+
+        public string ColorPaletteFile
+        {
+            get => colorPaletteFile;
+            set => SetProperty(ref colorPaletteFile, value);
+        }
+
+
+        public List<string> ElementStates
+        {
+            get => elementStates;
+            set => SetProperty(ref elementStates, value);
+        }
+
+        public List<string> ElementGroups
+        {
+            get => elementGroups;
+            set => SetProperty(ref elementGroups, value);
+        }
+        public ObservableCollection<ColorEntry> ColorEntries
+        {
+            get => colorEntries;
+            set => SetProperty(ref colorEntries, value);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(storage, value)) return false;
+
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

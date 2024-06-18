@@ -1,18 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Windows.UI;
+
 
 namespace ColorPaletteBuilder
 {
-    public class ColorEntry
+
+    public class ColorEntry : INotifyPropertyChanged
     {
-        public string ElementName { get; set; }
-        public string ElementState { get; set; }
-        public string ElementGroup { get; set; }
-        public string HexCode { get; set; }
-        public double Alpha { get; set; }
-      public  Microsoft.UI.Xaml.Media.Brush SelectedColor { get; set; }
+        private string elementName;
+        private string elementState;
+        private string elementGroup;
+        private string hexCode;
+        private double alpha;
+        private string displayColor; // This is a placeholder for the actual color value
+
+        public string ElementName
+        {
+            get => elementName;
+            set => SetProperty(ref elementName, value);
+        }
+
+        public string ElementState
+        {
+            get => elementState;
+            set => SetProperty(ref elementState, value);
+        }
+
+        public string ElementGroup
+        {
+            get => elementGroup;
+            set => SetProperty(ref elementGroup, value);
+        }
+
+        public string HexCode
+        {
+            get => hexCode;
+            set => SetProperty(ref hexCode, value);
+        }
+
+        public double Alpha
+        {
+            get => alpha;
+            set => SetProperty(ref alpha, value);
+        }
+
+        public string DisplayColor
+        {
+            get => displayColor;
+            set => SetProperty(ref displayColor, value);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(storage, value)) return false;
+
+            storage = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

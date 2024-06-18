@@ -8,10 +8,6 @@
     mc:Ignorable="d"
     Title="Color Palette Builder">
 
-
-
-
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -25,12 +21,12 @@
         <!-- Menu Bar  =================================================  -->
         <MenuBar Grid.Row="1">
             <MenuBarItem Title="File">
-                <MenuFlyoutItem Text="New Palette" Icon="NewFolder">
+                <MenuFlyoutItem Text="New Palette" Icon="NewFolder" Click="NewPalette_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="N"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Load Palette" Icon="OpenLocal">
+                <MenuFlyoutItem Text="Load Palette" Icon="OpenLocal" Click="OpenPalette_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="O"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -38,12 +34,12 @@
 
                 <MenuFlyoutSeparator/>
 
-                <MenuFlyoutItem Text="Save" Icon="Save">
+                <MenuFlyoutItem Text="Save" Icon="Save" Click="SavePalette_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="S"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
-                <MenuFlyoutItem Text="Save As" Icon="SaveLocal">
+                <MenuFlyoutItem Text="Save As" Icon="SaveLocal" Click="SavePaletteAs_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control,Shift" Key="S"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -51,7 +47,7 @@
 
                 <MenuFlyoutSeparator/>
 
-                <MenuFlyoutItem Text="Exit">
+                <MenuFlyoutItem Text="Exit" Click="MenuExit_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Key="F4"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -231,24 +227,26 @@
                     <DataTemplate x:DataType="local:ColorEntry">
                         <Grid Padding="10">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="150"/>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="30"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{x:Bind ElementName}" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                            <ComboBox Grid.Column="1" SelectedItem="{x:Bind ElementState}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                            <Button Grid.Column="0" Content="{x:Bind DisplayColor}" VerticalAlignment="Center" Width="40" Height="25"/>
+                            <TextBlock Grid.Column="1" Text="{x:Bind ElementName}" VerticalAlignment="Center" TextWrapping="Wrap" Width="200"/>
+                            <ComboBox Grid.Column="2" SelectedItem="{x:Bind ElementState}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
                                       Loaded="ElementStateComboBox_Loaded"/>
 
-                            <ComboBox Grid.Column="2" SelectedItem="{x:Bind ElementGroup}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                            <ComboBox Grid.Column="3" SelectedItem="{x:Bind ElementGroup}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
                                       Loaded="ElementGroupComboBox_Loaded"/>
 
 
-                            <TextBlock Grid.Column="3" Text="{x:Bind HexCode}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="4" Text="{x:Bind Alpha}" VerticalAlignment="Center"/>
-                            <Border Grid.Column="5" Background="{x:Bind SelectedColor}" Width="20" Height="20" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="{x:Bind HexCode}" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="{x:Bind Alpha}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            
+                            <!--<Border Grid.Column="5" Background="{x:Bind DisplayColor}" Width="20" Height="20" VerticalAlignment="Center"/>-->
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
