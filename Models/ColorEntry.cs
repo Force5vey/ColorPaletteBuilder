@@ -8,8 +8,8 @@ namespace ColorPaletteBuilder
 {
     public class ColorEntry
     {
-        public string Name { get; set; }
-        public string State { get; set; }
+        public string ElementName { get; set; }
+        public string ElementState { get; set; }
         public string ElementGroup { get; set; }
         public string HexCode { get; set; }
         public double Alpha { get; set; }

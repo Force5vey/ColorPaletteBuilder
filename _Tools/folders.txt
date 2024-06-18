@@ -1,0 +1,100 @@
+
+ Directory of c:\dev\ColorPaletteBuilder
+
+06/18/2024  10:35 AM    <DIR>          .
+06/16/2024  04:43 PM    <DIR>          ..
+06/16/2024  04:40 PM             2,581 .gitattributes
+06/16/2024  04:40 PM             6,585 .gitignore
+06/16/2024  04:23 PM             1,051 app.manifest
+06/17/2024  10:53 AM             1,223 App.xaml
+06/17/2024  02:47 PM             2,117 App.xaml.cs
+06/16/2024  04:23 PM    <DIR>          Assets
+06/16/2024  05:33 PM    <DIR>          bin
+06/17/2024  04:30 PM             2,894 ColorPaletteBuilder.csproj
+06/17/2024  09:34 AM               460 ColorPaletteBuilder.csproj.user
+06/16/2024  04:23 PM             2,286 ColorPaletteBuilder.sln
+06/16/2024  05:04 PM    <DIR>          Documentation
+06/16/2024  04:48 PM             2,996 LICENSE
+06/18/2024  10:15 AM    <DIR>          Models
+06/17/2024  04:30 PM    <DIR>          obj
+06/16/2024  04:23 PM             1,872 Package.appxmanifest
+06/16/2024  04:23 PM    <DIR>          Properties
+06/16/2024  05:03 PM             5,186 README.md
+06/17/2024  09:15 AM    <DIR>          Services
+06/18/2024  10:39 AM    <DIR>          Views
+06/18/2024  10:45 AM    <DIR>          _Tools
+              11 File(s)         29,251 bytes
+
+
+
+ Directory of c:\dev\ColorPaletteBuilder\Assets
+
+06/16/2024  04:23 PM    <DIR>          .
+06/18/2024  10:35 AM    <DIR>          ..
+06/09/2024  08:22 PM               432 LockScreenLogo.scale-200.png
+06/09/2024  08:22 PM             5,372 SplashScreen.scale-200.png
+06/09/2024  08:22 PM             1,755 Square150x150Logo.scale-200.png
+06/09/2024  08:22 PM               637 Square44x44Logo.scale-200.png
+06/09/2024  08:22 PM               283 Square44x44Logo.targetsize-24_altform-unplated.png
+06/09/2024  08:22 PM               456 StoreLogo.png
+06/09/2024  08:22 PM             2,097 Wide310x150Logo.scale-200.png
+               7 File(s)         11,032 bytes
+
+ 
+
+ Directory of c:\dev\ColorPaletteBuilder\Documentation
+
+06/16/2024  05:04 PM    <DIR>          .
+06/18/2024  10:35 AM    <DIR>          ..
+06/16/2024  05:04 PM             1,108 DesignDoc.md
+               1 File(s)          1,108 bytes
+
+ Directory of c:\dev\ColorPaletteBuilder\Models
+
+06/18/2024  10:15 AM    <DIR>          .
+06/18/2024  10:35 AM    <DIR>          ..
+06/18/2024  10:15 AM               509 ColorEntry.cs
+               1 File(s)            509 bytes
+
+
+ Directory of c:\dev\ColorPaletteBuilder\Properties
+
+06/16/2024  04:23 PM    <DIR>          .
+06/18/2024  10:35 AM    <DIR>          ..
+06/16/2024  04:23 PM               192 launchSettings.json
+06/16/2024  04:23 PM    <DIR>          PublishProfiles
+               1 File(s)            192 bytes
+
+ Directory of c:\dev\ColorPaletteBuilder\Properties\PublishProfiles
+
+06/16/2024  04:23 PM    <DIR>          .
+06/16/2024  04:23 PM    <DIR>          ..
+06/16/2024  04:23 PM             1,140 win-arm64.pubxml
+06/16/2024  04:23 PM             1,134 win-x64.pubxml
+06/16/2024  04:23 PM             1,134 win-x86.pubxml
+               3 File(s)          3,408 bytes
+
+ Directory of c:\dev\ColorPaletteBuilder\Services
+
+06/17/2024  09:15 AM    <DIR>          .
+06/18/2024  10:35 AM    <DIR>          ..
+               0 File(s)              0 bytes
+
+ Directory of c:\dev\ColorPaletteBuilder\Views
+
+06/18/2024  10:39 AM    <DIR>          .
+06/18/2024  10:35 AM    <DIR>          ..
+06/18/2024  10:39 AM             9,541 MainWindow.xaml
+06/18/2024  10:39 AM             8,077 MainWindow.xaml.cs
+06/17/2024  09:51 AM               544 SettingsPage.xaml
+06/17/2024  09:36 AM               912 SettingsPage.xaml.cs
+               4 File(s)         19,074 bytes
+
+ Directory of c:\dev\ColorPaletteBuilder\_Tools
+
+06/18/2024  10:45 AM    <DIR>          .
+06/18/2024  10:35 AM    <DIR>          ..
+06/18/2024  10:45 AM                 0 folders.txt
+06/18/2024  10:39 AM             1,816 FolderScanner.csx
+               2 File(s)          1,816 bytes
+

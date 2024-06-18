@@ -8,66 +8,225 @@
     mc:Ignorable="d"
     Title="Color Palette Builder">
 
+
+
+
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Navigation Menu -->
-        <NavigationView PaneDisplayMode="Top" IsBackButtonVisible="Collapsed">
-            <NavigationView.MenuItems>
-                <NavigationViewItem Icon="OpenFile" Content="Open" Tag="OpenPalette"/>
-                <NavigationViewItem Icon="Save" Content="Save" Tag="SavePalette"/>
-                <NavigationViewItem Icon="Copy" Content="Save Copy As" Tag="SavePaletteAs"/>
-                <NavigationViewItem >
-                    <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="Light" GroupName="Theme" Checked="ThemeRadioButton_Checked"/>
-                        <RadioButton Content="Dark" GroupName="Theme" Checked="ThemeRadioButton_Checked"/>
-                        <RadioButton Content="System" GroupName="Theme" Checked="ThemeRadioButton_Checked"/>
-                    </StackPanel>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
-        </NavigationView>
+        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0"/>
+
+        <!-- Menu Bar  =================================================  -->
+        <MenuBar Grid.Row="1">
+            <MenuBarItem Title="File">
+                <MenuFlyoutItem Text="New Palette" Icon="NewFolder">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="N"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Load Palette" Icon="OpenLocal">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="O"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Save" Icon="Save">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="S"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Save As" Icon="SaveLocal">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control,Shift" Key="S"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Exit">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F4"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="Edit">
+                <MenuFlyoutItem Text="Picker">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE759;"/>
+                    </MenuFlyoutItem.Icon>
+
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="Q"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="Settings" Icon="Setting">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="I"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="Help">
+                <MenuFlyoutItem Text="Help">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F1"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+
+                <MenuFlyoutSeparator/>
+
+                <MenuFlyoutItem Text="About">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="Y"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+        </MenuBar>
+
+        <!-- End Menu Bar  =================================================  -->
+
+        <!-- Command Bar (ribbon)  =================================================  -->
+
+        <CommandBar x:Name="MainCommandBar" Grid.Row="2" Background="Transparent" 
+                    IsOpen="False" DefaultLabelPosition="Right" HorizontalAlignment="Left">
+
+            <AppBarButton Label="Add" Icon="Add">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Insert"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+
+            <AppBarButton Label="Remove" Icon="Remove">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Delete"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+
+            <AppBarSeparator/>
+
+            <AppBarButton Label="Picker">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="Q"/>
+                </AppBarButton.KeyboardAccelerators>
+                <AppBarButton.Content>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE759;"/>
+                </AppBarButton.Content>
+            </AppBarButton>
+
+            <AppBarSeparator/>
+
+            <AppBarButton Label="Copy Hex" Icon="Copy"/>
+
+            <AppBarButton Label="Copy RGBA" Icon="Copy"/>
 
 
 
-        <Grid Grid.Row="1">
+
+
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Setting" Label="Settings">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="I" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+
+        <!-- End Command Bar (ribbon)  =================================================  -->
+
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="350"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
 
 
-            <!-- Left Column: Color Selector and Tools -->
-            <StackPanel Grid.Column="0" Padding="10">
-                <TextBlock Text="Color Selector" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-                <Button Content="Select Color" Click="SelectColor_Click" Margin="0,0,0,10"/>
-                <Button Content="Activate Eye Dropper" Click="ActivateEyeDropper_Click" Margin="0,10"/>
+            <StackPanel Grid.RowSpan="2" Grid.Column="0" Padding="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-                <TextBlock Text="Hex Code" Margin="0,20,0,5"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBox x:Name="tbHexCode" Width="200"/>
-                    <Button Content="Copy" Click="CopyHexCode_Click" Margin="5,0,0,0"/>
-                </StackPanel>
 
-                <TextBlock Text="RGBA" Margin="0,10,0,5"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBox x:Name="tbRGBA" Width="200"/>
-                    <Button Content="Copy" Click="CopyRGBA_Click" Margin="5,0,0,0"/>
-                </StackPanel>
+                <ScrollViewer Height="Auto" Width="400" ZoomMode="Disabled"
+            IsTabStop="True" IsVerticalScrollChainingEnabled="True"
+            HorizontalAlignment="Left" VerticalAlignment="Top"
+            ViewChanged="LeftScrollViewerControl_ViewChanged"
+            HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Auto"
+            VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
 
-                <TextBlock Text="C# Code" Margin="0,10,0,5"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBox x:Name="tbCSharp" Width="200"/>
-                    <Button Content="Copy" Click="CopyCSharpCode_Click" Margin="5,0,0,0"/>
-                </StackPanel>
+                    <StackPanel>
+
+                        <ColorPicker x:Name="CustomColorPicker"
+                      ColorSpectrumShape="Box"
+                      IsMoreButtonVisible="False"
+                      IsColorSliderVisible="True"
+                      IsColorChannelTextInputVisible="True"
+                      IsHexInputVisible="True"
+                      IsAlphaEnabled="True"
+                      IsAlphaSliderVisible="True"
+                      IsAlphaTextInputVisible="True" />
+
+
+                    </StackPanel>
+                </ScrollViewer>
+
             </StackPanel>
 
 
-            <!-- Right Column: List View/Data View -->
-            <ListView x:Name="ColorPaletteListView" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single">
+            
+            <!-- Right Column: Element Lists & List View/Data View -->
+
+            
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,5,0">
+                <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind ColorPaletteData.ElementStates}" Margin="5,0,5,0"
+                          Width="150" IsEditable="True" Header="Element States"/>
+                
+                <Button Margin="0,25,2,0" Height="30">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xe710;" FontSize="10" Margin="0"/>
+                    </Button.Content>
+                </Button>
+                <Button Margin="0,25,2,0" Height="30">
+                    <Button.Content>
+                            <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
+                        </Button.Content>
+                </Button>
+                
+                <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
+                          Width="150" IsEditable="True" Header=" Element Groups"/>
+
+                <Button Margin="0,25,2,0" Height="30">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xe710;" FontSize="10" Margin="0"/>
+                    </Button.Content>
+                </Button>
+                <Button Margin="0,25,2,0" Height="30">
+                    <Button.Content>
+                        <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
+                    </Button.Content>
+                </Button>
+                
+            </StackPanel>
+
+
+
+            <ListView x:Name="ColorPaletteListView" Grid.Row="1" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single"
+                      ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollMode="Auto" 
+                      Margin="0,15,0,0" >
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:ColorEntry">
                         <Grid Padding="10">
@@ -79,13 +238,14 @@
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="20"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{x:Bind Name}" VerticalAlignment="Center"/>
-                            <ComboBox Grid.Column="1" SelectedItem="{x:Bind State}" VerticalAlignment="Center">
-                                <!-- Add ComboBox items here -->
-                            </ComboBox>
-                            <ComboBox Grid.Column="2" SelectedItem="{x:Bind ElementGroup}" VerticalAlignment="Center">
-                                <!-- Add ComboBox items here -->
-                            </ComboBox>
+                            <TextBlock Grid.Column="0" Text="{x:Bind ElementName}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <ComboBox Grid.Column="1" SelectedItem="{x:Bind ElementState}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                                      Loaded="ElementStateComboBox_Loaded"/>
+
+                            <ComboBox Grid.Column="2" SelectedItem="{x:Bind ElementGroup}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                                      Loaded="ElementGroupComboBox_Loaded"/>
+
+
                             <TextBlock Grid.Column="3" Text="{x:Bind HexCode}" VerticalAlignment="Center"/>
                             <TextBlock Grid.Column="4" Text="{x:Bind Alpha}" VerticalAlignment="Center"/>
                             <Border Grid.Column="5" Background="{x:Bind SelectedColor}" Width="20" Height="20" VerticalAlignment="Center"/>
@@ -93,6 +253,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+          
         </Grid>
     </Grid>
 </Window>

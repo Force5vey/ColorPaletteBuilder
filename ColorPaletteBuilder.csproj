@@ -27,8 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240607001" />
+    <PackageReference Include="System.Text.Json" Version="8.0.3" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -42,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Documentation\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\SettingsPage.xaml">

@@ -38,8 +38,8 @@ namespace ColorPaletteBuilder
         {
             this.InitializeComponent();
 
-            
-            ApplyTheme();
+
+            SetTheme(ApplicationTheme.Dark);
         }
 
         /// <summary>
@@ -49,27 +49,13 @@ namespace ColorPaletteBuilder
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
+            m_window.ExtendsContentIntoTitleBar = true;
+
             m_window.Activate();
-        }
-
- 
-        public void ApplyTheme()
-        {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var themeSetting = localSettings.Values[ThemeSettingKey] as string;
-
-            if (string.IsNullOrEmpty(themeSetting))
-            {
-                //Default or system if no theme selected
-                themeSetting = "Light";
-                localSettings.Values[ThemeSettingKey] = themeSetting;
-            }
-            else
-            {
-                RequestedTheme = (ApplicationTheme)Enum.Parse(typeof(ApplicationTheme), themeSetting);
-            }
 
         }
+
+
 
         public void SetTheme(ApplicationTheme theme)
         {

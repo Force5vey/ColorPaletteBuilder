@@ -27,84 +27,59 @@ namespace ColorPaletteBuilder
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        public ObservableCollection<ColorEntry> ColorEntries { get; set; } = new ObservableCollection<ColorEntry>();
+        public ColorPalette ColorPaletteData { get; set; } = new ColorPalette();
 
         public MainWindow()
         {
             this.InitializeComponent();
-            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1200, 800));
+            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1000, 800));
 
             LoadSampleData();
 
-            ColorPaletteListView.ItemsSource = ColorEntries;
+            ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
+
         }
 
         private void LoadSampleData()
         {
-            ColorEntries = new ObservableCollection<ColorEntry>
+            ColorPaletteData = new ColorPalette
             {
-            new ColorEntry { Name = "Red", State = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
-                new ColorEntry { Name = "Green", State = "Enabled", ElementGroup = "UI", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
-                new ColorEntry { Name = "Blue", State = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
-                new ColorEntry { Name = "Yellow", State = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
-                new ColorEntry { Name = "Cyan", State = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
-                new ColorEntry { Name = "Magenta", State = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) }
+                ColorPaletteName = "Default",
+                ColorEntries = new ObservableCollection<ColorEntry>
+            {
+                new ColorEntry { ElementName = "Main UI Screen Accent", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = .5, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
+                new ColorEntry { ElementName = "Secondary UI Screen Item Selection", ElementState = "Enabled", ElementGroup = "Game Play", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
+                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
+                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
+                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
+                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) },
+                new ColorEntry { ElementName = "Red", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
+                new ColorEntry { ElementName = "Green", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
+                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
+                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
+                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
+                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) },
+                new ColorEntry { ElementName = "Red", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
+                new ColorEntry { ElementName = "Green", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
+                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
+                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
+                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
+                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) },
+                new ColorEntry { ElementName = "Red", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#FF0000", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Red) },
+                new ColorEntry { ElementName = "Green", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#00FF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Green) },
+                new ColorEntry { ElementName = "Blue", ElementState = "Enabled", ElementGroup = "UI", HexCode = "#0000FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Blue) },
+                new ColorEntry { ElementName = "Yellow", ElementState = "Disabled", ElementGroup = "Background", HexCode = "#FFFF00", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Yellow) },
+                new ColorEntry { ElementName = "Cyan", ElementState = "Enabled", ElementGroup = "Text", HexCode = "#00FFFF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Cyan) },
+                new ColorEntry { ElementName = "Magenta", ElementState = "Disabled", ElementGroup = "Text", HexCode = "#FF00FF", Alpha = 1.0, SelectedColor = new SolidColorBrush(Microsoft.UI.Colors.Magenta) }
+            },
+                ElementGroups = new List<string> { "UI", "Game Play", "Level", "Designer" },
+                ElementStates = new List<string> { "Enabled", "Disabled", "Selected", "No Focus" }
             };
 
-        }
 
-        /// <summary>
-        /// Color Wheel Selector
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SelectColor_Click(object sender, RoutedEventArgs e)
-        {
         }
 
 
-        /// <summary>
-        /// Activate Eye Dropper
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        private void ActivateEyeDropper_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Copy HexCode Code
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        private void CopyHexCode_Click(object sender, RoutedEventArgs e)
-        {
-            CopyToClipboard(tbHexCode.Text);
-        }
-
-        /// <summary>
-        /// Copy RGB_A Code
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        private void CopyRGBA_Click(object sender, RoutedEventArgs e)
-        {
-            CopyToClipboard(tbRGBA.Text);
-        }
-
-        /// <summary>
-        /// Copy CSharp Code
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        private void CopyCSharpCode_Click(object sender, RoutedEventArgs e)
-        {
-            CopyToClipboard(tbCSharp.Text);
-        }
 
         private void CopyToClipboard(string text)
         {
@@ -131,6 +106,29 @@ namespace ColorPaletteBuilder
         private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void LeftScrollViewerControl_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+        }
+
+        private void ElementStateComboBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox != null)
+            {
+                comboBox.ItemsSource = ColorPaletteData.ElementStates;
+            }
+        }
+
+
+        private void ElementGroupComboBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if(comboBox != null)
+            {
+                comboBox.ItemsSource = ColorPaletteData.ElementGroups;
+            }   
         }
     }
 }
