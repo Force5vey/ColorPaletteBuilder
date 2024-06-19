@@ -17,6 +17,7 @@ using System.Drawing;
 using Microsoft.UI;
 using Windows.Storage.Pickers;
 using Windows.Storage;
+using Windows.ApplicationModel.DataTransfer;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -29,20 +30,20 @@ namespace ColorPaletteBuilder
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-           public ColorPalette ColorPaletteData { get; set; } = new ColorPalette
+        public ColorPalette ColorPaletteData { get; set; } = new ColorPalette
         {
             ColorEntries = new ObservableCollection<ColorEntry>(),
             ElementGroups = new ObservableCollection<string>(),
             ElementStates = new ObservableCollection<string>()
         };
 
+        private ColorEntry _currentEntry = new ColorEntry();
+
         public MainWindow()
         {
             this.InitializeComponent();
             this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1000, 800));
 
-
-            LoadSampleData();
 
             ColorPaletteListView.DataContext = this;
 
@@ -52,44 +53,14 @@ namespace ColorPaletteBuilder
 
         private void ClearColorPaletteData()
         {
-            ColorPaletteData.ColorEntries.Clear(); 
+            ColorPaletteData.ColorPaletteFile = "New Palette";
+            ColorPaletteData.ColorPaletteName = "New Palette";
+            ColorPaletteData.ColorEntries.Clear();
             ColorPaletteData.ElementStates.Clear();
             ColorPaletteData.ElementGroups.Clear();
         }
 
-        private void LoadSampleData()
-        {
-            ColorPaletteData = new ColorPalette
-            {
-                ColorPaletteName = "Default",
-                ElementGroups = new ObservableCollection<string> { "UI", "Game Play", "Level", "Designer", "Background", "Text" },
-                ElementStates = new ObservableCollection<string> { "Enabled", "Disabled", "Selected", "No Focus" },
-                ColorEntries = new ObservableCollection<ColorEntry>
-                {
-                    new ColorEntry {ElementName = "Button", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#FF0000", Alpha = 1.0, DisplayColor = "PlaceHolder"},
-                    new ColorEntry { ElementName = "Main Background Page Color Accent", ElementGroup= "Game Play", ElementState = "Enabled", HexCode = "#00FF00", Alpha = 1.0, DisplayColor = "PlaceHolder" },
-                    new ColorEntry { ElementName = "Header Text", ElementGroup = "UI", ElementState = "Selected", HexCode = "#0000FF", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Footer Background", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#FFFF00", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Sidebar", ElementGroup = "UI", ElementState = "No Focus", HexCode = "#FF00FF", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Link Text", ElementGroup = "Text", ElementState = "Selected", HexCode = "#00FFFF", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Warning Text", ElementGroup = "Text", ElementState = "Enabled", HexCode = "#FFA500", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Success Text", ElementGroup = "Text", ElementState = "Enabled", HexCode = "#008000", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Info Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#ADD8E6", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Alert Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#FF4500", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Primary Button Text", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#FFFFFF", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Secondary Button Text", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#000000", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Card Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#F0E68C", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Primary Button Background", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#1E90FF", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Secondary Button Background", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#D3D3D3", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Modal Background", ElementGroup = "Background", ElementState = "Enabled", HexCode = "#2F4F4F", Alpha = 1.0 },
-                    new ColorEntry { ElementName = "Modal Text", ElementGroup = "Text", ElementState = "Enabled", HexCode = "#F5F5F5", Alpha = 1.0 }
-
-                }
-            };
-
-        }
-
-
+        
         private void CopyToClipboard(string text)
         {
             if (!string.IsNullOrEmpty(text))
@@ -99,6 +70,18 @@ namespace ColorPaletteBuilder
                 Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
             }
         }
+
+        private void CopyHexCode_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null && button.DataContext is ColorEntry colorEntry)
+            {
+                var dataPackage = new DataPackage();
+                dataPackage.SetText(colorEntry.HexCode);
+                Clipboard.SetContent(dataPackage);
+            }
+        }
+
         private void NewPalette_Click(object sender, RoutedEventArgs e)
         {
             ClearColorPaletteData();
@@ -117,7 +100,7 @@ namespace ColorPaletteBuilder
             {
                 ColorPalette colorPalette = await FileService.LoadPaletteAsync(file.Path);
 
-               ClearColorPaletteData();
+                ClearColorPaletteData();
 
                 ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
                 ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
@@ -133,8 +116,11 @@ namespace ColorPaletteBuilder
                 foreach (var state in colorPalette.ElementStates)
                 {
                     ColorPaletteData.ElementStates.Add(state);
-                }   
-               
+                }
+
+                // I am right here to start implementing the auto save / auto open last file that is laid out in last conversation
+                // of the chatgpt conversation
+
             }
         }
 
@@ -149,6 +135,7 @@ namespace ColorPaletteBuilder
             StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
             if (file != null)
             {
+                ColorPaletteData.ColorPaletteFile = file.Path;
                 await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
             }
         }
@@ -165,6 +152,7 @@ namespace ColorPaletteBuilder
             StorageFile file = picker.PickSaveFileAsync().AsTask().Result;
             if (file != null)
             {
+                ColorPaletteData.ColorPaletteFile = file.Path;
                 await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
             }
         }
@@ -202,5 +190,50 @@ namespace ColorPaletteBuilder
         {
 
         }
+
+        private void AddColorEntry_Click(object sender, RoutedEventArgs e)
+        {
+            ColorEntry newEntry = new ColorEntry
+            {
+                ElementName = "Name",
+                ElementGroup = ColorPaletteData.ElementGroups.FirstOrDefault(),
+                ElementState = ColorPaletteData.ElementStates.FirstOrDefault(),
+                HexCode = "#FF000000"
+            };
+
+            newEntry.HexCode = _currentEntry.HexCode;
+
+            ColorPaletteData.ColorEntries.Insert(0, newEntry);
+
+        }
+        private void RemoveColorEntry_Click(object sender, RoutedEventArgs e)
+        {
+          var selectedEntry = ColorPaletteListView.SelectedItem as ColorEntry;
+            if(selectedEntry != null)
+            {
+                ColorPaletteData.ColorEntries.Remove(selectedEntry);
+            }
+        }
+
+        private void CustomColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+        {
+            if (_currentEntry != null)
+            {
+                var color = args.NewColor;
+                _currentEntry.HexCode = ColorConverter.ToHex(color, includeAlpha: true);
+            }
+        }
+
+        private void AssignColor_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null && button.DataContext is ColorEntry colorEntry)
+            {
+                var color = CustomColorPicker.Color;
+                colorEntry.HexCode = ColorConverter.ToHex(color, includeAlpha: true);
+            }
+        }
+
+
     }
 }

@@ -14,8 +14,8 @@ namespace ColorPaletteBuilder
         private string elementState;
         private string elementGroup;
         private string hexCode;
-        private double alpha;
         private string displayColor; // This is a placeholder for the actual color value
+        private string changeColor; // This is a placeholder for listview to add a button to change color
 
         public string ElementName
         {
@@ -41,16 +41,16 @@ namespace ColorPaletteBuilder
             set => SetProperty(ref hexCode, value);
         }
 
-        public double Alpha
-        {
-            get => alpha;
-            set => SetProperty(ref alpha, value);
-        }
-
         public string DisplayColor
         {
             get => displayColor;
             set => SetProperty(ref displayColor, value);
+        }
+
+        public string ChangeColor
+        {
+            get => changeColor;
+            set => SetProperty(ref changeColor, value);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -75,7 +75,6 @@ namespace ColorPaletteBuilder
             ElementState = string.Empty;
             ElementGroup = string.Empty;
             HexCode = string.Empty;
-            Alpha = 1.0;
             DisplayColor = string.Empty;
         }
     }

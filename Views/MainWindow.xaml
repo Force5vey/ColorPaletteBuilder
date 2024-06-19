@@ -8,6 +8,7 @@
     mc:Ignorable="d"
     Title="Color Palette Builder">
 
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -98,13 +99,13 @@
         <CommandBar x:Name="MainCommandBar" Grid.Row="2" Background="Transparent" 
                     IsOpen="False" DefaultLabelPosition="Right" HorizontalAlignment="Left">
 
-            <AppBarButton Label="Add" Icon="Add">
+            <AppBarButton Label="Add" Icon="Add" Click="AddColorEntry_Click" ToolTipService.ToolTip="Add new color entry">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Insert"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
 
-            <AppBarButton Label="Remove" Icon="Remove">
+            <AppBarButton Label="Remove" Icon="Remove" Click="RemoveColorEntry_Click" ToolTipService.ToolTip="Remove the selected color entry">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Delete"/>
                 </AppBarButton.KeyboardAccelerators>
@@ -174,7 +175,8 @@
                       IsHexInputVisible="True"
                       IsAlphaEnabled="True"
                       IsAlphaSliderVisible="True"
-                      IsAlphaTextInputVisible="True" />
+                      IsAlphaTextInputVisible="True" 
+                                     ColorChanged="CustomColorPicker_ColorChanged"/>
 
 
                     </StackPanel>
@@ -183,14 +185,14 @@
             </StackPanel>
 
 
-            
+
             <!-- Right Column: Element Lists & List View/Data View -->
 
-            
+
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,5,0">
                 <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind ColorPaletteData.ElementStates}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header="Element States"/>
-                
+
                 <Button Margin="0,25,2,0" Height="30">
                     <Button.Content>
                         <FontIcon Glyph="&#xe710;" FontSize="10" Margin="0"/>
@@ -198,10 +200,10 @@
                 </Button>
                 <Button Margin="0,25,2,0" Height="30">
                     <Button.Content>
-                            <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
-                        </Button.Content>
+                        <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
+                    </Button.Content>
                 </Button>
-                
+
                 <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header=" Element Groups"/>
 
@@ -215,7 +217,7 @@
                         <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
                     </Button.Content>
                 </Button>
-                
+
             </StackPanel>
 
 
@@ -231,27 +233,38 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="30"/>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Content="{x:Bind DisplayColor}" VerticalAlignment="Center" Width="40" Height="25"/>
-                            <TextBlock Grid.Column="1" Text="{x:Bind ElementName}" VerticalAlignment="Center" TextWrapping="Wrap" Width="200"/>
-                            <ComboBox Grid.Column="2" SelectedItem="{x:Bind ElementState}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
-                                      Loaded="ElementStateComboBox_Loaded"/>
 
-                            <ComboBox Grid.Column="3" SelectedItem="{x:Bind ElementGroup}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
-                                      Loaded="ElementGroupComboBox_Loaded"/>
+                            <Button Grid.Column="0" Click="AssignColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Assign Currently Selected Color"
+                                    Width="35" Height="30" Margin="15,0,0,0">
+                                <Button.Content>
+                                    <FontIcon Glyph="&#xe7fd;" FontSize="16"/>
+                                </Button.Content>
+                            </Button>
 
+                            <Button Grid.Column="1" Style="{StaticResource CustomButtonStyle}" Background="{Binding HexCode, Converter={StaticResource HexToBrushConverter}}"
+                                    Click="CopyHexCode_Click" VerticalAlignment="Center" Width="40" Height="30" Margin="0,0,10,0" ToolTipService.ToolTip="Copy Hex Code to Clipboard">
+                                <Button.Content>
+                                    <SymbolIcon Symbol="Copy"/>
+                                </Button.Content>
+                            </Button>
 
-                            <TextBlock Grid.Column="4" Text="{x:Bind HexCode}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="5" Text="{x:Bind Alpha}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox Grid.Column="2" Text="{x:Bind ElementName, Mode=TwoWay}" VerticalAlignment="Center" TextWrapping="Wrap" Width="200" ToolTipService.ToolTip="Name of the Element" />
+                            <ComboBox Grid.Column="3" SelectedItem="{x:Bind ElementState, Mode=TwoWay}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                                      Loaded="ElementStateComboBox_Loaded" ToolTipService.ToolTip="Select an Element State for the Element"/>
+
+                            <ComboBox Grid.Column="4" SelectedItem="{x:Bind ElementGroup, Mode=TwoWay}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                                      Loaded="ElementGroupComboBox_Loaded" ToolTipService.ToolTip="Select a Group or Layer for the Color Element"/>
+
+                            <TextBox Grid.Column="5" Text="{x:Bind HexCode, Mode=TwoWay}" VerticalAlignment="Center" Width="115" ToolTipService.ToolTip="Either a 6 or 8 digit Hexidecimal Code"/>
                             
-                            <!--<Border Grid.Column="5" Background="{x:Bind DisplayColor}" Width="20" Height="20" VerticalAlignment="Center"/>-->
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-          
+
         </Grid>
     </Grid>
 </Window>
