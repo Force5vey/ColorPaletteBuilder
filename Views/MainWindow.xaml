@@ -222,7 +222,7 @@
 
             <ListView x:Name="ColorPaletteListView" Grid.Row="1" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single"
                       ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollMode="Auto" 
-                      Margin="0,15,0,0" >
+                      Margin="0,15,0,0">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:ColorEntry">
                         <Grid Padding="10">

@@ -29,16 +29,20 @@ namespace ColorPaletteBuilder
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        public ColorPalette ColorPaletteData { get; set; } = new ColorPalette();
-
-
+           public ColorPalette ColorPaletteData { get; set; } = new ColorPalette
+        {
+            ColorEntries = new ObservableCollection<ColorEntry>(),
+            ElementGroups = new ObservableCollection<string>(),
+            ElementStates = new ObservableCollection<string>()
+        };
 
         public MainWindow()
         {
             this.InitializeComponent();
             this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1000, 800));
 
-            //LoadSampleData();
+
+            LoadSampleData();
 
             ColorPaletteListView.DataContext = this;
 
@@ -46,13 +50,20 @@ namespace ColorPaletteBuilder
 
         }
 
+        private void ClearColorPaletteData()
+        {
+            ColorPaletteData.ColorEntries.Clear(); 
+            ColorPaletteData.ElementStates.Clear();
+            ColorPaletteData.ElementGroups.Clear();
+        }
+
         private void LoadSampleData()
         {
             ColorPaletteData = new ColorPalette
             {
                 ColorPaletteName = "Default",
-                ElementGroups = new List<string> { "UI", "Game Play", "Level", "Designer", "Background", "Text" },
-                ElementStates = new List<string> { "Enabled", "Disabled", "Selected", "No Focus" },
+                ElementGroups = new ObservableCollection<string> { "UI", "Game Play", "Level", "Designer", "Background", "Text" },
+                ElementStates = new ObservableCollection<string> { "Enabled", "Disabled", "Selected", "No Focus" },
                 ColorEntries = new ObservableCollection<ColorEntry>
                 {
                     new ColorEntry {ElementName = "Button", ElementGroup = "UI", ElementState = "Enabled", HexCode = "#FF0000", Alpha = 1.0, DisplayColor = "PlaceHolder"},
@@ -88,6 +99,10 @@ namespace ColorPaletteBuilder
                 Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
             }
         }
+        private void NewPalette_Click(object sender, RoutedEventArgs e)
+        {
+            ClearColorPaletteData();
+        }
 
         private async void OpenPalette_Click(object sender, RoutedEventArgs e)
         {
@@ -101,8 +116,25 @@ namespace ColorPaletteBuilder
             if (file != null)
             {
                 ColorPalette colorPalette = await FileService.LoadPaletteAsync(file.Path);
-                ColorPaletteData.ColorEntries.Clear();
-                ColorPaletteData = colorPalette;
+
+               ClearColorPaletteData();
+
+                ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
+                ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+
+                foreach (var entry in colorPalette.ColorEntries)
+                {
+                    ColorPaletteData.ColorEntries.Add(entry);
+                }
+                foreach (var group in colorPalette.ElementGroups)
+                {
+                    ColorPaletteData.ElementGroups.Add(group);
+                }
+                foreach (var state in colorPalette.ElementStates)
+                {
+                    ColorPaletteData.ElementStates.Add(state);
+                }   
+               
             }
         }
 
@@ -165,10 +197,6 @@ namespace ColorPaletteBuilder
             }
         }
 
-        private void NewPalette_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
         {

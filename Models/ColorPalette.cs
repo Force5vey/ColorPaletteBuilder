@@ -11,9 +11,18 @@ namespace ColorPaletteBuilder
     {
         private string colorPaletteName;
         private string colorPaletteFile;
-        private List<string> elementStates;
-        private List<string> elementGroups;
+        private ObservableCollection<string> elementStates;
+        private ObservableCollection<string> elementGroups;
         private ObservableCollection<ColorEntry> colorEntries;
+
+        public ColorPalette()
+        {
+            ColorPaletteName = "Color Palette";
+            ColorPaletteFile = "New Palette";
+            ElementStates = new ObservableCollection<string>();
+            ElementGroups = new ObservableCollection<string>();
+            ColorEntries = new ObservableCollection<ColorEntry>();
+        }
 
 
         public string ColorPaletteName
@@ -29,13 +38,13 @@ namespace ColorPaletteBuilder
         }
 
 
-        public List<string> ElementStates
+        public ObservableCollection<string> ElementStates
         {
             get => elementStates;
             set => SetProperty(ref elementStates, value);
         }
 
-        public List<string> ElementGroups
+        public ObservableCollection<string> ElementGroups
         {
             get => elementGroups;
             set => SetProperty(ref elementGroups, value);

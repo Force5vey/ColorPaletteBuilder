@@ -68,5 +68,15 @@ namespace ColorPaletteBuilder
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public ColorEntry()
+        {
+            ElementName = string.Empty;
+            ElementState = string.Empty;
+            ElementGroup = string.Empty;
+            HexCode = string.Empty;
+            Alpha = 1.0;
+            DisplayColor = string.Empty;
+        }
     }
 }

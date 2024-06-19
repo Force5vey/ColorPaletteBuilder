@@ -23,11 +23,11 @@ namespace ColorPaletteBuilder
                 };
 
                 var json = JsonSerializer.Serialize(colorPaletteData, options);
-            await File.WriteAllTextAsync(filePath, json);
-        }
+                await File.WriteAllTextAsync(filePath, json);
+            }
             catch (Exception ex)
             {
-               Debug.WriteLine($"Error saving file: {ex.Message}");
+                Debug.WriteLine($"Error saving file: {ex.Message}");
             }
 
         }
