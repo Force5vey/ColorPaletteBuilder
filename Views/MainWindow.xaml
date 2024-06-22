@@ -99,6 +99,26 @@
         <CommandBar x:Name="MainCommandBar" Grid.Row="2" Background="Transparent" 
                     IsOpen="False" DefaultLabelPosition="Right" HorizontalAlignment="Left">
 
+            <AppBarButton Label="New" Icon="NewFolder" Click="NewPalette_Click" ToolTipService.ToolTip="Add new color entry">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Insert"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+
+            <AppBarButton Label="Open" Icon="OpenLocal" Click="OpenPalette_Click" ToolTipService.ToolTip="Add new color entry">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Insert"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+
+            <AppBarButton Label="Save" Icon="Save" Click="SavePalette_Click" ToolTipService.ToolTip="Add new color entry">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Insert"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+
+            <AppBarSeparator/>
+
             <AppBarButton Label="Add" Icon="Add" Click="AddColorEntry_Click" ToolTipService.ToolTip="Add new color entry">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Insert"/>
@@ -113,7 +133,7 @@
 
             <AppBarSeparator/>
 
-            <AppBarButton Label="Picker">
+            <AppBarButton Label="Picker" Click="SelectColorButton_Click">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="Q"/>
                 </AppBarButton.KeyboardAccelerators>
@@ -124,9 +144,23 @@
 
             <AppBarSeparator/>
 
-            <AppBarButton Label="Copy Hex" Icon="Copy"/>
+            <!-- this needs to be updated to a toggleable button -->
+            <AppBarButton Label="Edit Palette">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="E"/>
+                </AppBarButton.KeyboardAccelerators>
+                <AppBarButton.Content>
+                    <SymbolIcon Symbol="Edit"/>
+                </AppBarButton.Content>
+            </AppBarButton>
 
-            <AppBarButton Label="Copy RGBA" Icon="Copy"/>
+            <AppBarSeparator/>
+            
+            <AppBarButton Label="Hex" Icon="Copy"/>
+
+            <AppBarButton Label="Hex w/Out Alpha" Icon="Copy"/>
+
+            <AppBarButton Label="RGBA" Icon="Copy"/>
 
 
 
@@ -182,6 +216,52 @@
                     </StackPanel>
                 </ScrollViewer>
 
+                <StackPanel Background="#FF161717">
+                    <TextBlock Width="250" Height="3"/>
+                </StackPanel>
+
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
+
+                    <Button x:Name="btSetColorPicker" Margin="5,0,0,0" ToolTipService.ToolTip="Set Color Picker From Selection">
+                        <Button.Content>
+                            <StackPanel Orientation="Vertical">
+                                <FontIcon Glyph="&#xe7eb;">
+                                </FontIcon>
+                                <TextBlock Text="Set"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                    <Button x:Name="btCopyHex" Margin="5,0,0,0" ToolTipService.ToolTip="Copy Full Hex code with alpha value from color picker">
+                        <Button.Content>
+                            <StackPanel>
+                                <SymbolIcon Symbol="Copy"/>
+                                <TextBlock Text="Hex"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                    <Button x:Name="btCopyHexNoAlpha" Margin="5,0,0,0" ToolTipService.ToolTip="Copy hex code with OUT alpha value from color picker">
+                        <Button.Content>
+                            <StackPanel>
+                                <SymbolIcon Symbol="Copy"/>
+                                <TextBlock Text="# No Alpha"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                    <Button x:Name="btCopyRGB" Margin="5,0,0,0" ToolTipService.ToolTip="Copy RGB values from color picker">
+                        <Button.Content>
+                            <StackPanel>
+                                <SymbolIcon Symbol="Copy"/>
+                                <TextBlock Text="RGB"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+
+                </StackPanel>
+
+
             </StackPanel>
 
 
@@ -190,6 +270,9 @@
 
 
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,5,0">
+
+             
+                
                 <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind ColorPaletteData.ElementStates}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header="Element States"/>
 
@@ -259,7 +342,7 @@
                                       Loaded="ElementGroupComboBox_Loaded" ToolTipService.ToolTip="Select a Group or Layer for the Color Element"/>
 
                             <TextBox Grid.Column="5" Text="{x:Bind HexCode, Mode=TwoWay}" VerticalAlignment="Center" Width="115" ToolTipService.ToolTip="Either a 6 or 8 digit Hexidecimal Code"/>
-                            
+
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

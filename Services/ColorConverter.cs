@@ -11,7 +11,7 @@ namespace ColorPaletteBuilder
 {
     public class ColorConverter
     {
-        public static string ToHex(Color color, bool includeAlpha = true)
+        public static string ToHex(System.Drawing.Color color, bool includeAlpha = true)
         {
             return includeAlpha
                 ? $"#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}"

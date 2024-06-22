@@ -8,6 +8,8 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI;
 using Microsoft.UI.Xaml.Markup;
 
+
+
 namespace ColorPaletteBuilder
 {
     public class HexToBrushConverter : IValueConverter
@@ -26,7 +28,7 @@ namespace ColorPaletteBuilder
                     return new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
                 }
             }
-            return new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+            return new SolidColorBrush(Windows.UI.Color.FromArgb(255, 0, 0, 0));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

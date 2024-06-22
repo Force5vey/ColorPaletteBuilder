@@ -18,6 +18,11 @@ using Microsoft.UI;
 using Windows.Storage.Pickers;
 using Windows.Storage;
 using Windows.ApplicationModel.DataTransfer;
+using System.Threading.Tasks;
+using Windows.Graphics.Capture;
+using Windows.Graphics.Imaging;
+using Windows.Storage.Streams;
+using Windows.UI.Core;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -42,13 +47,41 @@ namespace ColorPaletteBuilder
         public MainWindow()
         {
             this.InitializeComponent();
-            this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1000, 800));
 
+            // Set the window size according to last window size
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            try
+            {
+                if (localSettings.Values.TryGetValue("WindowWidth", out object width) && localSettings.Values.TryGetValue("WindowHeight", out object height))
+                {
+                    this.AppWindow.Resize(new Windows.Graphics.SizeInt32((int)width, (int)height));
+                }
+            }
+            catch
+            {
+                // Ignore errors (maybe for now) assign a default window size
+                this.AppWindow.Resize(new Windows.Graphics.SizeInt32(800, 600));
+            }
 
             ColorPaletteListView.DataContext = this;
-
             ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
 
+            LoadLastOpenedFile();
+
+            this.Closed += MainWindow_Closed;
+        }
+
+        private void LoadLastOpenedFile()
+        {
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            if (localSettings.Values.TryGetValue("LastOpenedFilePath", out object filePath))
+            {
+                string lastOpenedFilePath = filePath as string;
+                if (!string.IsNullOrEmpty(lastOpenedFilePath))
+                {
+                    LoadPaletteFromFile(lastOpenedFilePath);
+                }
+            }
         }
 
         private void ClearColorPaletteData()
@@ -60,7 +93,7 @@ namespace ColorPaletteBuilder
             ColorPaletteData.ElementGroups.Clear();
         }
 
-        
+
         private void CopyToClipboard(string text)
         {
             if (!string.IsNullOrEmpty(text))
@@ -98,31 +131,53 @@ namespace ColorPaletteBuilder
             StorageFile file = await picker.PickSingleFileAsync();
             if (file != null)
             {
-                ColorPalette colorPalette = await FileService.LoadPaletteAsync(file.Path);
+                await LoadPaletteFromFile(file.Path);
 
-                ClearColorPaletteData();
-
-                ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
-                ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
-
-                foreach (var entry in colorPalette.ColorEntries)
-                {
-                    ColorPaletteData.ColorEntries.Add(entry);
-                }
-                foreach (var group in colorPalette.ElementGroups)
-                {
-                    ColorPaletteData.ElementGroups.Add(group);
-                }
-                foreach (var state in colorPalette.ElementStates)
-                {
-                    ColorPaletteData.ElementStates.Add(state);
-                }
-
-                // I am right here to start implementing the auto save / auto open last file that is laid out in last conversation
-                // of the chatgpt conversation
+                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                localSettings.Values["LastOpenedFilePath"] = file.Path;
 
             }
         }
+
+        private async Task<int> LoadPaletteFromFile(string filePath)
+        {
+            try
+            {
+                ColorPalette colorPalette = await FileService.LoadPaletteAsync(filePath);
+                if (colorPalette != null)
+                {
+                    ClearColorPaletteData();
+
+                    ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
+                    ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+
+                    foreach (var entry in colorPalette.ColorEntries)
+                    {
+                        ColorPaletteData.ColorEntries.Add(entry);
+                    }
+                    foreach (var group in colorPalette.ElementGroups)
+                    {
+                        ColorPaletteData.ElementGroups.Add(group);
+                    }
+                    foreach (var state in colorPalette.ElementStates)
+                    {
+                        ColorPaletteData.ElementStates.Add(state);
+                    }
+
+                    // force a rebind of the ListView to ensure it updates
+                    ColorPaletteListView.ItemsSource = null;
+                    ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
+
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                //TODO: Handle errors
+                return -1;
+            }
+        }
+
 
         private async void SavePalette_Click(object sender, RoutedEventArgs e)
         {
@@ -132,11 +187,19 @@ namespace ColorPaletteBuilder
                 return;
             }
 
-            StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
+            await SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
+        }
+
+        private async Task SavePaletteToFile(string filePath)
+        {
+            StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);
             if (file != null)
             {
                 ColorPaletteData.ColorPaletteFile = file.Path;
                 await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
+
+                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                localSettings.Values["LastOpenedFilePath"] = file.Path;
             }
         }
 
@@ -152,14 +215,8 @@ namespace ColorPaletteBuilder
             StorageFile file = picker.PickSaveFileAsync().AsTask().Result;
             if (file != null)
             {
-                ColorPaletteData.ColorPaletteFile = file.Path;
-                await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
+                await SavePaletteToFile(file.Path);
             }
-        }
-
-        private void ThemeRadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void LeftScrollViewerControl_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -208,8 +265,8 @@ namespace ColorPaletteBuilder
         }
         private void RemoveColorEntry_Click(object sender, RoutedEventArgs e)
         {
-          var selectedEntry = ColorPaletteListView.SelectedItem as ColorEntry;
-            if(selectedEntry != null)
+            var selectedEntry = ColorPaletteListView.SelectedItem as ColorEntry;
+            if (selectedEntry != null)
             {
                 ColorPaletteData.ColorEntries.Remove(selectedEntry);
             }
@@ -219,21 +276,123 @@ namespace ColorPaletteBuilder
         {
             if (_currentEntry != null)
             {
-                var color = args.NewColor;
+               System.Drawing.Color color = args.NewColor;
                 _currentEntry.HexCode = ColorConverter.ToHex(color, includeAlpha: true);
             }
         }
 
         private void AssignColor_Click(object sender, RoutedEventArgs e)
         {
+
+            //TODO: This needs an enabled / disabled function to avoid accidental assignment
+
             var button = sender as Button;
             if (button != null && button.DataContext is ColorEntry colorEntry)
             {
-                var color = CustomColorPicker.Color;
+                System.Drawing.Color color = CustomColorPicker.Color;
                 colorEntry.HexCode = ColorConverter.ToHex(color, includeAlpha: true);
             }
         }
 
+        private void MainWindow_Closed(object sender, WindowEventArgs e)
+        {
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            localSettings.Values["WindowWidth"] = this.AppWindow.Size.Width;
+            localSettings.Values["WindowHeight"] = this.AppWindow.Size.Height;
+        }
 
+
+
+        #region Color Picker Logic
+
+        /*  ******************   Logic for Color Picker    ******************  */
+
+
+        private GraphicsCaptureItem _captureItem;
+        private Direct3D11CaptureFramePool _framePool;
+        private GraphicsCaptureSession _session;
+        private bool _isEyeDropperActive = false;
+
+
+        private async void SelectColorButton_Click(object sender, RoutedEventArgs e)
+        {
+            _isEyeDropperActive = true;
+
+            // Change the cursor to eye-dropper
+            // (Ensure you have a cursor file for eye-dropper)
+            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Custom, 0);
+
+            // Listen for the pointer pressed event
+            Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
+        }
+
+        private async void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
+        {
+            if (_isEyeDropperActive)
+            {
+                var pointerPosition = args.CurrentPoint.Position;
+                var color = await GetColorAt((int)pointerPosition.X, (int)pointerPosition.Y);
+
+                // Set the captured color to your color entry
+                _currentEntry.HexCode = ColorConverter.ToHex(color, includeAlpha: true);
+
+                // Revert the cursor back to default
+                sender.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+
+                // Remove the event handler
+                sender.PointerPressed -= CoreWindow_PointerPressed;
+                _isEyeDropperActive = false;
+            }
+        }
+
+        private async Task<Color> GetColorAt(int x, int y)
+        {
+            var picker = new GraphicsCapturePicker();
+            _captureItem = await picker.PickSingleItemAsync();
+            if (_captureItem == null)
+            {
+                return System.Drawing.Color.Transparent; // Handle the case where the user cancels the picker
+            }
+
+            var device = Direct3D11Helper.CreateDevice();
+            var itemSize = _captureItem.Size;
+            _framePool = Direct3D11CaptureFramePool.CreateFreeThreaded(
+                device,
+                DirectXPixelFormat.B8G8R8A8UIntNormalized,
+                1,
+                itemSize);
+
+            _session = _framePool.CreateCaptureSession(_captureItem);
+            _session.StartCapture();
+
+            var frame = _framePool.TryGetNextFrame();
+            var bitmap = await SoftwareBitmap.CreateCopyFromSurfaceAsync(frame.Surface);
+
+            using (var stream = new InMemoryRandomAccessStream())
+            {
+                var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, stream);
+                encoder.SetSoftwareBitmap(bitmap);
+                await encoder.FlushAsync();
+
+                stream.Seek(0);
+
+                var decoder = await BitmapDecoder.CreateAsync(stream);
+                var pixelData = await decoder.GetPixelDataAsync();
+                var pixels = pixelData.DetachPixelData();
+
+                var index = (y * bitmap.PixelWidth + x) * 4;
+                byte b = pixels[index];
+                byte g = pixels[index + 1];
+                byte r = pixels[index + 2];
+                byte a = pixels[index + 3];
+
+                return Color.FromArgb(a, r, g, b);
+            }
+        }
+
+
+
+
+        #endregion
     }
 }
