@@ -15,6 +15,10 @@ namespace ColorPaletteBuilder
         private ObservableCollection<string> elementGroups;
         private ObservableCollection<ColorEntry> colorEntries;
 
+        //Display and usage control variables
+        private bool isColorAssignEnabled;
+
+
         public ColorPalette()
         {
             ColorPaletteName = "Color Palette";
@@ -24,6 +28,12 @@ namespace ColorPaletteBuilder
             ColorEntries = new ObservableCollection<ColorEntry>();
         }
 
+
+        public bool IsColorAssignEnabled
+        {
+            get => isColorAssignEnabled;
+            set => SetProperty(ref isColorAssignEnabled, value);
+        }
 
         public string ColorPaletteName
         {

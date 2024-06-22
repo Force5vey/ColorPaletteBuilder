@@ -1,16 +1,29 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI;
+using System.Drawing;
 
 namespace ColorPaletteBuilder
 {
     public class ColorConverter
     {
+
+        public static Windows.UI.Color ConvertColorToWinUIColor(System.Drawing.Color color)
+        {
+            return Windows.UI.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        public static System.Drawing.Color ConvertColorToSysDrawColor(Windows.UI.Color color)
+        {
+            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
         public static string ToHex(System.Drawing.Color color, bool includeAlpha = true)
         {
             return includeAlpha
@@ -18,9 +31,9 @@ namespace ColorPaletteBuilder
                 : $"#{color.R:X2}{color.G:X2}{color.B:X2}";
         }
 
-        public static Color FromHex(string hex)
+        public static System.Drawing.Color FromHex(string hex)
         {
-            if(string.IsNullOrWhiteSpace(hex))
+            if (string.IsNullOrWhiteSpace(hex))
             {
                 throw new ArgumentException("Invalid hex string", nameof(hex));
             }
@@ -41,13 +54,7 @@ namespace ColorPaletteBuilder
             byte g = byte.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
             byte b = byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber);
 
-            return Color.FromArgb(a, r, g, b);
+            return System.Drawing.Color.FromArgb(a, r, g, b);
         }
-
-        public static SolidColorBrush ToBrush(string hex)
-        {
-            return new SolidColorBrush(FromHex(hex));
-        }
-
     }
 }

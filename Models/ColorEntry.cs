@@ -17,6 +17,15 @@ namespace ColorPaletteBuilder
         private string displayColor; // This is a placeholder for the actual color value
         private string changeColor; // This is a placeholder for listview to add a button to change color
 
+
+        private bool isColorAssignEnabled;
+
+        public bool IsColorAssignEnabled
+        {
+            get => isColorAssignEnabled;
+            set => SetProperty(ref isColorAssignEnabled, value);
+        }
+
         public string ElementName
         {
             get => elementName;
@@ -76,6 +85,7 @@ namespace ColorPaletteBuilder
             ElementGroup = string.Empty;
             HexCode = string.Empty;
             DisplayColor = string.Empty;
+            isColorAssignEnabled = false;
         }
     }
 }

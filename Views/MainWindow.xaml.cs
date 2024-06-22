@@ -25,6 +25,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Core;
 
 
+
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -43,6 +44,10 @@ namespace ColorPaletteBuilder
         };
 
         private ColorEntry _currentEntry = new ColorEntry();
+
+        private DispatcherTimer titleMessageTimer = new DispatcherTimer();
+
+        private bool isColorAssignEnabled = false;
 
         public MainWindow()
         {
@@ -69,6 +74,9 @@ namespace ColorPaletteBuilder
             LoadLastOpenedFile();
 
             this.Closed += MainWindow_Closed;
+
+            titleMessageTimer.Interval = TimeSpan.FromSeconds(2);
+            titleMessageTimer.Tick += TitleMessageTimer_Tick;
         }
 
         private void LoadLastOpenedFile()
@@ -112,6 +120,8 @@ namespace ColorPaletteBuilder
                 var dataPackage = new DataPackage();
                 dataPackage.SetText(colorEntry.HexCode);
                 Clipboard.SetContent(dataPackage);
+
+                TitleBarMessage.Text = "Copied to Clipboard";
             }
         }
 
@@ -245,7 +255,7 @@ namespace ColorPaletteBuilder
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
         {
-
+            Application.Current.Exit();
         }
 
         private void AddColorEntry_Click(object sender, RoutedEventArgs e)
@@ -256,9 +266,11 @@ namespace ColorPaletteBuilder
                 ElementGroup = ColorPaletteData.ElementGroups.FirstOrDefault(),
                 ElementState = ColorPaletteData.ElementStates.FirstOrDefault(),
                 HexCode = "#FF000000"
+                
             };
 
             newEntry.HexCode = _currentEntry.HexCode;
+            newEntry.IsColorAssignEnabled = isColorAssignEnabled;
 
             ColorPaletteData.ColorEntries.Insert(0, newEntry);
 
@@ -276,8 +288,7 @@ namespace ColorPaletteBuilder
         {
             if (_currentEntry != null)
             {
-               System.Drawing.Color color = args.NewColor;
-                _currentEntry.HexCode = ColorConverter.ToHex(color, includeAlpha: true);
+                _currentEntry.HexCode = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: true);
             }
         }
 
@@ -289,18 +300,65 @@ namespace ColorPaletteBuilder
             var button = sender as Button;
             if (button != null && button.DataContext is ColorEntry colorEntry)
             {
-                System.Drawing.Color color = CustomColorPicker.Color;
+                System.Drawing.Color color = ColorConverter.ConvertColorToSysDrawColor(CustomColorPicker.Color);
                 colorEntry.HexCode = ColorConverter.ToHex(color, includeAlpha: true);
             }
         }
 
         private void MainWindow_Closed(object sender, WindowEventArgs e)
         {
+            if (string.IsNullOrEmpty(ColorPaletteData.ColorPaletteFile) || ColorPaletteData.ColorPaletteFile == "New Palette")
+            {
+              //TODO: Modal to ask if save file
+                
+            }
+
+            SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
+
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             localSettings.Values["WindowWidth"] = this.AppWindow.Size.Width;
             localSettings.Values["WindowHeight"] = this.AppWindow.Size.Height;
         }
 
+
+
+        private void UnlockColorAssign_Click(object sender, RoutedEventArgs e)
+        {
+            isColorAssignEnabled = !isColorAssignEnabled;
+
+            TitleBarMessage.Text = isColorAssignEnabled ? "Editing Enabled" : "Editing Disabled";
+            titleMessageTimer.Start();
+
+            foreach (var item in ColorPaletteListView.Items)
+            {
+               if(item is ColorEntry colorEntry)
+                {
+                    colorEntry.IsColorAssignEnabled = isColorAssignEnabled;
+                }
+            }
+
+            ColorPaletteListView.ItemsSource = null;
+            ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
+
+
+            if (isColorAssignEnabled)
+            {
+                EditListViewButton.Label = "Lock";
+                
+            }
+            else
+            {
+                EditListViewButton.Label = "Edit";
+            }
+     
+        }
+
+
+        private void TitleMessageTimer_Tick(object sender, object e)
+        {
+            TitleBarMessage.Text = "";
+            titleMessageTimer.Stop();
+        }
 
 
         #region Color Picker Logic
@@ -316,14 +374,15 @@ namespace ColorPaletteBuilder
 
         private async void SelectColorButton_Click(object sender, RoutedEventArgs e)
         {
-            _isEyeDropperActive = true;
+            //TODO: None of this is working at all, all the way through the other methods.
+            _isEyeDropperActive = !_isEyeDropperActive;
 
             // Change the cursor to eye-dropper
             // (Ensure you have a cursor file for eye-dropper)
-            Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Custom, 0);
+            //Window.Current.CoreWindow.PointerCursor = new CoreCursor(CoreCursorType.Custom, 0);
 
             // Listen for the pointer pressed event
-            Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
+            //Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
         }
 
         private async void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)
@@ -354,13 +413,13 @@ namespace ColorPaletteBuilder
                 return System.Drawing.Color.Transparent; // Handle the case where the user cancels the picker
             }
 
-            var device = Direct3D11Helper.CreateDevice();
-            var itemSize = _captureItem.Size;
-            _framePool = Direct3D11CaptureFramePool.CreateFreeThreaded(
-                device,
-                DirectXPixelFormat.B8G8R8A8UIntNormalized,
-                1,
-                itemSize);
+            //var device = Direct3D11Helper.CreateDevice();
+            //var itemSize = _captureItem.Size;
+            //_framePool = Direct3D11CaptureFramePool.CreateFreeThreaded(
+            //    device,
+            //    DirectXPixelFormat.B8G8R8A8UIntNormalized,
+            //    1,
+            //    itemSize);
 
             _session = _framePool.CreateCaptureSession(_captureItem);
             _session.StartCapture();

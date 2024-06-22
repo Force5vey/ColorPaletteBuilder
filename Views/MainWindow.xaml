@@ -11,13 +11,19 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,0,0"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="2000" Height="30">
+
+            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
+            <TextBlock Text="Color Palette Builder" Margin="0,5,0,0"/>
+            <TextBlock Text="" Width="250"/>
+            <TextBlock x:Name="TitleBarMessage" Text="" Margin="0,5,0,0" Foreground="#FFFFD864"/>
+        </StackPanel>
 
         <!-- Menu Bar  =================================================  -->
         <MenuBar Grid.Row="1">
@@ -144,18 +150,8 @@
 
             <AppBarSeparator/>
 
-            <!-- this needs to be updated to a toggleable button -->
-            <AppBarButton Label="Edit Palette">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Control" Key="E"/>
-                </AppBarButton.KeyboardAccelerators>
-                <AppBarButton.Content>
-                    <SymbolIcon Symbol="Edit"/>
-                </AppBarButton.Content>
-            </AppBarButton>
-
             <AppBarSeparator/>
-            
+
             <AppBarButton Label="Hex" Icon="Copy"/>
 
             <AppBarButton Label="Hex w/Out Alpha" Icon="Copy"/>
@@ -180,6 +176,7 @@
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -189,7 +186,7 @@
 
 
 
-            <StackPanel Grid.RowSpan="2" Grid.Column="0" Padding="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <StackPanel Grid.RowSpan="3" Grid.Column="0" Padding="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 
                 <ScrollViewer Height="Auto" Width="400" ZoomMode="Disabled"
@@ -220,7 +217,7 @@
                     <TextBlock Width="250" Height="3"/>
                 </StackPanel>
 
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
 
                     <Button x:Name="btSetColorPicker" Margin="5,0,0,0" ToolTipService.ToolTip="Set Color Picker From Selection">
                         <Button.Content>
@@ -271,8 +268,8 @@
 
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,5,0">
 
-             
-                
+
+
                 <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind ColorPaletteData.ElementStates}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header="Element States"/>
 
@@ -303,11 +300,24 @@
 
             </StackPanel>
 
+            <!--    Column 1     Row 1    -->
+
+            <AppBarToggleButton x:Name="EditListViewButton" Click="UnlockColorAssign_Click"
+                                    Grid.Row="1" Grid.Column="1" Margin="20,0,0,0">
+                
+                <AppBarToggleButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Modifiers="Control" Key="E"/>
+                </AppBarToggleButton.KeyboardAccelerators>
+                <AppBarToggleButton.Icon>
+                    <FontIcon Glyph="&#xe785;"/>
+                </AppBarToggleButton.Icon>
+                
+            </AppBarToggleButton>
 
 
-            <ListView x:Name="ColorPaletteListView" Grid.Row="1" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single"
+            <ListView x:Name="ColorPaletteListView" Grid.Row="2" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single"
                       ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollMode="Auto" 
-                      Margin="0,15,0,0">
+                      Margin="0,0,0,0">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:ColorEntry">
                         <Grid Padding="10">
@@ -320,8 +330,8 @@
                                 <ColumnDefinition Width="30"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Click="AssignColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Assign Currently Selected Color"
-                                    Width="35" Height="30" Margin="15,0,0,0">
+                            <Button x:Name="AssignColorButton" Grid.Column="0" Click="AssignColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Assign Currently Selected Color"
+                                    Width="35" Height="30" Margin="15,0,0,0" IsEnabled="{x:Bind IsColorAssignEnabled}">
                                 <Button.Content>
                                     <FontIcon Glyph="&#xe7fd;" FontSize="16"/>
                                 </Button.Content>
