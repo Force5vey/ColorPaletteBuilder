@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
@@ -19,13 +20,22 @@ using Windows.Foundation.Collections;
 namespace ColorPaletteBuilder
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SettingsPage : Page
+    public sealed partial class SettingsWindow : Window
     {
-        public SettingsPage()
+        public SettingsWindow()
         {
             this.InitializeComponent();
+
+            ExtendsContentIntoTitleBar = true;
         }
+
+        private void SaveSettings_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
     }
 }
+

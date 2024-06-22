@@ -39,8 +39,8 @@ namespace ColorPaletteBuilder
         {
             this.InitializeComponent();
 
-
             SetTheme(ApplicationTheme.Dark);
+
         }
 
         /// <summary>
@@ -52,6 +52,7 @@ namespace ColorPaletteBuilder
             m_window = new MainWindow();
             m_window.ExtendsContentIntoTitleBar = true;
 
+           
 
             m_window.Activate();
         }

@@ -23,6 +23,8 @@ using Windows.Graphics.Capture;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using Microsoft.UI.Windowing;
+using Windows.ApplicationModel.Preview.Notes;
 
 
 
@@ -36,6 +38,10 @@ namespace ColorPaletteBuilder
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+
+        int settingsWindowWidth = 400;
+        int settingsWindowHeight = 600;
+
         public ColorPalette ColorPaletteData { get; set; } = new ColorPalette
         {
             ColorEntries = new ObservableCollection<ColorEntry>(),
@@ -101,17 +107,6 @@ namespace ColorPaletteBuilder
             ColorPaletteData.ElementGroups.Clear();
         }
 
-
-        private void CopyToClipboard(string text)
-        {
-            if (!string.IsNullOrEmpty(text))
-            {
-                var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
-                dataPackage.SetText(text);
-                Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
-            }
-        }
-
         private void CopyHexCode_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -122,6 +117,7 @@ namespace ColorPaletteBuilder
                 Clipboard.SetContent(dataPackage);
 
                 TitleBarMessage.Text = "Copied to Clipboard";
+                titleMessageTimer.Start();
             }
         }
 
@@ -266,7 +262,7 @@ namespace ColorPaletteBuilder
                 ElementGroup = ColorPaletteData.ElementGroups.FirstOrDefault(),
                 ElementState = ColorPaletteData.ElementStates.FirstOrDefault(),
                 HexCode = "#FF000000"
-                
+
             };
 
             newEntry.HexCode = _currentEntry.HexCode;
@@ -309,15 +305,21 @@ namespace ColorPaletteBuilder
         {
             if (string.IsNullOrEmpty(ColorPaletteData.ColorPaletteFile) || ColorPaletteData.ColorPaletteFile == "New Palette")
             {
-              //TODO: Modal to ask if save file
-                
+                //TODO: Modal to ask if save file
+
             }
+
 
             SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
 
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             localSettings.Values["WindowWidth"] = this.AppWindow.Size.Width;
             localSettings.Values["WindowHeight"] = this.AppWindow.Size.Height;
+
+            if (settingsWindow != null)
+            {
+                settingsWindow.Close();
+            }
         }
 
 
@@ -331,7 +333,7 @@ namespace ColorPaletteBuilder
 
             foreach (var item in ColorPaletteListView.Items)
             {
-               if(item is ColorEntry colorEntry)
+                if (item is ColorEntry colorEntry)
                 {
                     colorEntry.IsColorAssignEnabled = isColorAssignEnabled;
                 }
@@ -344,13 +346,13 @@ namespace ColorPaletteBuilder
             if (isColorAssignEnabled)
             {
                 EditListViewButton.Label = "Lock";
-                
+
             }
             else
             {
                 EditListViewButton.Label = "Edit";
             }
-     
+
         }
 
 
@@ -359,6 +361,40 @@ namespace ColorPaletteBuilder
             TitleBarMessage.Text = "";
             titleMessageTimer.Stop();
         }
+
+
+        private SettingsWindow settingsWindow;
+
+        private void OpenSettings_Click(object sender, RoutedEventArgs e)
+        {
+            if (settingsWindow == null)
+            {
+                settingsWindow = new SettingsWindow();
+                settingsWindow.Closed += SettingsWindow_Closed;
+                settingsWindow.Activate();
+            }
+
+            settingsWindow.AppWindow.Resize(new Windows.Graphics.SizeInt32(settingsWindowWidth, settingsWindowHeight));
+
+
+        }
+
+
+
+
+        private void SettingsWindow_Closed(object sender, WindowEventArgs e)
+        {
+            settingsWindow = null;
+        }
+
+
+
+
+
+
+
+
+
 
 
         #region Color Picker Logic

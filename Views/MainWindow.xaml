@@ -25,7 +25,8 @@
             <TextBlock x:Name="TitleBarMessage" Text="" Margin="0,5,0,0" Foreground="#FFFFD864"/>
         </StackPanel>
 
-        <!-- Menu Bar  =================================================  -->
+        <!-- ================================         Menu Bar        =================================================  -->
+        
         <MenuBar Grid.Row="1">
             <MenuBarItem Title="File">
                 <MenuFlyoutItem Text="New Palette" Icon="NewFolder" Click="NewPalette_Click">
@@ -74,7 +75,7 @@
 
                 <MenuFlyoutSeparator/>
 
-                <MenuFlyoutItem Text="Settings" Icon="Setting">
+                <MenuFlyoutItem Text="Settings" Icon="Setting" Click="OpenSettings_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="I"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -98,26 +99,25 @@
             </MenuBarItem>
         </MenuBar>
 
-        <!-- End Menu Bar  =================================================  -->
 
-        <!-- Command Bar (ribbon)  =================================================  -->
+        <!-- =============================          Command Bar (ribbon)           =================================================  -->
 
         <CommandBar x:Name="MainCommandBar" Grid.Row="2" Background="Transparent" 
-                    IsOpen="False" DefaultLabelPosition="Right" HorizontalAlignment="Left">
+                    IsOpen="False" DefaultLabelPosition="Bottom" HorizontalAlignment="Left">
 
-            <AppBarButton Label="New" Icon="NewFolder" Click="NewPalette_Click" ToolTipService.ToolTip="Add new color entry">
+            <AppBarButton Label="New" Icon="NewFolder" Click="NewPalette_Click" ToolTipService.ToolTip="New Color Palette">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Insert"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
 
-            <AppBarButton Label="Open" Icon="OpenLocal" Click="OpenPalette_Click" ToolTipService.ToolTip="Add new color entry">
+            <AppBarButton Label="Open" Icon="OpenLocal" Click="OpenPalette_Click" ToolTipService.ToolTip="Open Color Palette">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Insert"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
 
-            <AppBarButton Label="Save" Icon="Save" Click="SavePalette_Click" ToolTipService.ToolTip="Add new color entry">
+            <AppBarButton Label="Save" Icon="Save" Click="SavePalette_Click" ToolTipService.ToolTip="Save Current Palette">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Insert"/>
                 </AppBarButton.KeyboardAccelerators>
@@ -163,7 +163,7 @@
 
 
             <CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Setting" Label="Settings">
+                <AppBarButton Icon="Setting" Label="Settings" Click="OpenSettings_Click">
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="I" />
                     </AppBarButton.KeyboardAccelerators>
@@ -304,14 +304,14 @@
 
             <AppBarToggleButton x:Name="EditListViewButton" Click="UnlockColorAssign_Click"
                                     Grid.Row="1" Grid.Column="1" Margin="20,0,0,0">
-                
+
                 <AppBarToggleButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="E"/>
                 </AppBarToggleButton.KeyboardAccelerators>
                 <AppBarToggleButton.Icon>
                     <FontIcon Glyph="&#xe785;"/>
                 </AppBarToggleButton.Icon>
-                
+
             </AppBarToggleButton>
 
 

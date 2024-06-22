@@ -13,7 +13,7 @@
     <EnableMsixTooling>true</EnableMsixTooling>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Views\SettingsPage.xaml" />
+    <None Remove="Views\SettingsWindow.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,10 +42,7 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Documentation\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\SettingsPage.xaml">
+    <Page Update="Views\SettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
