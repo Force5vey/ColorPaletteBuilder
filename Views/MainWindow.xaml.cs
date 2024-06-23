@@ -24,8 +24,7 @@ using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Microsoft.UI.Windowing;
-using Windows.ApplicationModel.Preview.Notes;
-
+using System.ComponentModel;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -38,26 +37,21 @@ namespace ColorPaletteBuilder
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-
         int settingsWindowWidth = 400;
         int settingsWindowHeight = 600;
 
-        public ColorPalette ColorPaletteData { get; set; } = new ColorPalette
-        {
-            ColorEntries = new ObservableCollection<ColorEntry>(),
-            ElementGroups = new ObservableCollection<string>(),
-            ElementStates = new ObservableCollection<string>()
-        };
+
+        public ColorPalette ColorPaletteData = new ColorPalette();
+
 
         private ColorEntry _currentEntry = new ColorEntry();
-
         private DispatcherTimer titleMessageTimer = new DispatcherTimer();
-
-        private bool isColorAssignEnabled = false;
 
         public MainWindow()
         {
             this.InitializeComponent();
+
+            ColorPaletteData = new ColorPalette();
 
             // Set the window size according to last window size
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
@@ -70,11 +64,10 @@ namespace ColorPaletteBuilder
             }
             catch
             {
-                // Ignore errors (maybe for now) assign a default window size
+                // Just assign a default size if there is an error.
                 this.AppWindow.Resize(new Windows.Graphics.SizeInt32(800, 600));
             }
 
-            ColorPaletteListView.DataContext = this;
             ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
 
             LoadLastOpenedFile();
@@ -83,6 +76,39 @@ namespace ColorPaletteBuilder
 
             titleMessageTimer.Interval = TimeSpan.FromSeconds(2);
             titleMessageTimer.Tick += TitleMessageTimer_Tick;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        #region Helper Methods
+
+
+        private void ClearColorPaletteData()
+        {
+            ColorPaletteData.ColorPaletteFile = "New Palette";
+            ColorPaletteData.ColorPaletteName = "New Palette";
+            ColorPaletteData.ColorEntries.Clear();
+            ColorPaletteData.ElementStates.Clear();
+            ColorPaletteData.ElementGroups.Clear();
+        }
+
+
+        private void TitleMessageTimer_Tick(object sender, object e)
+        {
+            TitleBarMessage.Text = "";
+            titleMessageTimer.Stop();
         }
 
         private void LoadLastOpenedFile()
@@ -98,14 +124,10 @@ namespace ColorPaletteBuilder
             }
         }
 
-        private void ClearColorPaletteData()
-        {
-            ColorPaletteData.ColorPaletteFile = "New Palette";
-            ColorPaletteData.ColorPaletteName = "New Palette";
-            ColorPaletteData.ColorEntries.Clear();
-            ColorPaletteData.ElementStates.Clear();
-            ColorPaletteData.ElementGroups.Clear();
-        }
+
+        #endregion
+
+
 
         private void CopyHexCode_Click(object sender, RoutedEventArgs e)
         {
@@ -120,6 +142,10 @@ namespace ColorPaletteBuilder
                 titleMessageTimer.Start();
             }
         }
+
+
+        #region File Operations
+
 
         private void NewPalette_Click(object sender, RoutedEventArgs e)
         {
@@ -145,6 +171,10 @@ namespace ColorPaletteBuilder
             }
         }
 
+
+        //TODO: toggle isn't loading properly with the proper assign color button state
+        // need to just bring back all of the toggle of the enable assignments and rebuild.
+
         private async Task<int> LoadPaletteFromFile(string filePath)
         {
             try
@@ -156,6 +186,7 @@ namespace ColorPaletteBuilder
 
                     ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
                     ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+                    ColorPaletteData.IsColorAssignEnabled = colorPalette.IsColorAssignEnabled;
 
                     foreach (var entry in colorPalette.ColorEntries)
                     {
@@ -174,10 +205,22 @@ namespace ColorPaletteBuilder
                     ColorPaletteListView.ItemsSource = null;
                     ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
 
+                    IsAssignButtonEnabled.IsOn = ColorPaletteData.IsColorAssignEnabled;
+                    foreach (var item in ColorPaletteListView.Items)
+                    {
+                        if (item is ColorEntry colorEntry)
+                        {
+                            colorEntry.IsColorAssignEnabled = ColorPaletteData.IsColorAssignEnabled;
+                        }
+                    }
+
+
+                    TitleBarFileName.Text = ColorPaletteData.ColorPaletteName;
+
                 }
                 return 0;
             }
-            catch (Exception ex)
+            catch
             {
                 //TODO: Handle errors
                 return -1;
@@ -206,6 +249,8 @@ namespace ColorPaletteBuilder
 
                 var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                 localSettings.Values["LastOpenedFilePath"] = file.Path;
+
+                ColorPaletteData.ColorPaletteName = file.DisplayName;
             }
         }
 
@@ -224,6 +269,11 @@ namespace ColorPaletteBuilder
                 await SavePaletteToFile(file.Path);
             }
         }
+
+
+        #endregion
+
+
 
         private void LeftScrollViewerControl_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
@@ -266,7 +316,7 @@ namespace ColorPaletteBuilder
             };
 
             newEntry.HexCode = _currentEntry.HexCode;
-            newEntry.IsColorAssignEnabled = isColorAssignEnabled;
+            newEntry.IsColorAssignEnabled = ColorPaletteData.IsColorAssignEnabled;
 
             ColorPaletteData.ColorEntries.Insert(0, newEntry);
 
@@ -324,44 +374,10 @@ namespace ColorPaletteBuilder
 
 
 
-        private void UnlockColorAssign_Click(object sender, RoutedEventArgs e)
-        {
-            isColorAssignEnabled = !isColorAssignEnabled;
-
-            TitleBarMessage.Text = isColorAssignEnabled ? "Editing Enabled" : "Editing Disabled";
-            titleMessageTimer.Start();
-
-            foreach (var item in ColorPaletteListView.Items)
-            {
-                if (item is ColorEntry colorEntry)
-                {
-                    colorEntry.IsColorAssignEnabled = isColorAssignEnabled;
-                }
-            }
-
-            ColorPaletteListView.ItemsSource = null;
-            ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
 
 
-            if (isColorAssignEnabled)
-            {
-                EditListViewButton.Label = "Lock";
 
-            }
-            else
-            {
-                EditListViewButton.Label = "Edit";
-            }
-
-        }
-
-
-        private void TitleMessageTimer_Tick(object sender, object e)
-        {
-            TitleBarMessage.Text = "";
-            titleMessageTimer.Stop();
-        }
-
+        #region Settings Window
 
         private SettingsWindow settingsWindow;
 
@@ -380,15 +396,111 @@ namespace ColorPaletteBuilder
         }
 
 
-
-
         private void SettingsWindow_Closed(object sender, WindowEventArgs e)
         {
             settingsWindow = null;
         }
 
+        #endregion
 
 
+
+        #region State And Group Filters
+        private void AddState_Click(object sender, RoutedEventArgs e)
+        {
+            if (ColorPaletteData.ElementStates.Contains(comboElementStates.Text))
+            {
+                TitleBarMessage.Text = "State already exists";
+                titleMessageTimer.Start();
+            }
+            else
+            {
+                ColorPaletteData.ElementStates.Add(comboElementStates.Text);
+            }
+
+        }
+
+        private void RemoveStateConfirmation_Click(object sender, RoutedEventArgs e)
+        {
+            string stateToRemove = comboElementStates.Text;
+
+            foreach (var colorEntry in ColorPaletteData.ColorEntries)
+            {
+                if (colorEntry.ElementState == stateToRemove)
+                {
+                    colorEntry.ElementState = string.Empty;
+                }
+            }
+
+            ColorPaletteData.ElementStates.Remove(stateToRemove);
+
+            comboElementStates.SelectedItem = comboElementStates.Items.FirstOrDefault();
+
+            TitleBarMessage.Text = $"Removed State: {stateToRemove}";
+            titleMessageTimer.Start();
+
+            RemoveStateFlyout.Hide();
+        }
+
+        private void AddGroup_Click(object sender, RoutedEventArgs e)
+        {
+            if (ColorPaletteData.ElementGroups.Contains(comboElementGroups.Text))
+            {
+                TitleBarMessage.Text = "Group already exists";
+                titleMessageTimer.Start();
+            }
+            else
+            {
+                ColorPaletteData.ElementGroups.Add(comboElementGroups.Text);
+            }
+        }
+
+        private void RemoveGroupConfirmation_Click(object sender, RoutedEventArgs e)
+        {
+            string groupToRemove = comboElementGroups.Text;
+
+            foreach (var colorEntry in ColorPaletteData.ColorEntries)
+            {
+                if (colorEntry.ElementGroup == groupToRemove)
+                {
+                    colorEntry.ElementGroup = string.Empty;
+                }
+            }
+
+            ColorPaletteData.ElementGroups.Remove(groupToRemove);
+
+            comboElementGroups.SelectedItem = comboElementGroups.Items.FirstOrDefault();
+
+            TitleBarMessage.Text = $"Removed Group: {groupToRemove}";
+            titleMessageTimer.Start();
+
+            RemoveGroupFlyout.Hide();
+        }
+
+
+        #endregion
+
+
+
+        private void IsColorAssign_Toggle(object sender, RoutedEventArgs e)
+        {
+            ColorPaletteData.IsColorAssignEnabled = !ColorPaletteData.IsColorAssignEnabled;
+
+            TitleBarMessage.Text = ColorPaletteData.IsColorAssignEnabled ? "Editing Enabled" : "Editing Disabled";
+            titleMessageTimer.Start();
+
+            foreach (var item in ColorPaletteListView.Items)
+            {
+                if (item is ColorEntry colorEntry)
+                {
+                    colorEntry.IsColorAssignEnabled = ColorPaletteData.IsColorAssignEnabled;
+                }
+            }
+
+            ColorPaletteListView.ItemsSource = null;
+            ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
+
+        }
 
 
 
@@ -419,6 +531,9 @@ namespace ColorPaletteBuilder
 
             // Listen for the pointer pressed event
             //Window.Current.CoreWindow.PointerPressed += CoreWindow_PointerPressed;
+
+            TitleBarMessage.Text = "Select a color";
+            titleMessageTimer.Start();
         }
 
         private async void CoreWindow_PointerPressed(Windows.UI.Core.CoreWindow sender, Windows.UI.Core.PointerEventArgs args)

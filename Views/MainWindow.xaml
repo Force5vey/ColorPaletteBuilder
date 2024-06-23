@@ -20,13 +20,13 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="2000" Height="30">
 
             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
-            <TextBlock Text="Color Palette Builder" Margin="0,5,0,0"/>
-            <TextBlock Text="" Width="250"/>
+            <TextBlock Text="Color Palette Builder:" Margin="0,5,0,0"/>
+            <TextBlock x:Name="TitleBarFileName" Text="" Width="250" Margin="10,5,0,0"/>
             <TextBlock x:Name="TitleBarMessage" Text="" Margin="0,5,0,0" Foreground="#FFFFD864"/>
         </StackPanel>
 
         <!-- ================================         Menu Bar        =================================================  -->
-        
+
         <MenuBar Grid.Row="1">
             <MenuBarItem Title="File">
                 <MenuFlyoutItem Text="New Palette" Icon="NewFolder" Click="NewPalette_Click">
@@ -270,49 +270,93 @@
 
 
 
+                <!-- Add and Remove Element States -->
                 <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind ColorPaletteData.ElementStates}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header="Element States"/>
 
-                <Button Margin="0,25,2,0" Height="30">
+
+                <Button x:Name="AddStateButton" Margin="0,25,2,0" Height="30" Click="AddState_Click">
                     <Button.Content>
                         <FontIcon Glyph="&#xe710;" FontSize="10" Margin="0"/>
                     </Button.Content>
                 </Button>
-                <Button Margin="0,25,2,0" Height="30">
+
+                <Button x:Name="RemoveStateButton" Margin="0,25,2,0" Height="30">
                     <Button.Content>
                         <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
                     </Button.Content>
+                    <Button.Flyout>
+                        <Flyout x:Name="RemoveStateFlyout">
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled"/>
+                                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+                                    <Setter Property="IsTabStop" Value="True"/>
+                                    <Setter Property="TabNavigation" Value="Cycle"/>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="All elements using this state will be updated to a blank state. Do you want to continue?" Margin="0,0,0,12" />
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Yes" Click="RemoveStateConfirmation_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
                 </Button>
 
+
+                <!-- Add and Remove Element Groups -->
                 <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header=" Element Groups"/>
 
-                <Button Margin="0,25,2,0" Height="30">
+
+                <Button x:Name="AddGroupButton" Margin="0,25,2,0" Height="30" Click="AddGroup_Click">
                     <Button.Content>
                         <FontIcon Glyph="&#xe710;" FontSize="10" Margin="0"/>
                     </Button.Content>
                 </Button>
-                <Button Margin="0,25,2,0" Height="30">
+
+                <Button x:Name="RemoveGroupButton" Margin="0,25,2,0" Height="30">
                     <Button.Content>
                         <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
                     </Button.Content>
+                    <Button.Flyout>
+                        <Flyout x:Name="RemoveGroupFlyout">
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled"/>
+                                    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+                                    <Setter Property="IsTabStop" Value="True"/>
+                                    <Setter Property="TabNavigation" Value="Cycle"/>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="All elements using this group will be updated to a blank state. Do you want to continue?" Margin="0,0,0,12" />
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Yes" Click="RemoveGroupConfirmation_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
                 </Button>
 
             </StackPanel>
 
             <!--    Column 1     Row 1    -->
 
-            <AppBarToggleButton x:Name="EditListViewButton" Click="UnlockColorAssign_Click"
-                                    Grid.Row="1" Grid.Column="1" Margin="20,0,0,0">
+            <ToggleSwitch x:Name="IsAssignButtonEnabled" 
+                          Grid.Row="1" Grid.Column="1" Margin="20,0,0,0"
+                          
+                          Toggled="IsColorAssign_Toggle">
 
-                <AppBarToggleButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Control" Key="E"/>
-                </AppBarToggleButton.KeyboardAccelerators>
-                <AppBarToggleButton.Icon>
+                <ToggleSwitch.OffContent>
+                    <FontIcon Glyph="&#xe72e;"/>
+                </ToggleSwitch.OffContent>
+                <ToggleSwitch.OnContent>
                     <FontIcon Glyph="&#xe785;"/>
-                </AppBarToggleButton.Icon>
-
-            </AppBarToggleButton>
+                </ToggleSwitch.OnContent>
+            </ToggleSwitch>
 
 
             <ListView x:Name="ColorPaletteListView" Grid.Row="2" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single"

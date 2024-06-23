@@ -21,6 +21,7 @@ namespace ColorPaletteBuilder
 
         public ColorPalette()
         {
+            IsColorAssignEnabled = false;
             ColorPaletteName = "Color Palette";
             ColorPaletteFile = "New Palette";
             ElementStates = new ObservableCollection<string>();
