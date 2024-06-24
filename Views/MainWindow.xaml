@@ -139,7 +139,7 @@
 
             <AppBarSeparator/>
 
-            <AppBarButton Label="Picker" Click="SelectColorButton_Click">
+            <AppBarButton Label="Picker">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="Q"/>
                 </AppBarButton.KeyboardAccelerators>
@@ -341,7 +341,7 @@
                     </Button.Flyout>
                 </Button>
 
-                <Button Content="This is the Filter Button" Margin="10,25,0,0"/>
+                <Button x:Name="refreshFilterButton" Content="Refresh"  Click="RefershFilterButton_Click" Margin="10,25,0,0"/>
 
             </StackPanel>
 
