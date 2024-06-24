@@ -8,7 +8,6 @@
     mc:Ignorable="d"
     Title="Color Palette Builder">
 
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -341,13 +340,19 @@
                     </Button.Flyout>
                 </Button>
 
-                <Button x:Name="refreshFilterButton" Content="Refresh"  Click="RefershFilterButton_Click" Margin="10,25,0,0"/>
+                
+                    <TextBlock Text="Filter:" Margin="30,0,0,0"/>
+                    <Button x:Name="refreshFilterButton" Content="Apply"  Click="RefreshFilterButton_Click" Margin="-40,25,0,0"/>
+                <Button x:Name="ClearFilterButton" Content="Clear" Margin="5,25,0,0" Click="ClearFilterButton_Click"/>
+
 
             </StackPanel>
 
-            
-            
-            
+
+
+
+
+
             <!--    Column 1     Row 1    -->
 
             <ToggleSwitch x:Name="IsAssignButtonEnabled" 

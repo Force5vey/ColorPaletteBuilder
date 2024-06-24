@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -10,6 +11,8 @@ namespace ColorPaletteBuilder
 
     public class ColorEntry : INotifyPropertyChanged
     {
+        private Guid id;
+
         private string elementName;
         private string elementState;
         private string elementGroup;
@@ -19,6 +22,13 @@ namespace ColorPaletteBuilder
 
 
         private bool isColorAssignEnabled;
+
+
+        public Guid Id
+        {
+            get => id;
+            set => SetProperty(ref id, value);
+        }
 
         public bool IsColorAssignEnabled
         {
@@ -80,12 +90,14 @@ namespace ColorPaletteBuilder
 
         public ColorEntry()
         {
+            Id = Guid.NewGuid();
+
             ElementName = string.Empty;
             ElementState = string.Empty;
             ElementGroup = string.Empty;
             HexCode = string.Empty;
             DisplayColor = string.Empty;
-            isColorAssignEnabled = false;
+            IsColorAssignEnabled = false;
         }
     }
 }

@@ -44,14 +44,30 @@ namespace ColorPaletteBuilder
         public ColorPalette ColorPaletteData = new ColorPalette();
 
 
-        private ColorEntry _currentEntry = new ColorEntry();
+        private string currentColorPickerHex = "#FFFFFFFF";
+        private string defaultComboBoxText = "Any";
+
         private DispatcherTimer titleMessageTimer = new DispatcherTimer();
+
+        public string SelectedState { get; set; }
+        public string SelectedGroup { get; set; }
 
         public MainWindow()
         {
             this.InitializeComponent();
 
             ColorPaletteData = new ColorPalette();
+
+            SelectedState = defaultComboBoxText;
+            SelectedGroup = defaultComboBoxText;
+
+
+
+
+            // Set up event handlers
+            comboElementStates.SelectionChanged += OnFilterSelectionChanged;
+            comboElementGroups.SelectionChanged += OnFilterSelectionChanged;
+
 
             // Set the window size according to last window size
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
@@ -68,7 +84,7 @@ namespace ColorPaletteBuilder
                 this.AppWindow.Resize(new Windows.Graphics.SizeInt32(800, 600));
             }
 
-            ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
+            ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
 
             LoadLastOpenedFile();
 
@@ -76,18 +92,8 @@ namespace ColorPaletteBuilder
 
             titleMessageTimer.Interval = TimeSpan.FromSeconds(2);
             titleMessageTimer.Tick += TitleMessageTimer_Tick;
+
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -100,8 +106,26 @@ namespace ColorPaletteBuilder
             ColorPaletteData.ColorPaletteFile = "New Palette";
             ColorPaletteData.ColorPaletteName = "New Palette";
             ColorPaletteData.ColorEntries.Clear();
+            ColorPaletteData.FilteredColorEntries.Clear();
+
             ColorPaletteData.ElementStates.Clear();
             ColorPaletteData.ElementGroups.Clear();
+
+
+            //Add back the default empty string for States and Group
+            ColorPaletteData.ElementStates.Add(defaultComboBoxText);
+            ColorPaletteData.ElementGroups.Add(defaultComboBoxText);
+
+            SelectedState = defaultComboBoxText;
+            SelectedGroup = defaultComboBoxText;
+
+            comboElementGroups.SelectedItem = defaultComboBoxText;
+            comboElementStates.SelectedItem = defaultComboBoxText;
+        }
+
+        private void ClearFilteredColorEntries()
+        {
+            ColorPaletteData.FilteredColorEntries.Clear();
         }
 
 
@@ -194,18 +218,26 @@ namespace ColorPaletteBuilder
                     }
                     foreach (var group in colorPalette.ElementGroups)
                     {
-                        ColorPaletteData.ElementGroups.Add(group);
+                        if (group != defaultComboBoxText)
+                        {
+                            ColorPaletteData.ElementGroups.Add(group);
+                        }
                     }
                     foreach (var state in colorPalette.ElementStates)
                     {
-                        ColorPaletteData.ElementStates.Add(state);
+                        if (state != defaultComboBoxText)
+                        {
+                            ColorPaletteData.ElementStates.Add(state);
+                        }
                     }
 
                     // force a rebind of the ListView to ensure it updates
                     ColorPaletteListView.ItemsSource = null;
-                    ColorPaletteListView.ItemsSource = ColorPaletteData.ColorEntries;
+                    ApplyFilter();
+                    ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
 
                     IsAssignButtonEnabled.IsOn = ColorPaletteData.IsColorAssignEnabled;
+
                     foreach (var item in ColorPaletteListView.Items)
                     {
                         if (item is ColorEntry colorEntry)
@@ -315,10 +347,12 @@ namespace ColorPaletteBuilder
 
             };
 
-            newEntry.HexCode = _currentEntry.HexCode;
+            newEntry.HexCode = currentColorPickerHex;
             newEntry.IsColorAssignEnabled = ColorPaletteData.IsColorAssignEnabled;
 
             ColorPaletteData.ColorEntries.Insert(0, newEntry);
+
+            ApplyFilter();
 
         }
         private void RemoveColorEntry_Click(object sender, RoutedEventArgs e)
@@ -328,20 +362,20 @@ namespace ColorPaletteBuilder
             {
                 ColorPaletteData.ColorEntries.Remove(selectedEntry);
             }
+
+            ApplyFilter();
         }
 
         private void CustomColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
         {
-            if (_currentEntry != null)
+            if (currentColorPickerHex != null)
             {
-                _currentEntry.HexCode = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: true);
+                currentColorPickerHex = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: true);
             }
         }
 
         private void AssignColor_Click(object sender, RoutedEventArgs e)
         {
-
-            //TODO: This needs an enabled / disabled function to avoid accidental assignment
 
             var button = sender as Button;
             if (button != null && button.DataContext is ColorEntry colorEntry)
@@ -424,6 +458,7 @@ namespace ColorPaletteBuilder
         {
             string stateToRemove = comboElementStates.Text;
 
+            // Set each ColorEntry with the state to remove to an empty string
             foreach (var colorEntry in ColorPaletteData.ColorEntries)
             {
                 if (colorEntry.ElementState == stateToRemove)
@@ -432,7 +467,17 @@ namespace ColorPaletteBuilder
                 }
             }
 
-            ColorPaletteData.ElementStates.Remove(stateToRemove);
+            // Now Remove from the ElementStates collection
+            // Check if it is an empty string, for this cannot be removed
+            if (stateToRemove != defaultComboBoxText)
+            {
+                ColorPaletteData.ElementStates.Remove(stateToRemove);
+            }
+            else // Give a message to know it worked but just can't be removed
+            {
+                TitleBarMessage.Text = "State cannot be removed";
+                titleMessageTimer.Start();
+            }
 
             comboElementStates.SelectedItem = comboElementStates.Items.FirstOrDefault();
 
@@ -459,6 +504,7 @@ namespace ColorPaletteBuilder
         {
             string groupToRemove = comboElementGroups.Text;
 
+            // Set each ColorEntry with the group to remove to an empty string
             foreach (var colorEntry in ColorPaletteData.ColorEntries)
             {
                 if (colorEntry.ElementGroup == groupToRemove)
@@ -467,7 +513,17 @@ namespace ColorPaletteBuilder
                 }
             }
 
-            ColorPaletteData.ElementGroups.Remove(groupToRemove);
+            // Now Remove from the ElementGroups collection
+            // Check if it is an empty string, for this cannot be removed
+            if (groupToRemove != defaultComboBoxText)
+            {
+                ColorPaletteData.ElementGroups.Remove(groupToRemove);
+            }
+            else
+            {
+                TitleBarMessage.Text = "Group cannot be removed";
+                titleMessageTimer.Start();
+            }
 
             comboElementGroups.SelectedItem = comboElementGroups.Items.FirstOrDefault();
 
@@ -486,7 +542,7 @@ namespace ColorPaletteBuilder
         {
             ColorPaletteData.IsColorAssignEnabled = !ColorPaletteData.IsColorAssignEnabled;
 
-            TitleBarMessage.Text = ColorPaletteData.IsColorAssignEnabled ? "Editing Enabled" : "Editing Disabled";
+            TitleBarMessage.Text = ColorPaletteData.IsColorAssignEnabled ? "Quick Assign Unlocked" : "Quick Assign Lock-Out";
             titleMessageTimer.Start();
 
             foreach (var item in ColorPaletteListView.Items)
@@ -502,6 +558,66 @@ namespace ColorPaletteBuilder
 
         }
 
+
+
+        private void RefreshFilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void OnFilterSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((ComboBox)sender == comboElementStates)
+            {
+                SelectedState = comboElementStates.SelectedItem as string;
+            }
+            else if ((ComboBox)sender == comboElementGroups)
+            {
+                SelectedGroup = comboElementGroups.SelectedItem as string;
+            }
+
+            TitleBarMessage.Text = $"Filter: {SelectedState} - {SelectedGroup}";
+            titleMessageTimer.Start();
+
+        }
+
+        private void ApplyFilter()
+        {
+
+            ClearFilteredColorEntries();
+
+            foreach (var colorEntry in ColorPaletteData.ColorEntries)
+            {
+                if (SelectedState == defaultComboBoxText && SelectedGroup == defaultComboBoxText)
+                {
+                    ColorPaletteData.FilteredColorEntries.Add(colorEntry);
+                }
+                else if (SelectedState == defaultComboBoxText && colorEntry.ElementGroup == SelectedGroup)
+                {
+                    ColorPaletteData.FilteredColorEntries.Add(colorEntry);
+                }
+                else if (SelectedGroup == defaultComboBoxText && colorEntry.ElementState == SelectedState)
+                {
+                    ColorPaletteData.FilteredColorEntries.Add(colorEntry);
+                }
+                else if (colorEntry.ElementState == SelectedState && colorEntry.ElementGroup == SelectedGroup)
+                {
+                    ColorPaletteData.FilteredColorEntries.Add(colorEntry);
+                }
+            }
+
+            ColorPaletteListView.ItemsSource = null;
+            ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
+
+        }
+
+        private void ClearFilterButton_Click(object sender, RoutedEventArgs e)
+        {
+            comboElementStates.SelectedItem = defaultComboBoxText;
+            comboElementGroups.SelectedItem = defaultComboBoxText;
+
+            ApplyFilter();
+        }
 
 
     }

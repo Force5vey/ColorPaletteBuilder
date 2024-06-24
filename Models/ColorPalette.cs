@@ -14,6 +14,7 @@ namespace ColorPaletteBuilder
         private ObservableCollection<string> elementStates;
         private ObservableCollection<string> elementGroups;
         private ObservableCollection<ColorEntry> colorEntries;
+        private ObservableCollection<ColorEntry> filteredColorEntries;
 
         //Display and usage control variables
         private bool isColorAssignEnabled;
@@ -27,6 +28,12 @@ namespace ColorPaletteBuilder
             ElementStates = new ObservableCollection<string>();
             ElementGroups = new ObservableCollection<string>();
             ColorEntries = new ObservableCollection<ColorEntry>();
+            FilteredColorEntries = new ObservableCollection<ColorEntry>();
+
+
+            //ElementStates.Add("");
+            //ElementGroups.Add("");
+
         }
 
 
@@ -65,6 +72,12 @@ namespace ColorPaletteBuilder
             get => colorEntries;
             set => SetProperty(ref colorEntries, value);
         }
+
+        public ObservableCollection<ColorEntry> FilteredColorEntries
+        {
+            get => filteredColorEntries;
+            set => SetProperty(ref filteredColorEntries, value);
+                    }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

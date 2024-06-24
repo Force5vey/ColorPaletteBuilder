@@ -1,4 +1,12 @@
-﻿Notes on eyedropper tool implementation:
+﻿
+
+
+
+# Eye Dropper Notes
+
+---
+
+Notes on eyedropper tool implementation:
 
 2. Implementing the Eye Dropper Tool
 For the eye dropper tool, you need to capture the color of a pixel from the screen. You can use Win32 APIs to achieve this.
@@ -33,11 +41,11 @@ private Color GetColorAtCursor()
     IntPtr hdc = GetDC(IntPtr.Zero);
     uint pixel = GetPixel(hdc, cursor.X, cursor.Y);
     ReleaseDC(IntPtr.Zero, hdc);
-
+    
     Color color = Color.FromArgb((int)(pixel & 0x000000FF),
                                  (int)(pixel & 0x0000FF00) >> 8,
                                  (int)(pixel & 0x00FF0000) >> 16);
-
+    
     return color;
 }
 
