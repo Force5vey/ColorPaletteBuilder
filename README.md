@@ -33,7 +33,7 @@ A comprehensive tool designed for developers and designers to create, manage, an
      ```
      sh
      Copy code
-     git clone https://dev.azure.com/yourorganization/color-palette-builder/_git/color-palette-builder
+     git clone https://github.com/Force5vey/ColorPaletteBuilder
      ```
 
    **Navigate to the Project Directory:**
@@ -43,7 +43,7 @@ A comprehensive tool designed for developers and designers to create, manage, an
      ```
      sh
      Copy code
-     cd color-palette-builder
+     cd ColorPaletteBuilder
      ```
 
    **Open the Solution in Visual Studio:**

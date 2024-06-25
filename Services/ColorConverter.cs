@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 
+
 namespace ColorPaletteBuilder
 {
     public class ColorConverter
@@ -55,6 +56,16 @@ namespace ColorPaletteBuilder
             byte b = byte.Parse(hex.Substring(6, 2), NumberStyles.HexNumber);
 
             return System.Drawing.Color.FromArgb(a, r, g, b);
+        }
+
+        public static SolidColorBrush ConvertToSolidColorBrush(System.Drawing.Color color)
+        {
+            byte a = color.A;
+            byte r = color.R;
+            byte g = color.G;
+            byte b = color.B;
+
+            return new SolidColorBrush(Windows.UI.Color.FromArgb(a, r, g, b));
         }
     }
 }

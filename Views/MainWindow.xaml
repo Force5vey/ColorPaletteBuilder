@@ -62,7 +62,7 @@
             </MenuBarItem>
 
             <MenuBarItem Title="Edit">
-                <MenuFlyoutItem Text="Picker">
+                <MenuFlyoutItem Text="Color Selector" Click="ColorSelectorButton_Click">
                     <MenuFlyoutItem.Icon>
                         <FontIcon Glyph="&#xE759;"/>
                     </MenuFlyoutItem.Icon>
@@ -130,15 +130,16 @@
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
 
-            <AppBarButton Label="Remove" Icon="Remove" Click="RemoveColorEntry_Click" ToolTipService.ToolTip="Remove the selected color entry">
+            <AppBarButton Label="Delete" Icon="Delete" Click="RemoveColorEntry_Click" ToolTipService.ToolTip="Remove the selected color entry">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Delete"/>
                 </AppBarButton.KeyboardAccelerators>
             </AppBarButton>
 
             <AppBarSeparator/>
+            <AppBarSeparator/>
 
-            <AppBarButton Label="Picker">
+            <AppBarButton Label="Color Selector" Click="ColorSelectorButton_Click" ToolTipService.ToolTip="Select color from an image">
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Modifiers="Control" Key="Q"/>
                 </AppBarButton.KeyboardAccelerators>
@@ -147,15 +148,29 @@
                 </AppBarButton.Content>
             </AppBarButton>
 
-            <AppBarSeparator/>
+            <AppBarButton Label="Source Image" Icon="Upload" />
 
             <AppBarSeparator/>
 
-            <AppBarButton Label="Hex" Icon="Copy"/>
+            <AppBarSeparator/>
 
-            <AppBarButton Label="Hex w/Out Alpha" Icon="Copy"/>
+            <AppBarButton Label="" />
 
-            <AppBarButton Label="RGBA" Icon="Copy"/>
+            <AppBarButton Label=""/>
+
+            <AppBarButton Label=""/>
+            
+            <AppBarButton Label="" />
+
+            <AppBarButton Label=""/>
+
+            <AppBarButton Label=""/>
+            
+            <AppBarButton Label=""/>
+
+            <AppBarButton Label=""/>
+
+            <AppBarSeparator/>
 
 
 
@@ -221,8 +236,8 @@
                     <Button x:Name="btSetColorPicker" Margin="5,0,0,0" ToolTipService.ToolTip="Set Color Picker From Selection">
                         <Button.Content>
                             <StackPanel Orientation="Vertical">
-                                <FontIcon Glyph="&#xe7eb;">
-                                </FontIcon>
+                                <SymbolIcon Symbol="Upload"/>
+                                <!--<FontIcon Glyph="&#xe7eb;"/>-->
                                 <TextBlock Text="Set"/>
                             </StackPanel>
                         </Button.Content>
@@ -254,14 +269,25 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
+                </StackPanel>
 
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,25,0,0">
+                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
+
+                    <TextBox Text="Color.FromRGB(1,2,3,4);" Width="225" />
+                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                        <Button.Content>
+                            <!--<SymbolIcon Symbol="Copy"/>-->
+                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                        </Button.Content>
+                    </Button>
                 </StackPanel>
 
 
             </StackPanel>
 
 
-            <!-- ==================================== Left Column / Color Picker  =================================================  -->
+
             <!-- Right Column: Element Lists & List View/Data View -->
 
 
@@ -340,9 +366,9 @@
                     </Button.Flyout>
                 </Button>
 
-                
-                    <TextBlock Text="Filter:" Margin="30,0,0,0"/>
-                    <Button x:Name="refreshFilterButton" Content="Apply"  Click="RefreshFilterButton_Click" Margin="-40,25,0,0"/>
+
+                <TextBlock Text="Filter:" Margin="30,0,0,0"/>
+                <Button x:Name="refreshFilterButton" Content="Apply"  Click="RefreshFilterButton_Click" Margin="-40,25,0,0"/>
                 <Button x:Name="ClearFilterButton" Content="Clear" Margin="5,25,0,0" Click="ClearFilterButton_Click"/>
 
 
@@ -368,6 +394,7 @@
                 </ToggleSwitch.OnContent>
             </ToggleSwitch>
 
+            <!-- ===============================          List View       ================================     -->
 
             <ListView x:Name="ColorPaletteListView" Grid.Row="2" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single"
                       ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollMode="Auto" 
@@ -394,7 +421,7 @@
                             <Button Grid.Column="1" Style="{StaticResource CustomButtonStyle}" Background="{Binding HexCode, Converter={StaticResource HexToBrushConverter}}"
                                     Click="CopyHexCode_Click" VerticalAlignment="Center" Width="40" Height="30" Margin="0,0,10,0" ToolTipService.ToolTip="Copy Hex Code to Clipboard">
                                 <Button.Content>
-                                    <SymbolIcon Symbol="Copy"/>
+                                    <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                 </Button.Content>
                             </Button>
 

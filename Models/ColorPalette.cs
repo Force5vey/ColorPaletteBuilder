@@ -22,6 +22,8 @@ namespace ColorPaletteBuilder
 
         public ColorPalette()
         {
+            FileHeader = MakeFileHeader();
+
             IsColorAssignEnabled = false;
             ColorPaletteName = "Color Palette";
             ColorPaletteFile = "New Palette";
@@ -30,12 +32,10 @@ namespace ColorPaletteBuilder
             ColorEntries = new ObservableCollection<ColorEntry>();
             FilteredColorEntries = new ObservableCollection<ColorEntry>();
 
-
-            //ElementStates.Add("");
-            //ElementGroups.Add("");
-
         }
 
+
+        public string FileHeader { get; set; }
 
         public bool IsColorAssignEnabled
         {
@@ -77,7 +77,7 @@ namespace ColorPaletteBuilder
         {
             get => filteredColorEntries;
             set => SetProperty(ref filteredColorEntries, value);
-                    }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -93,6 +93,11 @@ namespace ColorPaletteBuilder
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private string MakeFileHeader()
+        {
+            return "Color Palette Builder - Force5 Development - apps@force5dev.com";
         }
     }
 }

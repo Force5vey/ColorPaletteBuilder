@@ -25,6 +25,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Microsoft.UI.Windowing;
 using System.ComponentModel;
+using Microsoft.UI.Input;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -619,6 +620,59 @@ namespace ColorPaletteBuilder
             ApplyFilter();
         }
 
+
+
+
+        //=============================    Color Selector    =============================
+
+        private ColorSelectorWindow colorSelectorWindow;
+        private void ColorSelectorButton_Click(object sender, RoutedEventArgs e)
+        {
+            StartColorSelector();
+        }
+
+        private void StartColorSelector()
+        {
+
+            //Get screen shot
+            App.screenShot = ScreenCapture.CaptureScreen();
+
+            if (colorSelectorWindow == null)
+            {
+                colorSelectorWindow = new ColorSelectorWindow();
+                colorSelectorWindow.AppWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
+
+
+                colorSelectorWindow.Closed += ColorSelectorWindow_Closed;
+                colorSelectorWindow.DataSelected += ColorSelectorWindow_DataSelected;
+                colorSelectorWindow.Activate();
+            }
+            else
+            {
+               TitleBarMessage.Text = "Color Selector already open";
+                titleMessageTimer.Start();
+            }
+
+
+            
+
+
+        }
+
+        private void ColorSelectorWindow_DataSelected(object sender, EventArgs e)
+        {
+            CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(App.colorSelectorColor);
+
+        }
+
+        private void ColorSelectorWindow_Closed(object sender, WindowEventArgs e)
+        {
+            colorSelectorWindow = null;
+
+            CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(App.colorSelectorColor);
+        }
+
+      
 
     }
 }

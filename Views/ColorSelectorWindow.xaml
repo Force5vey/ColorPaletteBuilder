@@ -1,0 +1,44 @@
+<Window
+      x:Class="ColorPaletteBuilder.ColorSelectorWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:local="using:ColorPaletteBuilder"
+  mc:Ignorable="d"
+  Title="Color Selector">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <AppBarButton x:Name="ColorSelectorExitButton" Click="ColorSelectorExitButton_Click" 
+                      Height="10" Width="10" 
+                      Background="Transparent" Content="">
+            <AppBarButton.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Escape" />
+            </AppBarButton.KeyboardAccelerators>
+        </AppBarButton>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0">
+            <Button x:Name="XCoord" Content="X Coord" />
+            <Button x:Name="YCoord" Content="Y Coord" Margin="5,0,0,0"/>
+            <Button x:Name="HoverColor" Width="100" Height="30"/>
+        </StackPanel>
+
+        <local:CustomGrid x:Name="CustomGrid" Background="Transparent" Grid.Row="2"
+                      PointerEntered="CustomGrid_PointerEntered"
+                      PointerExited="CustomGrid_PointerExited">
+
+
+
+            <Image x:Name="ScreenshotImage" Stretch="None" Margin="0,0,0,0"
+                      PointerPressed="ScreenShotImage_Clicked"
+                      PointerMoved="ScreenShotImage_PointerMoved" />
+
+
+        </local:CustomGrid>
+    </Grid>
+</Window>

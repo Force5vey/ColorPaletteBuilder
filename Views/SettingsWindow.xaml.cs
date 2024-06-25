@@ -29,6 +29,8 @@ namespace ColorPaletteBuilder
             this.InitializeComponent();
 
             ExtendsContentIntoTitleBar = true;
+
+            
         }
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
