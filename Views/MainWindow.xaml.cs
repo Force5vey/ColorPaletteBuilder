@@ -26,6 +26,9 @@ using Windows.UI.Core;
 using Microsoft.UI.Windowing;
 using System.ComponentModel;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Media.Imaging;
+using System.Runtime.CompilerServices;
+
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -93,6 +96,8 @@ namespace ColorPaletteBuilder
 
             titleMessageTimer.Interval = TimeSpan.FromSeconds(2);
             titleMessageTimer.Tick += TitleMessageTimer_Tick;
+
+            CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(Color.FromArgb(255, Color.White));
 
         }
 
@@ -213,6 +218,9 @@ namespace ColorPaletteBuilder
                     ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
                     ColorPaletteData.IsColorAssignEnabled = colorPalette.IsColorAssignEnabled;
 
+                    IsAssignButtonEnabled.IsOn = ColorPaletteData.IsColorAssignEnabled;
+                    TitleBarFileName.Text = ColorPaletteData.ColorPaletteName;
+
                     foreach (var entry in colorPalette.ColorEntries)
                     {
                         ColorPaletteData.ColorEntries.Add(entry);
@@ -232,13 +240,6 @@ namespace ColorPaletteBuilder
                         }
                     }
 
-                    // force a rebind of the ListView to ensure it updates
-                    ColorPaletteListView.ItemsSource = null;
-                    ApplyFilter();
-                    ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
-
-                    IsAssignButtonEnabled.IsOn = ColorPaletteData.IsColorAssignEnabled;
-
                     foreach (var item in ColorPaletteListView.Items)
                     {
                         if (item is ColorEntry colorEntry)
@@ -247,8 +248,11 @@ namespace ColorPaletteBuilder
                         }
                     }
 
+                    // force a rebind of the ListView to ensure it updates
+                    ColorPaletteListView.ItemsSource = null;
+                    ApplyFilter();
+                    ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
 
-                    TitleBarFileName.Text = ColorPaletteData.ColorPaletteName;
 
                 }
                 return 0;
@@ -302,6 +306,9 @@ namespace ColorPaletteBuilder
                 await SavePaletteToFile(file.Path);
             }
         }
+
+
+
 
 
         #endregion
@@ -559,6 +566,15 @@ namespace ColorPaletteBuilder
 
         }
 
+        private void IsAssignButtonEnabled_Loaded(object sender, RoutedEventArgs e)
+        {
+            var toggleSwitch = sender as ToggleSwitch;
+            if (toggleSwitch != null)
+            {
+                toggleSwitch.IsOn = ColorPaletteData.IsColorAssignEnabled;
+            }
+        }
+
 
 
         private void RefreshFilterButton_Click(object sender, RoutedEventArgs e)
@@ -621,9 +637,10 @@ namespace ColorPaletteBuilder
         }
 
 
+        /*===================================================================================================/
+         *                                          Color Selector                                           /
+         *==================================================================================================*/
 
-
-        //=============================    Color Selector    =============================
 
         private ColorSelectorWindow colorSelectorWindow;
         private void ColorSelectorButton_Click(object sender, RoutedEventArgs e)
@@ -635,7 +652,10 @@ namespace ColorPaletteBuilder
         {
 
             //Get screen shot
-            App.screenShot = ScreenCapture.CaptureScreen();
+            if (App.screenShot == null)
+            {
+                App.screenShot = ScreenCapture.CaptureScreen();
+            }
 
             if (colorSelectorWindow == null)
             {
@@ -649,12 +669,12 @@ namespace ColorPaletteBuilder
             }
             else
             {
-               TitleBarMessage.Text = "Color Selector already open";
+                TitleBarMessage.Text = "Color Selector already open";
                 titleMessageTimer.Start();
             }
 
 
-            
+
 
 
         }
@@ -670,9 +690,145 @@ namespace ColorPaletteBuilder
             colorSelectorWindow = null;
 
             CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(App.colorSelectorColor);
+
         }
 
-      
+
+        private async void BrowseColorSelectorPhoto_Click(object sender, RoutedEventArgs e)
+        {
+            // Initialize the picker
+            FileOpenPicker picker = new FileOpenPicker
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary // More appropriate start location for images
+            };
+
+            // Initialize with window handle
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+
+            // Add file type filters
+            picker.FileTypeFilter.Add(".bmp");
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+
+            // Pick a single file
+            StorageFile file = await picker.PickSingleFileAsync();
+            if (file != null)
+            {
+                // Store the path in local settings
+                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                localSettings.Values["LastOpenedFilePath"] = file.Path;
+
+                // Load the image into a WriteableBitmap
+                using (IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read))
+                {
+                    BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
+                    WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                    await bitmap.SetSourceAsync(fileStream);
+
+                    // Save the WriteableBitmap to the static screenShot variable
+                    App.screenShot = bitmap;
+                }
+
+                ColorSelectorSource.Text = file.Name;
+            }
+        }
+
+        private void ColorSelectorSource_DragOver(object sender, DragEventArgs e)
+        {
+            e.AcceptedOperation = DataPackageOperation.Copy;
+        }
+
+        private async void ColorSelectorSource_Drop(object sender, DragEventArgs e)
+        {
+            if (e.DataView.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                if (items.Any())
+                {
+                    var storageFile = items[0] as StorageFile;
+                    if (IsImageFile(storageFile))
+                    {
+                        // Load image into WriteableBitmap
+                        using (IRandomAccessStream fileStream = await storageFile.OpenAsync(FileAccessMode.Read))
+                        {
+                            BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
+                            WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                            await bitmap.SetSourceAsync(fileStream);
+
+                            // Save the WriteableBitmap to the static screenShot variable
+                            App.screenShot = bitmap;
+
+                            ColorSelectorSource.Text = storageFile.Name;
+
+                            TitleBarMessage.Text = $"Image dropped: {storageFile.Name}";
+                            titleMessageTimer.Start();
+                        }
+
+                    }
+                    else
+                    {
+                        TitleBarMessage.Text = "Invalid image / file type";
+                        titleMessageTimer.Start();
+                    }
+                }
+            }
+        }
+
+        private bool IsImageFile(StorageFile file)
+        {
+            var imageFileTypes = new[] { ".bmp", ".jpg", ".jpeg", ".png" };
+            return imageFileTypes.Contains(file.FileType.ToLower());
+        }
+
+        private async void ColorSelectorSource_Paste(object sender, TextControlPasteEventArgs e)
+        {
+            e.Handled = true; // Prevent the default paste behavior
+
+            var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+            try
+            {
+                if (dataPackageView.Contains(StandardDataFormats.Bitmap))
+                {
+                    var bitmap = await dataPackageView.GetBitmapAsync();
+                    if (bitmap != null)
+                    {
+                        using (var stream = await bitmap.OpenReadAsync())
+                        {
+                            // Ensure the stream is at the beginning
+                            stream.Seek(0);
+
+                            // Decode the bitmap
+                            var decoder = await BitmapDecoder.CreateAsync(stream);
+                            var writeableBitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                            await writeableBitmap.SetSourceAsync(stream);
+
+                            // Assign the WriteableBitmap to the static variable
+                            App.screenShot = writeableBitmap;
+
+                            // Update the UI
+                            ColorSelectorSource.Text = "Pasted Image";
+                            TitleBarMessage.Text = "Image pasted from clipboard.";
+                            titleMessageTimer.Start();
+                        }
+                    }
+                    else
+                    {
+                        TitleBarMessage.Text = "Failed to retrieve bitmap from clipboard.";
+                    }
+                }
+                else
+                {
+                    TitleBarMessage.Text = "Clipboard does not contain a bitmap.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TitleBarMessage.Text = $"An error occurred: {ex.Message}";
+            }
+        }
+
 
     }
 }

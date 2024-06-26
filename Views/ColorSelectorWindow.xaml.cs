@@ -105,5 +105,34 @@ namespace ColorPaletteBuilder
         {
             this.Close();
         }
+
+
+
+
+
+
+        private void DisplayImage_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            var scale = e.Delta.Scale;
+            var newZoomFactor = ImageScrollViewer.ZoomFactor * scale;
+            if (newZoomFactor >= ImageScrollViewer.MinZoomFactor && newZoomFactor <= ImageScrollViewer.MaxZoomFactor)
+            {
+                ImageScrollViewer.ChangeView(null, null, newZoomFactor);
+            }
+        }
+
+        private void ImageScrollViewer_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            var pointerPosition = e.GetPosition(ScreenshotImage);
+            var currentZoomFactor = ImageScrollViewer.ZoomFactor;
+            if (currentZoomFactor < 2.0f)
+            {
+                ImageScrollViewer.ChangeView(pointerPosition.X, pointerPosition.Y, 2.0f);
+            }
+            else
+            {
+                ImageScrollViewer.ChangeView(pointerPosition.X, pointerPosition.Y, 1.0f);
+            }
+        }
     }
 }

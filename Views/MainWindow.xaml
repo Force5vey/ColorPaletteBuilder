@@ -19,12 +19,14 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="2000" Height="30">
 
             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
-            <TextBlock Text="Color Palette Builder:" Margin="0,5,0,0"/>
-            <TextBlock x:Name="TitleBarFileName" Text="" Width="250" Margin="10,5,0,0"/>
-            <TextBlock x:Name="TitleBarMessage" Text="" Margin="0,5,0,0" Foreground="#FFFFD864"/>
+            <TextBlock Text="Color Palette Builder             Current Palette:" Margin="0,5,0,0"/>
+            <TextBlock x:Name="TitleBarFileName" Text="" Width="200" Margin="10,5,0,0"/>
+            <TextBlock x:Name="TitleBarMessage" Text="" Margin="10,5,0,0" Foreground="#FFFFD864"/>
         </StackPanel>
 
-        <!-- ================================         Menu Bar        =================================================  -->
+        <!-- ===================================================================================================================== -->
+        <!--                                                       MENU BAR                                                        -->
+        <!-- ===================================================================================================================== -->
 
         <MenuBar Grid.Row="1">
             <MenuBarItem Title="File">
@@ -98,94 +100,126 @@
             </MenuBarItem>
         </MenuBar>
 
+        <!-- ===================================================================================================================== -->
+        <!--                                                       TOOL BAR                                                        -->
+        <!-- ===================================================================================================================== -->
 
-        <!-- =============================          Command Bar (ribbon)           =================================================  -->
+        <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal">
+            <Button x:Name="NewPaletteButton" Margin="10,0,0,5" Style="{StaticResource AccentButtonStyle}" Click="NewPalette_Click">
+                <Button.Content>
+                    <StackPanel>
+                        <SymbolIcon Symbol="NewFolder"/>
+                        <TextBlock Text="New"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
-        <CommandBar x:Name="MainCommandBar" Grid.Row="2" Background="Transparent" 
-                    IsOpen="False" DefaultLabelPosition="Bottom" HorizontalAlignment="Left">
+            <Button x:Name="OpenPaletteButton" Margin="10,0,0,5" Click="OpenPalette_Click">
+                <Button.Content>
+                    <StackPanel>
+                        <SymbolIcon Symbol="OpenLocal"/>
+                        <TextBlock Text="Open"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
-            <AppBarButton Label="New" Icon="NewFolder" Click="NewPalette_Click" ToolTipService.ToolTip="New Color Palette">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Insert"/>
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
+            <Button x:Name="SavePaletteButton" Margin="10,0,0,5" Click="SavePalette_Click">
+                <Button.Content>
+                    <StackPanel>
+                        <SymbolIcon Symbol="Save"/>
+                        <TextBlock Text="Save"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
-            <AppBarButton Label="Open" Icon="OpenLocal" Click="OpenPalette_Click" ToolTipService.ToolTip="Open Color Palette">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Insert"/>
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
+            <!--  Separator -->
+            <StackPanel Orientation="Vertical" Background="#FF161717" Margin="10,10,0,15">
+                <TextBlock Width="2"/>
+            </StackPanel>
+            <!--  Separator -->
 
-            <AppBarButton Label="Save" Icon="Save" Click="SavePalette_Click" ToolTipService.ToolTip="Save Current Palette">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Insert"/>
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
+            <Button x:Name="AddColorEntryButton" Margin="10,0,0,5" Click="AddColorEntry_Click">
+                <Button.Content>
+                    <StackPanel>
+                        <SymbolIcon Symbol="Add"/>
+                        <TextBlock Text="Add"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
-            <AppBarSeparator/>
+            <Button x:Name="DeleteColorEntryButton" Margin="10,0,0,5" Click="RemoveColorEntry_Click">
+                <Button.Content>
+                    <StackPanel>
+                        <SymbolIcon Symbol="Delete"/>
+                        <TextBlock Text="Delete"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
-            <AppBarButton Label="Add" Icon="Add" Click="AddColorEntry_Click" ToolTipService.ToolTip="Add new color entry">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Insert"/>
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
+            <!--  Separator -->
+            <StackPanel Orientation="Vertical" Background="#FF161717" Margin="10,10,0,15">
+                <TextBlock Width="2"/>
+            </StackPanel>
+            <!--  Separator -->
 
-            <AppBarButton Label="Delete" Icon="Delete" Click="RemoveColorEntry_Click" ToolTipService.ToolTip="Remove the selected color entry">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Key="Delete"/>
-                </AppBarButton.KeyboardAccelerators>
-            </AppBarButton>
-
-            <AppBarSeparator/>
-            <AppBarSeparator/>
-
-            <AppBarButton Label="Color Selector" Click="ColorSelectorButton_Click" ToolTipService.ToolTip="Select color from an image">
-                <AppBarButton.KeyboardAccelerators>
-                    <KeyboardAccelerator Modifiers="Control" Key="Q"/>
-                </AppBarButton.KeyboardAccelerators>
-                <AppBarButton.Content>
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE759;"/>
-                </AppBarButton.Content>
-            </AppBarButton>
-
-            <AppBarButton Label="Source Image" Icon="Upload" />
-
-            <AppBarSeparator/>
-
-            <AppBarSeparator/>
-
-            <AppBarButton Label="" />
-
-            <AppBarButton Label=""/>
-
-            <AppBarButton Label=""/>
             
-            <AppBarButton Label="" />
+            <!-- Color Selector Button -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                <Button x:Name="ColorSelectorButton" Margin="10,0,0,5" Click="ColorSelectorButton_Click">
+                    <Button.Content>
+                        <StackPanel>
+                            <FontIcon Glyph="&#xe759;" Margin="0,5,0,0" Height="33"/>
+                            <!--<TextBlock Text=""/>-->
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
 
-            <AppBarButton Label=""/>
+                <StackPanel>
+                    <TextBlock Text="Drag and Drop Image:" Margin="15,-5,0,5"/>
+                    <TextBox x:Name="ColorSelectorSource" Width="150" Height="25" Margin="10,0,0,0"
+                             Text="" IsReadOnly="True" AllowDrop="True" 
+                             DragOver="ColorSelectorSource_DragOver" 
+                             Drop="ColorSelectorSource_Drop"
+                             Paste="ColorSelectorSource_Paste"/>
+                </StackPanel>
+            </StackPanel>
 
-            <AppBarButton Label=""/>
             
-            <AppBarButton Label=""/>
+            <!-- Drop Down Button - Color Selector Optons -->
+            <DropDownButton x:Name="ColorSelectorOptionsButton" Height="50" Margin="5,0,0,0" >
+                <DropDownButton.Content>
+                    <SymbolIcon Symbol="Pictures"/>
+                    <!--<FontIcon Glyph="&#xE715;"/>-->
+                </DropDownButton.Content>
+                <DropDownButton.Flyout>
+                    <MenuFlyout Placement="Bottom">
+                        <MenuFlyoutItem Text="Select Picture" Click="BrowseColorSelectorPhoto_Click">
+                            <MenuFlyoutItem.Icon>
+                                <SymbolIcon Symbol="BrowsePhotos"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Reply">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8CA;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Reply All">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xE8C2;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
 
-            <AppBarButton Label=""/>
-
-            <AppBarSeparator/>
 
 
+        </StackPanel>
 
 
-
-            <CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Setting" Label="Settings" Click="OpenSettings_Click">
-                    <AppBarButton.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="I" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
-
-        <!-- ==================================== Left Column / Color Picker  =================================================  -->
+        <!-- ================================================================================================================================  -->
+        <!-- ==================================================        Color Picker         =================================================  -->
+        <!-- ================================================================================================================================  -->
 
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
@@ -214,14 +248,14 @@
 
                         <ColorPicker x:Name="CustomColorPicker"
                       ColorSpectrumShape="Box"
-                      IsMoreButtonVisible="False"
+                      IsMoreButtonVisible="True"
                       IsColorSliderVisible="True"
                       IsColorChannelTextInputVisible="True"
                       IsHexInputVisible="True"
                       IsAlphaEnabled="True"
                       IsAlphaSliderVisible="True"
                       IsAlphaTextInputVisible="True" 
-                                     ColorChanged="CustomColorPicker_ColorChanged"/>
+                      ColorChanged="CustomColorPicker_ColorChanged"/>
 
 
                     </StackPanel>
@@ -232,6 +266,11 @@
                 </StackPanel>
 
                 <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
+
+
+                    <!-- ===================================================================================================================== -->
+                    <!--                                                 COLOR CODE SHORTCUTS                                                  -->
+                    <!-- ===================================================================================================================== -->
 
                     <Button x:Name="btSetColorPicker" Margin="5,0,0,0" ToolTipService.ToolTip="Set Color Picker From Selection">
                         <Button.Content>
@@ -288,7 +327,9 @@
 
 
 
-            <!-- Right Column: Element Lists & List View/Data View -->
+            <!-- ===================================================================================================================== -->
+            <!--                                                    Category Lists                                                     -->
+            <!-- ===================================================================================================================== -->
 
 
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,5,0">
@@ -376,14 +417,14 @@
 
 
 
+            <!-- ===================================================================================================================== -->
+            <!--                                                 LISTVIEW OPTIONS ROW                                                  -->
+            <!-- ===================================================================================================================== -->
 
-
-
-            <!--    Column 1     Row 1    -->
 
             <ToggleSwitch x:Name="IsAssignButtonEnabled" 
                           Grid.Row="1" Grid.Column="1" Margin="20,0,0,0"
-                          
+                          Loaded="IsAssignButtonEnabled_Loaded"
                           Toggled="IsColorAssign_Toggle">
 
                 <ToggleSwitch.OffContent>
@@ -394,11 +435,13 @@
                 </ToggleSwitch.OnContent>
             </ToggleSwitch>
 
-            <!-- ===============================          List View       ================================     -->
+            <!-- ===================================================================================================================== -->
+            <!--                                                       LISTVIEW                                                        -->
+            <!-- ===================================================================================================================== -->
 
             <ListView x:Name="ColorPaletteListView" Grid.Row="2" Grid.Column="1" IsItemClickEnabled="True" SelectionMode="Single"
                       ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollMode="Auto" 
-                      Margin="0,0,0,0">
+                      Margin="0,0,0,0" Background="Transparent">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:ColorEntry">
                         <Grid Padding="10">

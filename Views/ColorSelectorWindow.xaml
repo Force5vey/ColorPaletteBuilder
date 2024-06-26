@@ -33,11 +33,13 @@
                       PointerExited="CustomGrid_PointerExited">
 
 
-
-            <Image x:Name="ScreenshotImage" Stretch="None" Margin="0,0,0,0"
+            <ScrollViewer x:Name="ImageScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ZoomMode="Enabled" MaxZoomFactor="5" MinZoomFactor="0.5">
+                <Image x:Name="ScreenshotImage" Stretch="None" Margin="0,0,0,0"
                       PointerPressed="ScreenShotImage_Clicked"
-                      PointerMoved="ScreenShotImage_PointerMoved" />
+                      PointerMoved="ScreenShotImage_PointerMoved"
+                       ManipulationMode="All"/>
 
+            </ScrollViewer>
 
         </local:CustomGrid>
     </Grid>
