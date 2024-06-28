@@ -26,10 +26,10 @@ using Microsoft.UI.Xaml.Hosting;
 
 namespace ColorPaletteBuilder
 {
-    public class ScreenCapture
+    public class ColorSelectorProcessor
     {
 
-        public static WriteableBitmap CaptureScreen()
+        public static WriteableBitmap GetBitmap()
         {
 
             // Temporary, sending back bmp from assets folder
