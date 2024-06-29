@@ -31,6 +31,8 @@ namespace ColorPaletteBuilder
         private const int settingsWindowMinWidth = 425;
         private const int settingsWindowMinHeight = 700;
 
+
+        //check git changes for branch
         public SettingsWindow()
         {
             this.InitializeComponent();
