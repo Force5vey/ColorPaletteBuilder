@@ -70,7 +70,7 @@ namespace ColorPaletteBuilder
             ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
 
             // Loading Last Session State
-            LoadLastOpenedFile();
+            LoadLastOpenedFile(); //TODO: Conduct checks for if the last file was an autosave backup file that isn't saved then load that
 
             // Miscellaneous
             titleBarMessageTimer.Interval = TimeSpan.FromSeconds(2);
@@ -145,6 +145,7 @@ namespace ColorPaletteBuilder
 
         private void NewPalette_Click(object sender, RoutedEventArgs e)
         {
+            //TODO: Reset Filename etc to default.
             ClearColorPaletteData();
         }
 
