@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,9 +27,9 @@ namespace ColorPaletteBuilder
     public sealed partial class SettingsWindow : Window
     {
         private const int settingsWindowStartWidth = 450;
-        private const int settingsWindowStartHeight = 600;
-        private const int settingsWindowMinWidth = 350;
-        private const int settingsWindowMinHeight = 500;
+        private const int settingsWindowStartHeight = 800;
+        private const int settingsWindowMinWidth = 425;
+        private const int settingsWindowMinHeight = 700;
 
         public SettingsWindow()
         {
@@ -40,6 +41,13 @@ namespace ColorPaletteBuilder
 
             this.AppWindow.Changed += SettingsWindow_Changed;
 
+            LoadLocalFilePath();
+
+        }
+
+        private void LoadLocalFilePath()
+        {
+            LocalFolderPathTextbox.Text = ApplicationData.Current.LocalFolder.Path;
         }
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
@@ -60,7 +68,7 @@ namespace ColorPaletteBuilder
                 this.AppWindow.Resize(new Windows.Graphics.SizeInt32((int)sender.Size.Width, settingsWindowMinHeight));
             }
         }
-        
+
 
     }
 }

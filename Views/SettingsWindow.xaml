@@ -25,8 +25,8 @@
         </StackPanel>
 
         <!-- Settings Content -->
-        <ScrollViewer Grid.Row="1" Margin="10">
-            <StackPanel>
+        <ScrollViewer Grid.Row="1" Margin="10" HorizontalScrollMode="Enabled">
+            <StackPanel HorizontalAlignment="Stretch">
 
                 <!-- Theme Selection -->
                 <TextBlock Text="Theme" FontWeight="Bold" Margin="0,10,0,5"/>
@@ -35,18 +35,24 @@
                     <ComboBoxItem Content="Dark" />
                     <ComboBoxItem Content="System Default" />
                 </ComboBox>
-
+                
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
+                
                 <!-- Enable Auto-save -->
                 <TextBlock Text="Enable Auto-save" FontWeight="Bold" Margin="0,10,0,5"/>
                 <CheckBox x:Name="EnableAutoSaveCheckBox" IsChecked="True" Content="Enable Auto-save"/>
 
                 <!-- Auto-save Interval -->
                 <TextBlock Text="Auto-save Interval (minutes)" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Slider x:Name="AutoSaveSlider" Minimum="1" Maximum="20" Width="200" Value="10" />
+                <Slider x:Name="AutoSaveSlider" Minimum="1" Maximum="20" Width="200" Value="10" HorizontalAlignment="Left" />
 
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
+                
                 <!-- Show notifications -->
                 <TextBlock Text="Notifications" FontWeight="Bold" Margin="0,10,0,5"/>
                 <CheckBox x:Name="ShowNotificationsCheckBox" IsChecked="True" Content="Show Notifications"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
                 <!-- Default Palette Location -->
                 <TextBlock Text="Default Palette Location" FontWeight="Bold" Margin="0,10,0,5"/>
@@ -58,6 +64,8 @@
                 <!-- Recent Palettes -->
                 <TextBlock Text="Recent Palettes" FontWeight="Bold" Margin="0,10,0,5"/>
                 <ListView x:Name="RecentPalettesListView" Width="300" Height="100"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
                 <!-- Color Format Preference -->
                 <TextBlock Text="Color Format Preference" FontWeight="Bold" Margin="0,10,0,5"/>
@@ -77,7 +85,9 @@
 
                 <!-- Color Preview Size -->
                 <TextBlock Text="Color Preview Size" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Slider x:Name="ColorPreviewSizeSlider" Minimum="1" Maximum="3" Width="200" Value="2"/>
+                <Slider x:Name="ColorPreviewSizeSlider" Minimum="1" Maximum="3" Width="200" Value="2" HorizontalAlignment="Left"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
                 <!-- Export Options -->
                 <TextBlock Text="Export Options" FontWeight="Bold" Margin="0,10,0,5"/>
@@ -88,15 +98,21 @@
                 </ComboBox>
 
                 <!-- Backup and Restore -->
-                <TextBlock Text="Backup and Restore" FontWeight="Bold" Margin="0,10,0,5"/>
+                <TextBlock Text="Backup and Restore" FontWeight="Bold" Margin="0,30,0,5"/>
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Backup" Margin="0,0,10,0"/>
                     <Button Content="Restore"/>
                 </StackPanel>
+                <TextBlock Text="Autosave / Backup Location" Margin="0,10,0,5"/>
+                <TextBox x:Name="LocalFolderPathTextbox" IsReadOnly="True" HorizontalAlignment="Stretch" Margin="0,0,10,0"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
                 <!-- Undo/Redo History Limit -->
                 <TextBlock Text="Undo/Redo History Limit" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Slider x:Name="UndoRedoHistoryLimitSlider" Minimum="1" Maximum="100" Width="200" Value="20"/>
+                <Slider x:Name="UndoRedoHistoryLimitSlider" Minimum="1" Maximum="100" Width="200" Value="20" HorizontalAlignment="Left"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
                 <!-- Language Preference -->
                 <TextBlock Text="Language Preference" FontWeight="Bold" Margin="0,10,0,5"/>
@@ -106,15 +122,23 @@
                     <ComboBoxItem Content="Python" />
                 </ComboBox>
 
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
+                
                 <!-- Other Settings -->
                 <TextBlock Text="Other Settings" FontWeight="Bold" Margin="0,10,0,5"/>
                 <CheckBox x:Name="EnableLoggingCheckBox" IsChecked="False" Content="Enable Logging"/>
                 <CheckBox x:Name="EnableBetaFeaturesCheckBox" IsChecked="False" Content="Enable Beta Features"/>
+                
+               
+                
+               
 
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Buttons -->
+        
+        
+        <!-- Save Button -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"
                         Grid.Row="2">
             <Button Content="Save" Click="SaveSettings_Click" Margin="0,0,0,10" Width="100"/>

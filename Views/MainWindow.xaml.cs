@@ -12,19 +12,18 @@ using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.Drawing.Text;
+using ColorPaletteBuilder.Services;
+using System.Diagnostics;
 
-
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace ColorPaletteBuilder
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainWindow : Window
     {
+        // View Model
+        private MainViewModel mainViewModel = new MainViewModel();
+
         // Window and UI Elements
         private SettingsWindow settingsWindow;
         private ColorSelectorWindow colorSelectorWindow;
@@ -41,6 +40,8 @@ namespace ColorPaletteBuilder
         // Private Fields
         private string currentColorPickerHex = "#FFFFFFFF";
         private string defaultComboBoxText = "Any";
+        private DispatcherTimer autoSaveTimer;
+        private int autoSaveInterval = 1; // minutes
 
         // Timers and Miscellaneous
         private DispatcherTimer titleBarMessageTimer = new DispatcherTimer();
@@ -74,6 +75,10 @@ namespace ColorPaletteBuilder
             // Miscellaneous
             titleBarMessageTimer.Interval = TimeSpan.FromSeconds(2);
             titleBarMessageTimer.Tick += TitleMessageTimer_Tick;
+            StartAutoSaveTimer();
+
+            string localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
+            Debug.WriteLine($"Local Folder Path: {localFolderPath}");
         }
 
         private void ConfigureWindowSize()
@@ -111,13 +116,14 @@ namespace ColorPaletteBuilder
         {
             if (string.IsNullOrEmpty(ColorPaletteData.ColorPaletteFile) || ColorPaletteData.ColorPaletteFile == "New Palette")
             {
-                //TODO: Modal to ask if save file
-
+                AutoSave();
+            }
+            else
+            {
+                SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
             }
 
-
-            SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
-
+            // Things to do regardless of file options
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             localSettings.Values["WindowWidth"] = this.AppWindow.Size.Width;
             localSettings.Values["WindowHeight"] = this.AppWindow.Size.Height;
@@ -422,6 +428,7 @@ namespace ColorPaletteBuilder
         {
             e.AcceptedOperation = DataPackageOperation.Copy;
         }
+
         private async void ColorSelectorSource_Drop(object sender, DragEventArgs e)
         {
             if (e.DataView.Contains(StandardDataFormats.StorageItems))
@@ -772,5 +779,20 @@ namespace ColorPaletteBuilder
 
         }
 
+        private void StartAutoSaveTimer()
+        {
+            autoSaveTimer = new DispatcherTimer();
+            autoSaveTimer.Interval = TimeSpan.FromMinutes(autoSaveInterval);
+            autoSaveTimer.Tick += (s, e) => AutoSave();
+            autoSaveTimer.Start();
+        }
+
+        private async void AutoSave()
+        {
+            await BackupService.SaveBackupAsync(ColorPaletteData);
+            TitleBarMessage.Text = "Auto-Saved Completed";
+            titleBarMessageTimer.Start();
+
+        }
     }
 }
