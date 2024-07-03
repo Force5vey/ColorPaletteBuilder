@@ -23,7 +23,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="2000" Height="30">
             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
             <TextBlock Text="Color Palette Builder             Current Palette:" Margin="0,5,0,0"/>
-            <TextBlock x:Name="TitleBarFileName" Text="" Width="200" Margin="10,5,0,0"/>
+            <TextBlock x:Name="TitleBarFileName" Text="" Width="200" Margin="10,7,0,0"  FontWeight="SemiBold" FontSize="14" FontFamily="Courier"  Foreground="#FFFF9364"/>
             <TextBlock x:Name="TitleBarMessage" Text="" Margin="10,5,0,0" Foreground="#FFFFD864"/>
         </StackPanel>
 
@@ -141,7 +141,7 @@
             </StackPanel>
             <!--  Separator -->
 
-            <Button x:Name="AddColorEntryButton" Margin="10,0,0,5" Click="AddColorEntry_Click">
+            <Button x:Name="AddColorEntryButton" Margin="10,0,0,5" Style="{StaticResource AccentButtonStyle}" Click="AddColorEntry_Click">
                 <Button.Content>
                     <StackPanel>
                         <SymbolIcon Symbol="Add"/>

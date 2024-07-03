@@ -2,6 +2,48 @@
 
 ### Main Page Features
 
+#### General Notes
+- [ ] Auto-copy buttons below color picker
+- [ ] update the title bar file name if a palette is saved as and other scenarios.
+- [ ] fix the lock toggle, so it stays accurate.
+  - [ ] with undo implemented, rethink needing this lock.
+
+- [ ] color picker needs better checking for file loads
+- [ ] color picker needs to handle not having a proper image file by loading and presenting buttons to browse or a spot drag / drop a file.
+- [ ] thumbnail of image in toolbar for whichever image is currently there.
+  - [ ] this might involve just getting rid of the file name and having the thumbnail.
+
+- [ ] scroll functionality for the color picker column as well as over all proper scrolling.
+- [ ] title bar message for the filter selections should be Filter: state & group so it would be Filter: Enabled & Any
+- [ ] Color Entry needs a note item
+- [ ] if the backup is loaded, ensure it asks to save to new file.
+
+#### Settings Notes
+
+- [ ] Save the settings as well as actually load and use them
+- [ ] Proper theme selection
+- [ ] Color format preference sets what is saved in the color code entry
+  - [ ] allow to tick off the hashtag for hex copy
+
+- [ ] 
+
+#### Features Notes
+
+- [ ] Undo Tree implementation
+  - [ ] this should be for each of the elements of a color entry.
+- [ ] a separate undo for the color picker specifically
+- [ ] Recent colors list for the color picker
+  - [ ] row of auto added that just filters through by adding to newest and subtracting to oldest
+  - [ ] row of manually selected, a 'temp' spot in sorts.
+- [ ] Paste from clipboard, from say a screen shot.
+- [ ] opposite of the assign current to existing color button, do an assign to the color picker the color from the color entry.
+  - [ ] This is so if you want to adjust slightly the saved color it can auto set the color picker, make the slight adjustment, then reassign.
+
+
+
+
+
+
 #### Color Picker Integration
 - [ ] Implement the color picker and ensure it updates the current color entry.
 - [ ] Ensure the color picker supports RGB, Hex, and RGBA formats.
