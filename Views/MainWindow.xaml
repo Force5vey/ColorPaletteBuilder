@@ -19,7 +19,7 @@
         <!-- ===================================================================================================================== -->
         <!--                                                       TITLE BAR                                                       -->
         <!-- ===================================================================================================================== -->
-        
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="2000" Height="30">
             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
             <TextBlock Text="Color Palette Builder             Current Palette:" Margin="0,5,0,0"/>
@@ -227,10 +227,10 @@
             ViewChanged="LeftScrollViewerControl_ViewChanged"
             HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Auto"
             VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
-
                     <StackPanel>
+                        <StackPanel>
 
-                        <ColorPicker x:Name="CustomColorPicker"
+                            <ColorPicker x:Name="CustomColorPicker"
                       ColorSpectrumShape="Box"
                       IsMoreButtonVisible="True"
                       IsColorSliderVisible="True"
@@ -242,73 +242,85 @@
                       ColorChanged="CustomColorPicker_ColorChanged"/>
 
 
+                        </StackPanel>
+
+                        <StackPanel Background="#FF161717">
+                            <TextBlock Width="250" Height="3"/>
+                        </StackPanel>
+
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
+
+
+                            <!-- ===================================================================================================================== -->
+                            <!--                                                 COLOR CODE SHORTCUTS                                                  -->
+                            <!-- ===================================================================================================================== -->
+
+                            <Button x:Name="btSetColorPicker" Margin="5,0,0,0" ToolTipService.ToolTip="Set Color Picker From Selection">
+                                <Button.Content>
+                                    <StackPanel Orientation="Vertical">
+                                        <SymbolIcon Symbol="Upload"/>
+                                        <!--<FontIcon Glyph="&#xe7eb;"/>-->
+                                        <TextBlock Text="Set"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Margin="0,25,0,0">
+
+                                <StackPanel>
+                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
+
+                                    <TextBox Text="Copy Hex w/ Alpha" Width="225" />
+                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                        <Button.Content>
+                                            <!--<SymbolIcon Symbol="Copy"/>-->
+                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
+
+                                    <TextBox Text="Copy Hex w/o Alpha;" Width="225" />
+                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                        <Button.Content>
+                                            <!--<SymbolIcon Symbol="Copy"/>-->
+                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+
+                                <StackPanel>
+
+                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
+
+                                    <TextBox Text="Copy RGB" Width="225" />
+                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                        <Button.Content>
+                                            <!--<SymbolIcon Symbol="Copy"/>-->
+                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
+
+                                    <TextBox Text="Color.FromRGB(1,2,3,4);" Width="225" />
+                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                        <Button.Content>
+                                            <!--<SymbolIcon Symbol="Copy"/>-->
+                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
-
-                <StackPanel Background="#FF161717">
-                    <TextBlock Width="250" Height="3"/>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
-
-
-                    <!-- ===================================================================================================================== -->
-                    <!--                                                 COLOR CODE SHORTCUTS                                                  -->
-                    <!-- ===================================================================================================================== -->
-
-                    <Button x:Name="btSetColorPicker" Margin="5,0,0,0" ToolTipService.ToolTip="Set Color Picker From Selection">
-                        <Button.Content>
-                            <StackPanel Orientation="Vertical">
-                                <SymbolIcon Symbol="Upload"/>
-                                <!--<FontIcon Glyph="&#xe7eb;"/>-->
-                                <TextBlock Text="Set"/>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-
-                    <Button x:Name="btCopyHex" Margin="5,0,0,0" ToolTipService.ToolTip="Copy Full Hex code with alpha value from color picker">
-                        <Button.Content>
-                            <StackPanel>
-                                <SymbolIcon Symbol="Copy"/>
-                                <TextBlock Text="Hex"/>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-
-                    <Button x:Name="btCopyHexNoAlpha" Margin="5,0,0,0" ToolTipService.ToolTip="Copy hex code with OUT alpha value from color picker">
-                        <Button.Content>
-                            <StackPanel>
-                                <SymbolIcon Symbol="Copy"/>
-                                <TextBlock Text="# No Alpha"/>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-
-                    <Button x:Name="btCopyRGB" Margin="5,0,0,0" ToolTipService.ToolTip="Copy RGB values from color picker">
-                        <Button.Content>
-                            <StackPanel>
-                                <SymbolIcon Symbol="Copy"/>
-                                <TextBlock Text="RGB"/>
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,25,0,0">
-                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
-
-                    <TextBox Text="Color.FromRGB(1,2,3,4);" Width="225" />
-                    <Button Width="35" Height="30" Margin="5,0,0,0">
-                        <Button.Content>
-                            <!--<SymbolIcon Symbol="Copy"/>-->
-                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
-                        </Button.Content>
-                    </Button>
-                </StackPanel>
-
-
             </StackPanel>
-
 
 
             <!-- ===================================================================================================================== -->
@@ -469,7 +481,6 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
         </Grid>
     </Grid>
 </Window>
