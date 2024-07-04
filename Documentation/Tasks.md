@@ -7,12 +7,10 @@
 - [ ] update the title bar file name if a palette is saved as and other scenarios.
 - [ ] fix the lock toggle, so it stays accurate.
   - [ ] with undo implemented, rethink needing this lock.
-
 - [ ] color picker needs better checking for file loads
 - [ ] color picker needs to handle not having a proper image file by loading and presenting buttons to browse or a spot drag / drop a file.
 - [ ] thumbnail of image in toolbar for whichever image is currently there.
   - [ ] this might involve just getting rid of the file name and having the thumbnail.
-
 - [ ] scroll functionality for the color picker column as well as over all proper scrolling.
 - [ ] title bar message for the filter selections should be Filter: state & group so it would be Filter: Enabled & Any
 - [ ] Color Entry needs a note item
@@ -20,7 +18,7 @@
 - [ ] Hex code in hex entry of color entry needs checks to ensure it follows the hex pattern.
   - [ ] might want override, or something similar if someone wants a custom color code saved.
 
-- [ ] assign and rotate the sendcolor same as assign color
+- [ ] review auto save and save on close, some scenarios does not ask to save as etc.
 
 #### Settings Notes
 

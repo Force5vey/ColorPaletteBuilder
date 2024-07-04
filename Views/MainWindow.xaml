@@ -258,8 +258,8 @@
                             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Margin="0,25,0,0">
 
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox Text="Copy Hex w/ Alpha" Width="275" />
-                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                    <TextBox x:Name="TextBoxColorPickerHex" Text="Copy Hex w/ Alpha" Width="275" />
+                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerHex_Click">
                                         <Button.Content>
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
@@ -267,8 +267,8 @@
                                 </StackPanel>
 
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox Text="Copy Hex w/o Alpha;" Width="275" />
-                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                    <TextBox x:Name="TextBoxColorPickerHexNoAlpha" Text="Copy Hex w/o Alpha;" Width="275"/>
+                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerHexNoAlpha_Click">
                                         <Button.Content>
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
@@ -276,8 +276,8 @@
                                 </StackPanel>
 
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox Text="Copy RGB" Width="275" />
-                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                    <TextBox  x:Name="TextBoxColorPickerRGB" Text="Copy RGB" Width="275" />
+                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerRGB_Click">
                                         <Button.Content>
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
@@ -285,8 +285,8 @@
                                 </StackPanel>
 
                                 <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox Text="Color.FromRGB(1,2,3,4);" Width="275" />
-                                    <Button Width="35" Height="30" Margin="5,0,0,0">
+                                    <TextBox x:Name="TextBoxColorPickerCodeSnippet" Text="Color.FromRGB(1,2,3,4);" Width="275" />
+                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerCodeSnippet_Click">
                                         <Button.Content>
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
@@ -421,8 +421,8 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button x:Name="SendColorButton" Grid.Column="1" Click="SendColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Set to color picker"
-                                    Width="35" Height="30" Margin="15,0,0,0">
+                            <Button x:Name="SendColorButton" Grid.Column="0" Click="SendColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Set Entry Color to Color Picker"
+                                    Width="35" Height="30" Margin="5,0,0,0" Style="{StaticResource SquareButtonStyle}">
                                 <Button.Content>
                                     <FontIcon Glyph="&#xe7fd;" FontSize="20" Margin="15,18,0,0">
                                         <FontIcon.RenderTransform>
@@ -432,15 +432,15 @@
                                 </Button.Content>
                             </Button>
 
-                            <Button x:Name="AssignColorButton" Grid.Column="1" Click="AssignColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Assign Currently Selected Color"
-                                    Width="35" Height="30" Margin="0,0,0,0">
+                            <Button x:Name="AssignColorButton" Grid.Column="1" Click="AssignColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Set Color Picker from Entry Color"
+                                    Width="35" Height="30" Margin="0,0,0,0" Style="{StaticResource SquareButtonStyle}">
                                 <Button.Content>
-                                    <FontIcon Glyph="&#xe7fd;" FontSize="20" Margin="2,0,0,0"/>
+                                    <FontIcon Glyph="&#xe7fd;" FontSize="20" Margin="0,0,0,0"/>
                                 </Button.Content>
                             </Button>
 
                             <Button Grid.Column="2" Style="{StaticResource CustomButtonStyle}" Background="{Binding HexCode, Converter={StaticResource HexToBrushConverter}}"
-                                    Click="CopyHexCode_Click" VerticalAlignment="Center" Width="40" Height="30" Margin="0,0,10,0" ToolTipService.ToolTip="Copy Hex Code to Clipboard">
+                                    Click="CopyHexCode_Click" VerticalAlignment="Center" Width="40" Height="30" Margin="10,0,10,0" ToolTipService.ToolTip="Copy Hex Code to Clipboard">
                                 <Button.Content>
                                     <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                 </Button.Content>

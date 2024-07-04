@@ -39,6 +39,10 @@ namespace ColorPaletteBuilder
 
           // Private Fields
           private string currentColorPickerHex = "#FFFFFFFF";
+          private string currentColorPickerHexNoAlpha = "#FFFFFF";
+          private string currentColorPickerRGB = "";
+          private string currentColorPickerCodeSnippet = "";
+
           private string defaultComboBoxText = "Any";
           private DispatcherTimer autoSaveTimer;
           private int autoSaveInterval = 1; // minutes
@@ -563,10 +567,73 @@ namespace ColorPaletteBuilder
           // ColorPicker Event Handlers
           private void CustomColorPicker_ColorChanged( ColorPicker sender, ColorChangedEventArgs args )
           {
-               if ( currentColorPickerHex != null )
+               if ( currentColorPickerHex != null)
                {
                     currentColorPickerHex = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: true);
                }
+               if ( currentColorPickerHexNoAlpha != null )
+               {
+                    currentColorPickerHexNoAlpha = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: false);
+               }
+               if(currentColorPickerRGB != null )
+               {
+                    currentColorPickerRGB = $"{args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}";
+               }
+               if(currentColorPickerCodeSnippet != null )
+               {
+                    //TODO: Settings will allow the desired snippet to be created and then use that to form the snippet with selected color
+                    currentColorPickerCodeSnippet = $"new SolidColorBrush(Color.FromArgb({args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}));";
+               }
+
+               TextBoxColorPickerHex.Text = currentColorPickerHex;
+               TextBoxColorPickerHexNoAlpha.Text = currentColorPickerHexNoAlpha;
+               TextBoxColorPickerRGB.Text = currentColorPickerRGB;
+               TextBoxColorPickerCodeSnippet.Text = currentColorPickerCodeSnippet;
+
+          }
+
+          private void CopyColorPickerHex_Click( object sender, RoutedEventArgs e )
+          {
+               var dataPackage = new DataPackage();
+               dataPackage.SetText(currentColorPickerHex);
+               Clipboard.SetContent(dataPackage);
+
+               TitleBarMessage.Text = "Copied Hex to Clipboard";
+               titleBarMessageTimer.Start();
+          }
+
+          private void CopyColorPickerHexNoAlpha_Click( object sender, RoutedEventArgs e )
+          {
+               var dataPackage = new DataPackage();
+               dataPackage.SetText(currentColorPickerHexNoAlpha);
+               Clipboard.SetContent(dataPackage);
+
+               TitleBarMessage.Text = "Copied Hex w/o Alpha to Clipboard";
+               titleBarMessageTimer.Start();
+          }
+
+          private void CopyColorPickerRGB_Click( object sender, RoutedEventArgs e )
+          {
+               var dataPackage = new DataPackage();
+               dataPackage.SetText(currentColorPickerRGB);
+               Clipboard.SetContent(dataPackage);
+
+               TitleBarMessage.Text = "Copied RGB to Clipboard";
+               titleBarMessageTimer.Start();
+          }
+
+          private void CopyColorPickerCodeSnippet_Click( object sender, RoutedEventArgs e )
+          {
+               //TODO: Get from settings which language is selected
+               //for now it is default C# code snippet
+               //TODO: this is set in CustomColorPicker ColorChanged event handler
+
+               var dataPackage = new DataPackage();
+               dataPackage.SetText(currentColorPickerCodeSnippet);
+               Clipboard.SetContent(dataPackage);
+
+               TitleBarMessage.Text = "Copied Code Snippet to Clipboard";
+               titleBarMessageTimer.Start();
           }
 
           // SettingsWindow Event Handlers
