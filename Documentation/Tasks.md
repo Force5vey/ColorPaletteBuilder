@@ -17,6 +17,10 @@
 - [ ] title bar message for the filter selections should be Filter: state & group so it would be Filter: Enabled & Any
 - [ ] Color Entry needs a note item
 - [ ] if the backup is loaded, ensure it asks to save to new file.
+- [ ] Hex code in hex entry of color entry needs checks to ensure it follows the hex pattern.
+  - [ ] might want override, or something similar if someone wants a custom color code saved.
+
+- [ ] assign and rotate the sendcolor same as assign color
 
 #### Settings Notes
 

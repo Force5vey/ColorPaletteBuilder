@@ -255,62 +255,39 @@
                             <!--                                                 COLOR CODE SHORTCUTS                                                  -->
                             <!-- ===================================================================================================================== -->
 
-                            <Button x:Name="btSetColorPicker" Margin="5,0,0,0" ToolTipService.ToolTip="Set Color Picker From Selection">
-                                <Button.Content>
-                                    <StackPanel Orientation="Vertical">
-                                        <SymbolIcon Symbol="Upload"/>
-                                        <!--<FontIcon Glyph="&#xe7eb;"/>-->
-                                        <TextBlock Text="Set"/>
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-
                             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Margin="0,25,0,0">
 
-                                <StackPanel>
-                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
-
-                                    <TextBox Text="Copy Hex w/ Alpha" Width="225" />
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBox Text="Copy Hex w/ Alpha" Width="275" />
                                     <Button Width="35" Height="30" Margin="5,0,0,0">
                                         <Button.Content>
-                                            <!--<SymbolIcon Symbol="Copy"/>-->
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
                                     </Button>
                                 </StackPanel>
 
-                                <StackPanel>
-                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
-
-                                    <TextBox Text="Copy Hex w/o Alpha;" Width="225" />
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBox Text="Copy Hex w/o Alpha;" Width="275" />
                                     <Button Width="35" Height="30" Margin="5,0,0,0">
                                         <Button.Content>
-                                            <!--<SymbolIcon Symbol="Copy"/>-->
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
                                     </Button>
                                 </StackPanel>
 
-                                <StackPanel>
-
-                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
-
-                                    <TextBox Text="Copy RGB" Width="225" />
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBox Text="Copy RGB" Width="275" />
                                     <Button Width="35" Height="30" Margin="5,0,0,0">
                                         <Button.Content>
-                                            <!--<SymbolIcon Symbol="Copy"/>-->
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
                                     </Button>
                                 </StackPanel>
 
-                                <StackPanel>
-                                    <TextBlock Text="Snippet:" Margin="0,7,10,0"/>
-
-                                    <TextBox Text="Color.FromRGB(1,2,3,4);" Width="225" />
+                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBox Text="Color.FromRGB(1,2,3,4);" Width="275" />
                                     <Button Width="35" Height="30" Margin="5,0,0,0">
                                         <Button.Content>
-                                            <!--<SymbolIcon Symbol="Copy"/>-->
                                             <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                         </Button.Content>
                                     </Button>
@@ -345,7 +322,7 @@
 
                 <Button x:Name="RemoveStateButton" Margin="0,25,2,0" Height="30">
                     <Button.Content>
-                        <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
+                        <FontIcon Glyph="&#xe74d;" FontSize="10" Margin="0"/>
                     </Button.Content>
                     <Button.Flyout>
                         <Flyout x:Name="RemoveStateFlyout">
@@ -381,7 +358,7 @@
 
                 <Button x:Name="RemoveGroupButton" Margin="0,25,2,0" Height="30">
                     <Button.Content>
-                        <FontIcon Glyph="&#xe738;" FontSize="10" Margin="0"/>
+                        <FontIcon Glyph="&#xe74d;" FontSize="10" Margin="0"/>
                     </Button.Content>
                     <Button.Flyout>
                         <Flyout x:Name="RemoveGroupFlyout">
@@ -415,21 +392,9 @@
             <!-- ===================================================================================================================== -->
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Grid.Row="1" Grid.Column="1">
+                        Grid.Row="1" Grid.Column="1" Margin="0,10,0,10">
 
-                <ToggleSwitch x:Name="IsAssignButtonEnabled" Margin="20,0,0,0"
-                          Loaded="IsAssignButtonEnabled_Loaded"
-                          Toggled="IsColorAssign_Toggle">
-                    <ToggleSwitch.OffContent>
-                        <FontIcon Glyph="&#xe72e;"/>
-                    </ToggleSwitch.OffContent>
-                    <ToggleSwitch.OnContent>
-                        <FontIcon Glyph="&#xe785;"/>
-                    </ToggleSwitch.OnContent>
-                </ToggleSwitch>
-
-
-                <TextBlock Text="Filter:" Margin="-50,11,0,0"/>
+                <TextBlock Text="Filter:" Margin="10,11,10,0"/>
                 <Button x:Name="refreshFilterButton" Content="Apply"  Click="RefreshFilterButton_Click" Margin="0,0,0,0"/>
                 <Button x:Name="ClearFilterButton" Content="Clear" Margin="5,0,0,0" Click="ClearFilterButton_Click"/>
 
@@ -446,36 +411,51 @@
                     <DataTemplate x:DataType="local:ColorEntry">
                         <Grid Padding="10">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button x:Name="AssignColorButton" Grid.Column="0" Click="AssignColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Assign Currently Selected Color"
-                                    Width="35" Height="30" Margin="15,0,0,0" IsEnabled="{x:Bind IsColorAssignEnabled}">
+                            <Button x:Name="SendColorButton" Grid.Column="1" Click="SendColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Set to color picker"
+                                    Width="35" Height="30" Margin="15,0,0,0">
                                 <Button.Content>
-                                    <FontIcon Glyph="&#xe7fd;" FontSize="16"/>
+                                    <FontIcon Glyph="&#xe7fd;" FontSize="20" Margin="15,18,0,0">
+                                        <FontIcon.RenderTransform>
+                                            <RotateTransform Angle="180"/>
+                                        </FontIcon.RenderTransform>
+                                    </FontIcon>
                                 </Button.Content>
                             </Button>
 
-                            <Button Grid.Column="1" Style="{StaticResource CustomButtonStyle}" Background="{Binding HexCode, Converter={StaticResource HexToBrushConverter}}"
+                            <Button x:Name="AssignColorButton" Grid.Column="1" Click="AssignColor_Click" VerticalAlignment="Center" ToolTipService.ToolTip="Assign Currently Selected Color"
+                                    Width="35" Height="30" Margin="0,0,0,0">
+                                <Button.Content>
+                                    <FontIcon Glyph="&#xe7fd;" FontSize="20" Margin="2,0,0,0"/>
+                                </Button.Content>
+                            </Button>
+
+                            <Button Grid.Column="2" Style="{StaticResource CustomButtonStyle}" Background="{Binding HexCode, Converter={StaticResource HexToBrushConverter}}"
                                     Click="CopyHexCode_Click" VerticalAlignment="Center" Width="40" Height="30" Margin="0,0,10,0" ToolTipService.ToolTip="Copy Hex Code to Clipboard">
                                 <Button.Content>
                                     <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
                                 </Button.Content>
                             </Button>
 
-                            <TextBox Grid.Column="2" Text="{x:Bind ElementName, Mode=TwoWay}" VerticalAlignment="Center" TextWrapping="Wrap" Width="200" ToolTipService.ToolTip="Name of the Element" />
-                            <ComboBox Grid.Column="3" SelectedItem="{x:Bind ElementState, Mode=TwoWay}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                            <TextBox Grid.Column="3" Text="{x:Bind ElementName, Mode=TwoWay}" VerticalAlignment="Center" TextWrapping="Wrap" Width="200" ToolTipService.ToolTip="Name of the Element" />
+                            <ComboBox Grid.Column="4" SelectedItem="{x:Bind ElementState, Mode=TwoWay}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
                                       Loaded="ElementStateComboBox_Loaded" ToolTipService.ToolTip="Select an Element State for the Element"/>
 
-                            <ComboBox Grid.Column="4" SelectedItem="{x:Bind ElementGroup, Mode=TwoWay}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
+                            <ComboBox Grid.Column="5" SelectedItem="{x:Bind ElementGroup, Mode=TwoWay}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
                                       Loaded="ElementGroupComboBox_Loaded" ToolTipService.ToolTip="Select a Group or Layer for the Color Element"/>
 
-                            <TextBox Grid.Column="5" Text="{x:Bind HexCode, Mode=TwoWay}" VerticalAlignment="Center" Width="115" ToolTipService.ToolTip="Either a 6 or 8 digit Hexidecimal Code"/>
+                            <TextBox Grid.Column="6" Text="{x:Bind HexCode, Mode=TwoWay}" VerticalAlignment="Center" Width="115" ToolTipService.ToolTip="Either a 6 or 8 digit Hexidecimal Code"/>
+
+                            <TextBox Grid.Column="7" Text="{x:Bind Note, Mode=TwoWay}" VerticalAlignment="Center" ToolTipService.ToolTip="Custom Note for this Color Entry" Margin="5,0,0,0"/>
 
                         </Grid>
                     </DataTemplate>
