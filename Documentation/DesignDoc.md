@@ -1,14 +1,12 @@
-# Color Palette Builder
+# Design Document for Color Palette Builder
 
-### Force5 Development
-
-## Design Document
+------
 
 ## 1. Introduction
 
 ### Purpose
 
-The purpose of the Color Palette Builder application is to provide designers, artists, and developers with a versatile tool to select, store, log, and organize colors. Users can categorize colors by customizable names, states (Category 1), and groups (Category 2). This tool is intended to work independently of major photo editing software, offering a seamless way to manage and retrieve color palettes for various projects. It simplifies the process of transferring color codes to other applications via the clipboard.
+The purpose of the Color Palette Builder application is to provide designers, artists, and developers with a versatile tool to select, store, log, and organize colors. Users can categorize colors by customizable names, states, and groups. This tool is intended to work independently of major photo editing software, offering a seamless way to manage and retrieve color palettes for various projects. It simplifies the process of transferring color codes to other applications via the clipboard.
 
 ### Target Audience
 
@@ -80,11 +78,16 @@ The target audience for this application includes:
   csharpCopy codepublic class ColorEntry : INotifyPropertyChanged
   {
       public Guid Id { get; set; }
+      public int ElementIndex { get; set; }
       public string ElementName { get; set; }
       public string ElementState { get; set; }
       public string ElementGroup { get; set; }
       public string HexCode { get; set; }
-      public bool IsColorAssignEnabled { get; set; }
+      public string DisplayColor { get; set; }
+      public string ChangeColor { get; set; }
+      public string SendColor { get; set; }
+      public string Note { get; set; }
+      public event PropertyChangedEventHandler PropertyChanged;
       // Additional properties and methods...
   }
   ```
@@ -99,6 +102,9 @@ The target audience for this application includes:
       public ObservableCollection<string> ElementStates { get; set; }
       public ObservableCollection<string> ElementGroups { get; set; }
       public ObservableCollection<ColorEntry> ColorEntries { get; set; }
+      public ObservableCollection<ColorEntry> FilteredColorEntries { get; set; }
+      public string FileHeader { get; set; }
+      public event PropertyChangedEventHandler PropertyChanged;
       // Additional properties and methods...
   }
   ```
@@ -114,12 +120,18 @@ The target audience for this application includes:
   - Handles application launch and theme setting.
 - **MainWindow.xaml.cs**:
   - Manages the main window, including event handlers and methods for file operations, color management, and UI updates.
+  - Includes methods to filter and sort color entries, handle clipboard operations, and manage the state of the color palette.
 - **SettingsWindow.xaml.cs**:
   - Handles the settings window initialization and user interactions.
+  - Manages window size constraints and settings saving.
 - **FileService.cs**:
   - Provides methods for saving and loading color palettes in JSON format.
 - **ColorConverter.cs**, **DarkerHexConverter.cs**, **HexToBrushConverter.cs**:
   - Provide utility methods for color conversion and handling.
+- **BackupService.cs**:
+  - Handles backup functionality, including methods to save and load backups of the color palette.
+- **ColorSelectorProcessor.cs**:
+  - Manages color selection processing, including loading and converting images for use in the application.
 
 ## 7. Development and Contribution
 
@@ -131,17 +143,12 @@ The target audience for this application includes:
 
 ### Coding Standards and Guidelines
 
-- Naming Conventions
-
-  :
-
+- Naming Conventions:
   - Classes: PascalCase
   - Methods: PascalCase
   - Variables: camelCase
   - Constants: ALL_CAPS
-
 - **Commenting**: Use XML documentation comments for public members and methods.
-
 - **Error Handling**: Use try-catch blocks for error-prone operations, and log errors appropriately.
 
 ### Contribution Process
