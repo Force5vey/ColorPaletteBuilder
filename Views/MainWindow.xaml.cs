@@ -32,7 +32,6 @@ namespace ColorPaletteBuilder
           // Constants
           private const int mainWindowMinWidth = 800;
           private const int mainWindowMinHeight = 625;
-
           private enum SortCriteria
           {
                Index,
@@ -59,7 +58,7 @@ namespace ColorPaletteBuilder
           private string defaultComboBoxText = "Any";
           private SortCriteria activeSortCriteria = SortCriteria.Index;
           private bool isAscending = true;
-          
+
 
           // Timers and Miscellaneous
           private DispatcherTimer titleBarMessageTimer = new DispatcherTimer();
@@ -433,7 +432,7 @@ namespace ColorPaletteBuilder
 
           private void ResetSortButtons()
           {
-               FontIconSortElementIndex.Glyph = "\uE70D";
+               FontIconSortElementIndex.Glyph = "\uE70D"; // Down Arrow - default glyph
                FontIconSortElementName.Glyph = "\uE70D";
                FontIconSortElementState.Glyph = "\uE70D";
                FontIconSortElementGroup.Glyph = "\uE70D";
@@ -881,28 +880,17 @@ namespace ColorPaletteBuilder
           {
                ResetSortButtons();
 
-               if ( isAscending )
-               {
-                    sortIcon.Glyph = "\uE70E";
-               }
-               else
-               {
-                    sortIcon.Glyph = "\uE70D";
-               }
-
-               // If button 'criteria' is current, the swap, if it is not, then set it to the sending button criteria
                if ( activeSortCriteria == criteria )
                {
                     isAscending = !isAscending;
-                    //sortIcon.Glyph = "\uE70E";
                }
                else
                {
                     activeSortCriteria = criteria;
                     isAscending = true;
-                    sortIcon.Glyph = "\uE70E";
                }
 
+               sortIcon.Glyph = isAscending ? "\uE70E" : "\uE70D";
 
 
                var sortedEntries = new List<ColorEntry>(ColorPaletteData.FilteredColorEntries);

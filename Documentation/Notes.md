@@ -1,10 +1,16 @@
-﻿Current Crash error.
-
-something with custom button style for square button
-
-commented out, the border brush themeresource line.
-
-Major Issues:
+﻿Major Issues:
 
 ​	List View "flashes" when being refreshed. Very annoying on the eyes.
+
+XAML Errors
+
+Custom Button: Border Brush
+
+​	Theme Resource Line for Border Brush is commented out until further resolution.
+
+
+
+
+
+
 
