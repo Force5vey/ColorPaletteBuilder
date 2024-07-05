@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using System.Drawing.Text;
 using ColorPaletteBuilder.Services;
 using System.Diagnostics;
+using System.Data;
 
 
 namespace ColorPaletteBuilder
@@ -32,6 +33,16 @@ namespace ColorPaletteBuilder
           private const int mainWindowMinWidth = 800;
           private const int mainWindowMinHeight = 625;
 
+          private enum SortCriteria
+          {
+               Index,
+               Name,
+               State,
+               Group,
+               Color,
+               Note
+          }
+
           // Public Properties
           public ColorPalette ColorPaletteData { get; set; } = new ColorPalette();
           public string SelectedState { get; set; }
@@ -42,13 +53,19 @@ namespace ColorPaletteBuilder
           private string currentColorPickerHexNoAlpha = "#FFFFFF";
           private string currentColorPickerRGB = "";
           private string currentColorPickerCodeSnippet = "";
+          private int currentElementIndex = 0;
 
+          // Sort and Filter Fields
           private string defaultComboBoxText = "Any";
-          private DispatcherTimer autoSaveTimer;
-          private int autoSaveInterval = 1; // minutes
+          private SortCriteria activeSortCriteria = SortCriteria.Index;
+          private bool isAscending = true;
+          
 
           // Timers and Miscellaneous
           private DispatcherTimer titleBarMessageTimer = new DispatcherTimer();
+
+          private DispatcherTimer autoSaveTimer;
+          private int autoSaveInterval = 1; // minutes
 
           public MainWindow()
           {
@@ -70,14 +87,17 @@ namespace ColorPaletteBuilder
                // Window Size Configuration
                ConfigureWindowSize();
 
-               // Load last used values from previous session
-               LoadLastSession();
-
                // Data Binding Setup
                ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
 
                // Loading Last Session State
                LoadLastOpenedFile(); //TODO: Conduct checks for if the last file was an autosave backup file that isn't saved then load that
+
+               // Load last used values from previous session
+               LoadLastSession();
+
+               //Do a default Sort by Index
+               SortFilteredColorEntries(FontIconSortElementIndex, activeSortCriteria);
 
                // Miscellaneous
                titleBarMessageTimer.Interval = TimeSpan.FromSeconds(2);
@@ -225,11 +245,11 @@ namespace ColorPaletteBuilder
           {
                ColorEntry newEntry = new ColorEntry
                {
+                    ElementIndex = currentElementIndex++,
                     ElementName = "Name",
                     ElementGroup = ColorPaletteData.ElementGroups.FirstOrDefault(),
                     ElementState = ColorPaletteData.ElementStates.FirstOrDefault(),
                     HexCode = currentColorPickerHex
-
                };
 
                // TODO: Make user setting to add to top (0) or end (list Count)
@@ -411,9 +431,44 @@ namespace ColorPaletteBuilder
                ApplyFilter();
           }
 
+          private void ResetSortButtons()
+          {
+               FontIconSortElementIndex.Glyph = "\uE70D";
+               FontIconSortElementName.Glyph = "\uE70D";
+               FontIconSortElementState.Glyph = "\uE70D";
+               FontIconSortElementGroup.Glyph = "\uE70D";
+               FontIconSortColor.Glyph = "\uE70D";
+               FontIconSortNote.Glyph = "\uE70D";
+          }
+
+          private void ButtonSortElementIndex_Click( object sender, RoutedEventArgs e )
+          {
+               SortFilteredColorEntries(FontIconSortElementIndex, SortCriteria.Index);
+          }
+
           private void ButtonSortElementName_Click( object sender, RoutedEventArgs e )
           {
-               //TODO: Sort the Collection and Display in Listview
+               SortFilteredColorEntries(FontIconSortElementName, SortCriteria.Name);
+          }
+
+          private void ButtonSortElementState_Click( object sender, RoutedEventArgs e )
+          {
+               SortFilteredColorEntries(FontIconSortElementState, SortCriteria.State);
+          }
+
+          private void ButtonSortElementGroup_Click( object sender, RoutedEventArgs e )
+          {
+               SortFilteredColorEntries(FontIconSortElementGroup, SortCriteria.Group);
+          }
+
+          private void ButtonSortColor_Click( object sender, RoutedEventArgs e )
+          {
+               SortFilteredColorEntries(FontIconSortColor, SortCriteria.Color);
+          }
+
+          private void ButtonSortNote_Click( object sender, RoutedEventArgs e )
+          {
+               SortFilteredColorEntries(FontIconSortNote, SortCriteria.Note);
           }
 
           // Button Click Event Handlers - Color Selector Actions
@@ -755,6 +810,8 @@ namespace ColorPaletteBuilder
                               }
                          }
 
+                         currentElementIndex = ColorPaletteData.ColorEntries.Max(entry => entry.ElementIndex) + 1;
+
                          // force a rebind of the ListView to ensure it updates
                          ColorPaletteListView.ItemsSource = null;
                          ApplyFilter();
@@ -819,6 +876,96 @@ namespace ColorPaletteBuilder
                ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
 
           }
+
+          private void SortFilteredColorEntries( FontIcon sortIcon, SortCriteria criteria )
+          {
+               ResetSortButtons();
+
+               if ( isAscending )
+               {
+                    sortIcon.Glyph = "\uE70E";
+               }
+               else
+               {
+                    sortIcon.Glyph = "\uE70D";
+               }
+
+               // If button 'criteria' is current, the swap, if it is not, then set it to the sending button criteria
+               if ( activeSortCriteria == criteria )
+               {
+                    isAscending = !isAscending;
+                    //sortIcon.Glyph = "\uE70E";
+               }
+               else
+               {
+                    activeSortCriteria = criteria;
+                    isAscending = true;
+                    sortIcon.Glyph = "\uE70E";
+               }
+
+
+
+               var sortedEntries = new List<ColorEntry>(ColorPaletteData.FilteredColorEntries);
+
+               switch ( activeSortCriteria )
+               {
+                    case SortCriteria.Index:
+                    {
+                         sortedEntries = isAscending ?
+                              sortedEntries.OrderBy(entry => entry.ElementIndex).ToList() :
+                              sortedEntries.OrderByDescending(entry => entry.ElementIndex).ToList();
+                         break;
+                    }
+                    case SortCriteria.Name:
+                    {
+                         sortedEntries = isAscending ?
+                              sortedEntries.OrderBy(entry => entry.ElementName).ToList() :
+                              sortedEntries.OrderByDescending(entry => entry.ElementName).ToList();
+                         break;
+                    }
+                    case SortCriteria.State:
+                    {
+                         sortedEntries = isAscending ?
+                              sortedEntries.OrderBy(entry => entry.ElementState).ToList() :
+                              sortedEntries.OrderByDescending(entry => entry.ElementState).ToList();
+                         break;
+                    }
+                    case SortCriteria.Group:
+                    {
+                         sortedEntries = isAscending ?
+                              sortedEntries.OrderBy(entry => entry.ElementGroup).ToList() :
+                              sortedEntries.OrderByDescending(entry => entry.ElementGroup).ToList();
+                         break;
+                    }
+                    case SortCriteria.Color:
+                    {
+                         sortedEntries = isAscending ?
+                              sortedEntries.OrderBy(entry => entry.HexCode).ToList() :
+                              sortedEntries.OrderByDescending(entry => entry.HexCode).ToList();
+                         break;
+                    }
+                    case SortCriteria.Note:
+                    {
+                         sortedEntries = isAscending ?
+                              sortedEntries.OrderBy(entry => entry.Note).ToList() :
+                              sortedEntries.OrderByDescending(entry => entry.Note).ToList();
+                         break;
+                    }
+               }
+
+               //Clear and update existing
+               ClearFilteredColorEntries();
+
+               foreach ( var entry in sortedEntries )
+               {
+                    ColorPaletteData.FilteredColorEntries.Add(entry);
+               }
+
+               ColorPaletteListView.ItemsSource = null;
+               ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
+
+          }
+
           private void StartColorSelector()
           {
                if ( App.colorSelectorBitmap == null )

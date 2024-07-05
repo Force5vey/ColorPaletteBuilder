@@ -19,6 +19,7 @@
   - [ ] might want override, or something similar if someone wants a custom color code saved.
 
 - [ ] review auto save and save on close, some scenarios does not ask to save as etc.
+- [x] List viewer scroll viewer (currently built in one) needs to get transitioned to a standalone to incorporate the header buttons for sorting.
 
 #### Settings Notes
 
@@ -27,7 +28,7 @@
 - [ ] Color format preference sets what is saved in the color code entry
   - [ ] allow to tick off the hashtag for hex copy
 
-- [ ] 
+- [ ] User setting for turning on / off word wrap in name or note in the listview
 
 #### Features Notes
 
@@ -40,6 +41,8 @@
 - [ ] Paste from clipboard, from say a screen shot.
 - [ ] opposite of the assign current to existing color button, do an assign to the color picker the color from the color entry.
   - [ ] This is so if you want to adjust slightly the saved color it can auto set the color picker, make the slight adjustment, then reassign.
+- [ ] Sort by hex, needs user settings for sort method. Light to dark, group colors, need to look up possible sorting options.
+- [ ] Saved color code (currently hex with alpha) should be a user setting so the string value will be hex, hex w/ alpha, hsv, rgb, etc.
 
 
 

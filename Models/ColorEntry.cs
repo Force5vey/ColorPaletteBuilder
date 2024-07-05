@@ -13,6 +13,7 @@ namespace ColorPaletteBuilder
      {
           private Guid id;
 
+          private int elementIndex; // This will be static to the order it was added to the color palette.
           private string elementName;
           private string elementState;
           private string elementGroup;
@@ -26,6 +27,12 @@ namespace ColorPaletteBuilder
           {
                get => id;
                set => SetProperty(ref id, value);
+          }
+
+          public int ElementIndex
+          {
+               get => elementIndex;
+               set => SetProperty(ref elementIndex, value);
           }
 
           public string ElementName
