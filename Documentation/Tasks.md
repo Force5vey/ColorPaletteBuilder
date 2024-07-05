@@ -15,6 +15,7 @@
 - **Backup file handling**: Ensure the application prompts to save as a new file if a backup is loaded.
 - **Hex code validation**: Ensure the hex code in color entries follows the proper pattern, with an option to override if necessary.
 - **Review auto-save and save on close**: Address scenarios where saving prompts are inconsistent.
+- ColorPicker needs a clear image button
 
 #### Settings Notes
 

@@ -16,6 +16,7 @@ using System.Drawing.Text;
 using ColorPaletteBuilder.Services;
 using System.Diagnostics;
 using System.Data;
+using System.IO;
 
 
 namespace ColorPaletteBuilder
@@ -501,18 +502,9 @@ namespace ColorPaletteBuilder
                     var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                     localSettings.Values["LastOpenedFilePath"] = file.Path;
 
-                    // Load the image into a WriteableBitmap
-                    using ( IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read) )
-                    {
-                         BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
-                         WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                         await bitmap.SetSourceAsync(fileStream);
+                    LoadThumbNailImage(file.Path);
 
-                         // Save the WriteableBitmap to the static colorSelectorBitmap variable
-                         App.colorSelectorBitmap = bitmap;
-                    }
-
-                    ColorSelectorSource.Text = file.Name;
+                    ColorPaletteData.ColorSelectorSource = file.Path;
                }
           }
 
@@ -539,9 +531,8 @@ namespace ColorPaletteBuilder
                                    await bitmap.SetSourceAsync(fileStream);
 
                                    // Save the WriteableBitmap to the static colorSelectorBitmap variable
-                                   App.colorSelectorBitmap = bitmap;
-
-                                   ColorSelectorSource.Text = storageFile.Name;
+                                   App.ColorSelectorBitmap = bitmap;
+                                   ColorPaletteData.ColorSelectorSource = storageFile.Path;
 
                                    TitleBarMessage.Text = $"Image dropped: {storageFile.Name}";
                                    titleBarMessageTimer.Start();
@@ -580,10 +571,9 @@ namespace ColorPaletteBuilder
                                    await writeableBitmap.SetSourceAsync(stream);
 
                                    // Assign the WriteableBitmap to the static variable
-                                   App.colorSelectorBitmap = writeableBitmap;
+                                   App.ColorSelectorBitmap = writeableBitmap;
 
                                    // Update the UI
-                                   ColorSelectorSource.Text = "Pasted Image";
                                    TitleBarMessage.Text = "Image pasted from clipboard.";
                                    titleBarMessageTimer.Start();
                               }
@@ -763,15 +753,16 @@ namespace ColorPaletteBuilder
           {
                ColorPaletteData.FilteredColorEntries.Clear();
           }
-          private void LoadLastOpenedFile()
+          private async Task LoadLastOpenedFile()
           {
                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                if ( localSettings.Values.TryGetValue("LastOpenedFilePath", out object filePath) )
                {
                     string lastOpenedFilePath = filePath as string;
-                    if ( !string.IsNullOrEmpty(lastOpenedFilePath) )
+                    if ( !string.IsNullOrEmpty(lastOpenedFilePath) && File.Exists(lastOpenedFilePath) )
                     {
-                         LoadPaletteFromFile(lastOpenedFilePath);
+                         await LoadPaletteFromFile(lastOpenedFilePath);
+                         LoadThumbNailImage(lastOpenedFilePath);
                     }
                }
           }
@@ -787,6 +778,9 @@ namespace ColorPaletteBuilder
 
                          ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
                          ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+                         ColorPaletteData.ColorSelectorSource = colorPalette.ColorSelectorSource;
+
+                         LoadThumbNailImage(colorPalette.ColorSelectorSource);
 
                          TitleBarFileName.Text = ColorPaletteData.ColorPaletteName;
 
@@ -824,6 +818,35 @@ namespace ColorPaletteBuilder
                {
                     //TODO: Handle errors
                     return -1;
+               }
+          }
+
+          private async void LoadThumbNailImage( string imagePath )
+          {
+               try
+               {
+                    if ( File.Exists(imagePath) )
+                    {
+                         using ( IRandomAccessStream fileStream = await StorageFile.GetFileFromPathAsync(imagePath).AsTask().Result.OpenAsync(FileAccessMode.Read) )
+                         {
+                              BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
+                              WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                              await bitmap.SetSourceAsync(fileStream);
+
+                              // Set the properties
+                              App.ColorSelectorBitmap = bitmap;
+                              ColorSelectorImage.Source = App.ColorSelectorBitmap;
+                         }
+                    }
+                    else
+                    {
+                         Debug.WriteLine($"File does not exist: {imagePath}");
+                    }
+               }
+               catch ( Exception ex )
+               {
+                    Debug.WriteLine($"Error loading thumbnail image: {ex.Message}");
+                    Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                }
           }
 
@@ -956,9 +979,9 @@ namespace ColorPaletteBuilder
 
           private void StartColorSelector()
           {
-               if ( App.colorSelectorBitmap == null )
+               if ( App.ColorSelectorBitmap == null )
                {
-                    App.colorSelectorBitmap = ColorSelectorProcessor.GetBitmap();
+                    App.ColorSelectorBitmap = ColorSelectorProcessor.GetBitmap();
                }
 
                if ( colorSelectorWindow == null )

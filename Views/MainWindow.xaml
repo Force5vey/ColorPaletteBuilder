@@ -177,14 +177,11 @@
                     </Button.Content>
                 </Button>
 
-                <!-- Color Selector Image Path -->
-                <StackPanel>
-                    <TextBlock Text="Drag and Drop Image:" Margin="15,-5,0,5"/>
-                    <TextBox x:Name="ColorSelectorSource" Width="150" Height="25" Margin="10,0,0,0"
-                             Text="" IsReadOnly="True" AllowDrop="True" 
-                             DragOver="ColorSelectorSource_DragOver" 
-                             Drop="ColorSelectorSource_Drop"
-                             Paste="ColorSelectorSource_Paste"/>
+                <!-- Color Selector Image Thumbnail -->
+                <StackPanel AllowDrop="True" Drop="ColorSelectorSource_Drop">
+                    <TextBlock Text="Drop Image:" Margin="15,-5,0,5"/>
+                    <Image x:Name="ColorSelectorImage" Width="100" Height="100" Margin="15,0,0,0"
+                           Source="{Binding ColorSelectorSourceImage}"/>
                 </StackPanel>
             </StackPanel>
 

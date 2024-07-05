@@ -15,6 +15,7 @@ namespace ColorPaletteBuilder
           private ObservableCollection<string> elementGroups;
           private ObservableCollection<ColorEntry> colorEntries;
           private ObservableCollection<ColorEntry> filteredColorEntries;
+          private string _colorSelectorSource;
 
           public ColorPalette()
           {
@@ -31,6 +32,12 @@ namespace ColorPaletteBuilder
 
 
           public string FileHeader { get; set; }
+
+          public string ColorSelectorSource
+          {
+               get => _colorSelectorSource;
+               set => SetProperty(ref _colorSelectorSource, value);
+          }
 
           public string ColorPaletteName
           {

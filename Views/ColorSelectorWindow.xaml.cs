@@ -36,7 +36,7 @@ namespace ColorPaletteBuilder
 
             ExtendsContentIntoTitleBar = true;
 
-            ScreenshotImage.Source = App.colorSelectorBitmap;
+            ScreenshotImage.Source = App.ColorSelectorBitmap;
 
         }
 
@@ -84,10 +84,10 @@ namespace ColorPaletteBuilder
 
         private Color GetColorAtPosition(int x, int y)
         {
-            using (Stream pixelStream = App.colorSelectorBitmap.PixelBuffer.AsStream())
+            using (Stream pixelStream = App.ColorSelectorBitmap.PixelBuffer.AsStream())
             {
                 byte[] pixels = new byte[4]; //BGRA format
-                int widthInBytes = 4 * App.colorSelectorBitmap.PixelWidth;
+                int widthInBytes = 4 * App.ColorSelectorBitmap.PixelWidth;
 
                 pixelStream.Seek(y * widthInBytes + x * 4, SeekOrigin.Begin);
                 pixelStream.Read(pixels, 0, 4);
