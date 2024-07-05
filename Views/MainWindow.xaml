@@ -383,6 +383,24 @@
 
 
 
+                        <Button x:Name="refreshFilterButton" Content="Apply"  Click="RefreshFilterButton_Click" Margin="10,25,0,0"/>
+                        <Button x:Name="ClearFilterButton" Content="Clear" Margin="5,25,0,0" Click="ClearFilterButton_Click"/>
+
+                   
+
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
+                <Button x:Name="ButtonSortElementName" Click="ButtonSortElementName_Click">
+                    Margin="155,10,0,0" Height="25">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="ElementName" FontSize="11" Margin="0,-2,95,0"/>
+                            <FontIcon Glyph="&#xe70d;" FontSize="10"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
             </StackPanel>
 
 
@@ -391,14 +409,7 @@
             <!--                                                 LISTVIEW OPTIONS ROW                                                  -->
             <!-- ===================================================================================================================== -->
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Grid.Row="1" Grid.Column="1" Margin="0,10,0,10">
 
-                <TextBlock Text="Filter:" Margin="10,11,10,0"/>
-                <Button x:Name="refreshFilterButton" Content="Apply"  Click="RefreshFilterButton_Click" Margin="0,0,0,0"/>
-                <Button x:Name="ClearFilterButton" Content="Clear" Margin="5,0,0,0" Click="ClearFilterButton_Click"/>
-
-            </StackPanel>
 
             <!-- ===================================================================================================================== -->
             <!--                                                       LISTVIEW                                                        -->

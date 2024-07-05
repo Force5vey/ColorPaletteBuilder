@@ -70,6 +70,9 @@ namespace ColorPaletteBuilder
                // Window Size Configuration
                ConfigureWindowSize();
 
+               // Load last used values from previous session
+               LoadLastSession();
+
                // Data Binding Setup
                ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
 
@@ -85,6 +88,8 @@ namespace ColorPaletteBuilder
                Debug.WriteLine($"Local Folder Path: {localFolderPath}");
           }
 
+
+          // Initialization Methods
           private void ConfigureWindowSize()
           {
                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
@@ -99,6 +104,16 @@ namespace ColorPaletteBuilder
                {
                     // Just assign a default size if there is an error.
                     this.AppWindow.Resize(new Windows.Graphics.SizeInt32(mainWindowMinWidth, mainWindowMinHeight));
+               }
+          }
+
+          private void LoadLastSession()
+          {
+               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+               if ( localSettings.Values.TryGetValue("LastColorPickerHex", out object lastColorPickerHex) )
+               {
+                    currentColorPickerHex = lastColorPickerHex as string;
+                    CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(ColorConverter.FromHex(currentColorPickerHex));
                }
           }
 
@@ -131,10 +146,15 @@ namespace ColorPaletteBuilder
                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                localSettings.Values["WindowWidth"] = this.AppWindow.Size.Width;
                localSettings.Values["WindowHeight"] = this.AppWindow.Size.Height;
+               localSettings.Values["LastColorPickerHex"] = currentColorPickerHex;
 
                if ( settingsWindow != null )
                {
                     settingsWindow.Close();
+               }
+               if ( colorSelectorWindow != null )
+               {
+                    colorSelectorWindow.Close();
                }
           }
 
@@ -377,7 +397,7 @@ namespace ColorPaletteBuilder
                RemoveGroupFlyout.Hide();
           }
 
-          // Button Click Event Handlers - Filters Management
+          // Button Click Event Handlers - Filters and Sorting
           private void ClearFilterButton_Click( object sender, RoutedEventArgs e )
           {
                comboElementStates.SelectedItem = defaultComboBoxText;
@@ -389,6 +409,11 @@ namespace ColorPaletteBuilder
           private void RefreshFilterButton_Click( object sender, RoutedEventArgs e )
           {
                ApplyFilter();
+          }
+
+          private void ButtonSortElementName_Click( object sender, RoutedEventArgs e )
+          {
+               //TODO: Sort the Collection and Display in Listview
           }
 
           // Button Click Event Handlers - Color Selector Actions
@@ -567,7 +592,7 @@ namespace ColorPaletteBuilder
           // ColorPicker Event Handlers
           private void CustomColorPicker_ColorChanged( ColorPicker sender, ColorChangedEventArgs args )
           {
-               if ( currentColorPickerHex != null)
+               if ( currentColorPickerHex != null )
                {
                     currentColorPickerHex = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: true);
                }
@@ -575,11 +600,11 @@ namespace ColorPaletteBuilder
                {
                     currentColorPickerHexNoAlpha = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: false);
                }
-               if(currentColorPickerRGB != null )
+               if ( currentColorPickerRGB != null )
                {
                     currentColorPickerRGB = $"{args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}";
                }
-               if(currentColorPickerCodeSnippet != null )
+               if ( currentColorPickerCodeSnippet != null )
                {
                     //TODO: Settings will allow the desired snippet to be created and then use that to form the snippet with selected color
                     currentColorPickerCodeSnippet = $"new SolidColorBrush(Color.FromArgb({args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}));";

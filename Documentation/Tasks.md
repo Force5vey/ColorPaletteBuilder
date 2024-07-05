@@ -3,7 +3,7 @@
 ### Main Page Features
 
 #### General Notes
-- [ ] Auto-copy buttons below color picker
+- [x] Auto-copy buttons below color picker
 - [ ] update the title bar file name if a palette is saved as and other scenarios.
 - [ ] fix the lock toggle, so it stays accurate.
   - [ ] with undo implemented, rethink needing this lock.
@@ -47,37 +47,36 @@
 
 
 #### Color Picker Integration
-- [ ] Implement the color picker and ensure it updates the current color entry.
-- [ ] Ensure the color picker supports RGB, Hex, and RGBA formats.
-- [ ] Add buttons for copying color values in different formats.
+- [x] Implement the color picker and ensure it updates the current color entry.
+- [x] Ensure the color picker supports RGB, Hex, and RGBA formats.
+- [x] Add buttons for copying color values in different formats.
 
 #### Color Palette Management
-- [ ] Implement functionality to add, remove, and edit color entries.
-- [ ] Enable saving and loading color palettes from files.
-- [ ] Implement auto-save functionality with user-defined intervals.
+- [x] Implement functionality to add, remove, and edit color entries.
+- [x] Enable saving and loading color palettes from files.
+- [x] Implement auto-save functionality with user-defined intervals.
 
 #### Element Groups and States
-- [ ] Allow users to create and manage element groups and states.
-- [ ] Ensure ComboBoxes for element groups and states are properly populated and editable.
+- [x] Allow users to create and manage element groups and states.
+- [x] Ensure ComboBoxes for element groups and states are properly populated and editable.
 
 #### ListView Item Interaction
-- [ ] Implement functionality to copy hex codes to clipboard.
-- [ ] Add the ability to assign the current color to a color entry.
-- [ ] Ensure ListView updates appropriately when color entries are modified.
+- [x] Implement functionality to copy hex codes to clipboard.
+- [x] Add the ability to assign the current color to a color entry.
+- [x] Ensure ListView updates appropriately when color entries are modified.
 
 ### Settings Window
-- [ ] Create a settings window to manage application settings.
+- [x] Create a settings window to manage application settings.
 - [ ] Ensure the settings window is modal and blocks interaction with the main window.
 - [ ] Add functionality to save and load settings.
 
 ### Screen Color Picker
-- [ ] Implement an eye-dropper tool to pick colors from the screen.
-- [ ] Ensure the tool works across different displays and resolutions.
+- [x] Implement an eye-dropper tool to pick colors from the screen.
+- [x] Ensure the tool works across different displays and resolutions.
 
 ### User Interface Enhancements
 - [ ] Implement an adaptive layout for different screen sizes and resolutions.
 - [ ] Add tooltips for all interactive elements.
-- [ ] Ensure accessibility features such as keyboard navigation and screen reader support.
 
 ### Additional Features for Usability and Customization
 
