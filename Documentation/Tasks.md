@@ -15,11 +15,15 @@
 - **Backup file handling**: Ensure the application prompts to save as a new file if a backup is loaded.
 - **Hex code validation**: Ensure the hex code in color entries follows the proper pattern, with an option to override if necessary.
 - **Review auto-save and save on close**: Address scenarios where saving prompts are inconsistent.
-- ColorPicker needs a clear image button
+- *complete* ColorPicker needs a clear image button
 - Color hex codes button shortcuts need a user settings option to decide if it includes the hashtag or not --- double clicking to highight and paste over works better without including the hashtag.
 - Auto-save doesn't seem to be triggering. noticed case: app loads and loads last file. doesn't trigger it.
   - Ok, so it is triggered, its just that it is only saving the backupfile. This can be reviewed because it autosaves a backup but not the current file an this could be beneficial to give the option to make a bunch of changes, do a save as, and preserve the original file from when it was last saved. think of MS Word, and it autosaves all the time and then when you realized you wanted to keep the original and save a copy it is messd up from the autosave.
 
+- clearing colorselector doesn't update the color selector window
+  - maybe it should be clear and close
+
+- Clicking new, then adding and then saving doesn't set the title bar to the file name.
 
 #### Settings Notes
 
