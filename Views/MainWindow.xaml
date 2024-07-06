@@ -178,22 +178,41 @@
                 </Button>
 
                 <!-- Color Selector Image Thumbnail -->
-                <StackPanel AllowDrop="True" Drop="ColorSelectorSource_Drop">
-                    <TextBlock Text="Drop Image:" Margin="15,-5,0,5"/>
-                    <Image x:Name="ColorSelectorImage" Width="100" Height="100" Margin="15,0,0,0"
-                           Source="{Binding ColorSelectorSourceImage}"/>
+                <StackPanel Margin="10,-25,0,0">
+                    <TextBlock Text="Drop Image:" Margin="15,-20,0,5"/>
+                    <Image x:Name="ColorSelectorImage" Width="100" Height="75" Margin="15,0,0,0" MinWidth="100" MinHeight="75"
+                           Source="{Binding ColorSelectorSourceImage}"
+                               AllowDrop="True" Drop="ColorSelectorSource_Drop" DragOver="ColorSelectorSource_DragOver" PointerPressed="ColorSelectorSource_PointerPressed"/>
                 </StackPanel>
             </StackPanel>
 
 
             <!-- Color Selector - Select Image Picker -->
-
-            <Button x:Name="ColorSelectorLoadImageButton" Height="50" Width="25" Margin="5,0,0,0"
+            <Button x:Name="ColorSelectorLoadImageButton" Height="50" Width="25" Margin="10,0,0,0"
                     Click="BrowseColorSelectorPhoto_Click" ToolTipService.ToolTip="Browse for Image">
                 <Button.Content>
                     <FontIcon Glyph="&#xe898;" FontSize="12" Margin="-5"/>
                 </Button.Content>
             </Button>
+
+            <!-- Color Selector - Clear Color Selector Source -->
+            <Button x:Name="ColorSelectorClearImageButton" Margin="5,0,0,0"
+        Click="ColorSelectorClearImage_Click" ToolTipService.ToolTip="Clear Color Selector Image">
+                <Button.Content>
+                    <!--<FontIcon Glyph="&#xe898;" FontSize="12" Margin="-5"/>-->
+                    <StackPanel>
+                        <SymbolIcon Symbol="ClearSelection" Margin="-5,0,0,0"/>
+                        <TextBlock Text="Clear"/>
+                    </StackPanel>
+
+                </Button.Content>
+            </Button>
+
+            <!--  Separator -->
+            <StackPanel Orientation="Vertical" Background="#FF161717" Margin="10,10,0,15">
+                <TextBlock Width="2"/>
+            </StackPanel>
+            <!--  Separator -->
 
         </StackPanel>
 

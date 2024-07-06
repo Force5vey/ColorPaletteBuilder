@@ -22,117 +22,150 @@ using System.ComponentModel;
 
 namespace ColorPaletteBuilder
 {
-    /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class ColorSelectorWindow : Window
-    {
+     /// <summary>
+     /// An empty window that can be used on its own or navigated to within a Frame.
+     /// </summary>
+     public sealed partial class ColorSelectorWindow :Window
+     {
+          private MainWindow _mainWindow;
 
-        public event EventHandler DataSelected;
+          public event EventHandler DataSelected;
 
-        public ColorSelectorWindow()
-        {
-            this.InitializeComponent();
+          public ColorSelectorWindow( MainWindow mainWindow )
+          {
+               this.InitializeComponent();
 
-            ExtendsContentIntoTitleBar = true;
+               _mainWindow = mainWindow;
 
-            ScreenshotImage.Source = App.ColorSelectorBitmap;
+               _mainWindow.SetColorSelectorImage += OnImageUpdated;
 
-        }
+               ExtendsContentIntoTitleBar = true;
 
-        private InputCursor? OriginalInputCursor { get; set; }
+               ScreenshotImage.Source = App.ColorSelectorBitmap;
 
-        private void CustomGrid_PointerEntered(object sender, PointerRoutedEventArgs e)
-        {
-            OriginalInputCursor = this.CustomGrid.InputCursor ?? InputSystemCursor.Create(InputSystemCursorShape.Arrow);
-            this.CustomGrid.InputCursor = InputSystemCursor.Create(InputSystemCursorShape.Cross);
+               this.Closed += ColorSelectorWindow_Closed;
 
-        }
+               LoadWindowSizeAndLocation();
+          }
 
-        private void CustomGrid_PointerExited(object sender, PointerRoutedEventArgs e)
-        {
-            if (OriginalInputCursor != null)
-            {
-                //this.CustomGrid.InputCursor = OriginalInputCursor;
-            }
-        }
+          private void ColorSelectorWindow_Closed( object sender, WindowEventArgs args )
+          {
+               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+               localSettings.Values["ColorSelectorWindowWidth"] = this.AppWindow.Size.Width;
+               localSettings.Values["ColorSelectorWindowHeight"] = this.AppWindow.Size.Height;
+               localSettings.Values["ColorSelectorWindowLeft"] = this.AppWindow.Position.X;
+               localSettings.Values["ColorSelectorWindowTop"] = this.AppWindow.Position.Y;
 
-        private void ScreenShotImage_Clicked(object sender, PointerRoutedEventArgs e)
-        {
+               _mainWindow.SetColorSelectorImage -= OnImageUpdated;
+          }
 
-            if (ScreenshotImage.Source != null)
-            {
-                var position = e.GetCurrentPoint(ScreenshotImage).Position;
+          private void LoadWindowSizeAndLocation()
+          {
+               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+               if ( localSettings.Values.TryGetValue("ColorSelectorWindowWidth", out object width) &&
+                   localSettings.Values.TryGetValue("ColorSelectorWindowHeight", out object height) &&
+                   localSettings.Values.TryGetValue("ColorSelectorWindowLeft", out object left) &&
+                   localSettings.Values.TryGetValue("ColorSelectorWindowTop", out object top) )
+               {
+                    this.AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = (int)width, Height = (int)height });
+                    this.AppWindow.Move(new Windows.Graphics.PointInt32 { X = (int)left, Y = (int)top });
+               }
+          }
 
-                App.colorSelectorColor = GetColorAtPosition((int)position.X, (int)position.Y);
+          private void OnImageUpdated( object sender, EventArgs e )
+          {
+               ScreenshotImage.Source = App.ColorSelectorBitmap;
+          }
 
-                DataSelected?.Invoke(this, EventArgs.Empty);
-            }
+          private InputCursor? OriginalInputCursor { get; set; }
 
+          private void CustomGrid_PointerEntered( object sender, PointerRoutedEventArgs e )
+          {
+               OriginalInputCursor = this.CustomGrid.InputCursor ?? InputSystemCursor.Create(InputSystemCursorShape.Arrow);
+               this.CustomGrid.InputCursor = InputSystemCursor.Create(InputSystemCursorShape.Cross);
 
-        }
+          }
 
-        private void ScreenShotImage_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            var position = e.GetCurrentPoint(ScreenshotImage).Position;
-            XCoord.Content = $"X: {position.X}";
-            YCoord.Content = $"Y: {position.Y}";
+          private void CustomGrid_PointerExited( object sender, PointerRoutedEventArgs e )
+          {
+               if ( OriginalInputCursor != null )
+               {
+                    //this.CustomGrid.InputCursor = OriginalInputCursor;
+               }
+          }
 
-            HoverColor.Background = ColorConverter.ConvertToSolidColorBrush(GetColorAtPosition((int)position.X, (int)position.Y));
-        }
+          private void ScreenShotImage_Clicked( object sender, PointerRoutedEventArgs e )
+          {
 
+               if ( ScreenshotImage.Source != null )
+               {
+                    var position = e.GetCurrentPoint(ScreenshotImage).Position;
 
-        private Color GetColorAtPosition(int x, int y)
-        {
-            using (Stream pixelStream = App.ColorSelectorBitmap.PixelBuffer.AsStream())
-            {
-                byte[] pixels = new byte[4]; //BGRA format
-                int widthInBytes = 4 * App.ColorSelectorBitmap.PixelWidth;
+                    App.colorSelectorColor = GetColorAtPosition((int)position.X, (int)position.Y);
 
-                pixelStream.Seek(y * widthInBytes + x * 4, SeekOrigin.Begin);
-                pixelStream.Read(pixels, 0, 4);
-
-                byte b = pixels[0];
-                byte g = pixels[1];
-                byte r = pixels[2];
-                byte a = pixels[3];
-
-                return Color.FromArgb(a, r, g, b);
-            }
-        }
-
-        private void ColorSelectorExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-
+                    DataSelected?.Invoke(this, EventArgs.Empty);
+               }
 
 
+          }
+
+          private void ScreenShotImage_PointerMoved( object sender, PointerRoutedEventArgs e )
+          {
+               var position = e.GetCurrentPoint(ScreenshotImage).Position;
+               XCoord.Content = $"X: {position.X}";
+               YCoord.Content = $"Y: {position.Y}";
+
+               HoverColor.Background = ColorConverter.ConvertToSolidColorBrush(GetColorAtPosition((int)position.X, (int)position.Y));
+          }
 
 
-        private void DisplayImage_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
-        {
-            var scale = e.Delta.Scale;
-            var newZoomFactor = ImageScrollViewer.ZoomFactor * scale;
-            if (newZoomFactor >= ImageScrollViewer.MinZoomFactor && newZoomFactor <= ImageScrollViewer.MaxZoomFactor)
-            {
-                ImageScrollViewer.ChangeView(null, null, newZoomFactor);
-            }
-        }
+          private Color GetColorAtPosition( int x, int y )
+          {
+               using ( Stream pixelStream = App.ColorSelectorBitmap.PixelBuffer.AsStream() )
+               {
+                    byte[] pixels = new byte[4]; //BGRA format
+                    int widthInBytes = 4 * App.ColorSelectorBitmap.PixelWidth;
 
-        private void ImageScrollViewer_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-        {
-            var pointerPosition = e.GetPosition(ScreenshotImage);
-            var currentZoomFactor = ImageScrollViewer.ZoomFactor;
-            if (currentZoomFactor < 2.0f)
-            {
-                ImageScrollViewer.ChangeView(pointerPosition.X, pointerPosition.Y, 2.0f);
-            }
-            else
-            {
-                ImageScrollViewer.ChangeView(pointerPosition.X, pointerPosition.Y, 1.0f);
-            }
-        }
-    }
+                    pixelStream.Seek(y * widthInBytes + x * 4, SeekOrigin.Begin);
+                    pixelStream.Read(pixels, 0, 4);
+
+                    byte b = pixels[0];
+                    byte g = pixels[1];
+                    byte r = pixels[2];
+                    byte a = pixels[3];
+
+                    return Color.FromArgb(a, r, g, b);
+               }
+          }
+
+          private void ColorSelectorExitButton_Click( object sender, RoutedEventArgs e )
+          {
+               _mainWindow.SetColorSelectorImage -= OnImageUpdated;
+               this.Close();
+          }
+
+          private void DisplayImage_ManipulationDelta( object sender, ManipulationDeltaRoutedEventArgs e )
+          {
+               var scale = e.Delta.Scale;
+               var newZoomFactor = ImageScrollViewer.ZoomFactor * scale;
+               if ( newZoomFactor >= ImageScrollViewer.MinZoomFactor && newZoomFactor <= ImageScrollViewer.MaxZoomFactor )
+               {
+                    ImageScrollViewer.ChangeView(null, null, newZoomFactor);
+               }
+          }
+
+          private void ImageScrollViewer_DoubleTapped( object sender, DoubleTappedRoutedEventArgs e )
+          {
+               var pointerPosition = e.GetPosition(ScreenshotImage);
+               var currentZoomFactor = ImageScrollViewer.ZoomFactor;
+               if ( currentZoomFactor < 2.0f )
+               {
+                    ImageScrollViewer.ChangeView(pointerPosition.X, pointerPosition.Y, 2.0f);
+               }
+               else
+               {
+                    ImageScrollViewer.ChangeView(pointerPosition.X, pointerPosition.Y, 1.0f);
+               }
+          }
+     }
 }
