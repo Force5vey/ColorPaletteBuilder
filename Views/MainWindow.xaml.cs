@@ -13,7 +13,6 @@ using Windows.Storage.Streams;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Drawing.Text;
-using ColorPaletteBuilder.Services;
 using System.Diagnostics;
 using System.Data;
 using System.IO;
@@ -67,11 +66,15 @@ namespace ColorPaletteBuilder
           private bool isAscending = true;
 
 
-          // Timers and Miscellaneous
+          // Timers
           private DispatcherTimer titleBarMessageTimer = new DispatcherTimer();
+          private int messageTimerInterval = 2; // seconds
 
-          private DispatcherTimer autoSaveTimer;
-          private int autoSaveInterval = 1; // minutes
+          private DispatcherTimer autoSaveTimer = new DispatcherTimer();
+          private int autoSaveInterval = 60; // seconds
+
+          // Miscellaneous
+
 
           public MainWindow()
           {
@@ -95,10 +98,12 @@ namespace ColorPaletteBuilder
                // Window Size Configuration
                ConfigureWindowSize();
 
+               // Timers
+               InitializeMessageTimer();
+               //
+               InitializeAutoSaveTimer();
+
                // Miscellaneous
-               titleBarMessageTimer.Interval = TimeSpan.FromSeconds(2);
-               titleBarMessageTimer.Tick += TitleMessageTimer_Tick;
-               StartAutoSaveTimer();
 
                string localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
                Debug.WriteLine($"Local Folder Path: {localFolderPath}");
@@ -184,17 +189,7 @@ namespace ColorPaletteBuilder
 
           private void MainWindow_Closed( object sender, WindowEventArgs e )
           {
-               if ( string.IsNullOrEmpty(ColorPaletteData.ColorPaletteFile) || ColorPaletteData.ColorPaletteFile == "New Palette" )
-               {
-                    AutoSave();
-               }
-               else
-               {
-                    //TODO: Look through this logic flow, so that if there are changes, and not saved initially, will ask to save as
-                    SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
-               }
-
-               // Things to do regardless of file options
+               // Save Values to reopen windows at same size as close position.
                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                localSettings.Values["WindowWidth"] = this.AppWindow.Size.Width;
                localSettings.Values["WindowHeight"] = this.AppWindow.Size.Height;
@@ -214,10 +209,66 @@ namespace ColorPaletteBuilder
           }
 
           // Timer Event Handlers
+          private void InitializeAutoSaveTimer()
+          {
+               autoSaveTimer.Interval = TimeSpan.FromSeconds(autoSaveInterval);
+               autoSaveTimer.Tick += AutoSaveBackupTimer_Tick;
+               autoSaveTimer.Tick += AutoSaveTimer_Tick;
+               autoSaveTimer.Start();
+          }
+
+          private void InitializeMessageTimer()
+          {
+               titleBarMessageTimer.Interval = TimeSpan.FromSeconds(messageTimerInterval);
+               titleBarMessageTimer.Tick += TitleMessageTimer_Tick;
+          }
+
           private void TitleMessageTimer_Tick( object sender, object e )
           {
                TitleBarMessage.Text = "";
                titleBarMessageTimer.Stop();
+          }
+
+          private async void AutoSaveTimer_Tick( object sender, object e )
+          {
+               AppConstants.ReturnCode returnCode;
+             returnCode =  await SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
+
+               if ( TitleBarMessage != null || titleBarMessageTimer != null )
+               {
+                    switch ( returnCode )
+                    {
+                         case AppConstants.ReturnCode.Success:
+                         TitleBarMessage.Text = "Auto-Saved";
+                         titleBarMessageTimer.Start();
+                         break;
+                         case AppConstants.ReturnCode.GeneralFailure:
+                         TitleBarMessage.Text = "Auto-Save Failed";
+                         titleBarMessageTimer.Start();
+                         break;
+                    }
+               }
+          }
+
+          private async void AutoSaveBackupTimer_Tick( object sender, object e )
+          {
+               AppConstants.ReturnCode returnCode;
+               returnCode = await mainViewModel.AutoSaveBackup_Async(ColorPaletteData);
+
+               if ( TitleBarMessage != null || titleBarMessageTimer != null )
+               {
+                    switch ( returnCode )
+                    {
+                         case AppConstants.ReturnCode.Success:
+                         TitleBarMessage.Text = "Auto-Saved To Backup";
+                         titleBarMessageTimer.Start();
+                         break;
+                         case AppConstants.ReturnCode.GeneralFailure:
+                         TitleBarMessage.Text = "Auto-Save Failed";
+                         titleBarMessageTimer.Start();
+                         break;
+                    }
+               }
           }
 
           // Button Click Event Handlers - Color Palette Actions
@@ -901,7 +952,7 @@ namespace ColorPaletteBuilder
                }
           }
 
-          private async Task SavePaletteToFile( string filePath )
+          private async Task<AppConstants.ReturnCode> SavePaletteToFile( string filePath )
           {
                StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);
                if ( file != null )
@@ -913,6 +964,12 @@ namespace ColorPaletteBuilder
                     localSettings.Values["LastOpenedFilePath"] = file.Path;
 
                     ColorPaletteData.ColorPaletteName = file.DisplayName;
+
+                    return AppConstants.ReturnCode.Success;
+               }
+               else
+               {
+                    return AppConstants.ReturnCode.GeneralFailure;
                }
           }
           private bool IsImageFile( StorageFile file )
@@ -1053,22 +1110,8 @@ namespace ColorPaletteBuilder
           }
 
 
-          private void StartAutoSaveTimer()
-          {
-               autoSaveTimer = new DispatcherTimer();
-               autoSaveTimer.Interval = TimeSpan.FromMinutes(autoSaveInterval);
-               autoSaveTimer.Tick += ( s, e ) => AutoSave();
-               autoSaveTimer.Start();
-          }
 
-          private async void AutoSave()
-          {
-               await BackupService.SaveBackupAsync(ColorPaletteData);
-               if ( TitleBarMessage != null || titleBarMessageTimer != null )
-               {
-                    TitleBarMessage.Text = "Auto-Saved To Backup Completed";
-                    titleBarMessageTimer.Start();
-               }
-          }
+
+
      }
 }

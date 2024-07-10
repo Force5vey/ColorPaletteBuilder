@@ -1,10 +1,14 @@
 {
   "FileHeader": "Color Palette Builder - Force5 Development - apps@force5dev.com",
-  "ColorSelectorSource": null,
+  "ColorSelectorSource": "",
   "ColorPaletteName": "Color Palette",
   "ColorPaletteFile": "C:\\dev\\ColorPaletteBuilder\\Assets\\ThursdayTest.cpb",
-  "ElementStates": [],
-  "ElementGroups": [],
+  "ElementStates": [
+    "Any"
+  ],
+  "ElementGroups": [
+    "Any"
+  ],
   "ColorEntries": [
     {
       "Id": "19e9b035-6605-4308-9d12-182788fe4309",

@@ -6,32 +6,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
-namespace ColorPaletteBuilder.Services
+namespace ColorPaletteBuilder
 {
     internal class BackupService
     {
-        private static readonly string backupFileName = "backup.cpb";
-
+        
         private static async Task<StorageFile> GetBackupFileAsync()
         {
             StorageFolder localFolder = ApplicationData.Current.LocalFolder;
             StorageFolder backupFolder = await localFolder.CreateFolderAsync("BackupFiles", CreationCollisionOption.OpenIfExists);
-            StorageFile backupFile = await backupFolder.CreateFileAsync(backupFileName, CreationCollisionOption.ReplaceExisting);
+            StorageFile backupFile = await backupFolder.CreateFileAsync(AppConstants.BackupFileName, CreationCollisionOption.ReplaceExisting);
             return backupFile;
         }
 
-        internal static async Task<string> SaveBackupAsync(ColorPalette colorPaletteData)
+        internal static async Task<AppConstants.ReturnCode> SaveBackupAsync(ColorPalette colorPaletteData)
         {
             try
             {
                 StorageFile backupFile = await GetBackupFileAsync();
                 await FileService.SavePaletteAsync(backupFile.Path, colorPaletteData);
-                return "Backup saved successfully";
+                return AppConstants.ReturnCode.Success;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error saving backup: {ex.Message}");
-                return $"Error saving backup";
+                return AppConstants.ReturnCode.FileWriteError;
             }
         }
 
