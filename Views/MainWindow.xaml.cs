@@ -1064,9 +1064,11 @@ namespace ColorPaletteBuilder
           private async void AutoSave()
           {
                await BackupService.SaveBackupAsync(ColorPaletteData);
-               TitleBarMessage.Text = "Auto-Saved To Backup Completed";
-               titleBarMessageTimer.Start();
-
+               if ( TitleBarMessage != null || titleBarMessageTimer != null )
+               {
+                    TitleBarMessage.Text = "Auto-Saved To Backup Completed";
+                    titleBarMessageTimer.Start();
+               }
           }
      }
 }
