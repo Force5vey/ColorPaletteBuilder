@@ -1,7 +1,7 @@
 {
   "FileHeader": "Color Palette Builder - Force5 Development - apps@force5dev.com",
   "ColorSelectorSource": "C:\\Users\\edmon\\OneDrive\\Pictures\\Friends\\IMG_0280.JPG",
-  "ColorPaletteName": "Color Palette",
+  "ColorPaletteName": "ThursdayTest",
   "ColorPaletteFile": "C:\\dev\\ColorPaletteBuilder\\Assets\\ThursdayTest.cpb",
   "ElementStates": [
     "Any"
@@ -10,6 +10,30 @@
     "Any"
   ],
   "ColorEntries": [
+    {
+      "Id": "034c2fd4-545d-47e4-8d0a-7ad01552362f",
+      "ElementIndex": 5,
+      "ElementName": "Name",
+      "ElementState": "Any",
+      "ElementGroup": "Any",
+      "HexCode": "#FF2B0B0E",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
+    {
+      "Id": "329686ed-0381-4a42-89bb-4d739bc8b3a1",
+      "ElementIndex": 4,
+      "ElementName": "Name",
+      "ElementState": "Any",
+      "ElementGroup": "Any",
+      "HexCode": "#FF5D76FF",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
     {
       "Id": "19e9b035-6605-4308-9d12-182788fe4309",
       "ElementIndex": 3,
@@ -60,6 +84,30 @@
     }
   ],
   "FilteredColorEntries": [
+    {
+      "Id": "034c2fd4-545d-47e4-8d0a-7ad01552362f",
+      "ElementIndex": 5,
+      "ElementName": "Name",
+      "ElementState": "Any",
+      "ElementGroup": "Any",
+      "HexCode": "#FF2B0B0E",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
+    {
+      "Id": "329686ed-0381-4a42-89bb-4d739bc8b3a1",
+      "ElementIndex": 4,
+      "ElementName": "Name",
+      "ElementState": "Any",
+      "ElementGroup": "Any",
+      "HexCode": "#FF5D76FF",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
     {
       "Id": "19e9b035-6605-4308-9d12-182788fe4309",
       "ElementIndex": 3,

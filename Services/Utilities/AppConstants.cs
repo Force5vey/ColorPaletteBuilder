@@ -45,5 +45,11 @@ namespace ColorPaletteBuilder
           internal static string LastColorPickerHex = "LastColorPickerHex";
           internal static string LastOpenedFilePath = "LastOpenedFilePath";
 
+          //Window Sizing
+          internal static string WindowWidth = "WindowWidth";
+          internal static string WindowHeight = "WindowHeight";
+          internal static string WindowLeft = "WindowLeft";
+          internal static string WindowTop = "WindowTop";
+
      }
 }

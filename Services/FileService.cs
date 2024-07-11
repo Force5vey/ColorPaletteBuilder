@@ -84,6 +84,12 @@ namespace ColorPaletteBuilder
                return null;
           }
 
+          internal static bool IsImageFile(StorageFile file)
+          {
+               var imageFileTypes = new[] { ".bmp", ".jpg", ".jpeg", ".png" };
+               return imageFileTypes.Contains(file.FileType.ToLower());
+          }
+
 
      }
 

@@ -42,6 +42,8 @@ namespace ColorPaletteBuilder
                Color,
                Note
           }
+          private ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
 
           // Events
           public event EventHandler SetColorSelectorImage;
@@ -125,16 +127,20 @@ namespace ColorPaletteBuilder
 
           private void ConfigureWindowSize()
           {
-               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                try
                {
-                    if ( localSettings.Values.TryGetValue("WindowWidth", out object width) &&
-                         localSettings.Values.TryGetValue("WindowHeight", out object height) &&
-                         localSettings.Values.TryGetValue("WindowLeft", out object left) &&
-                         localSettings.Values.TryGetValue("WindowTop", out object top) )
+                    if ( localSettings.Values.TryGetValue(AppConstants.WindowWidth, out object width) &&
+                         localSettings.Values.TryGetValue(AppConstants.WindowHeight, out object height) &&
+                         localSettings.Values.TryGetValue(AppConstants.WindowLeft, out object left) &&
+                         localSettings.Values.TryGetValue(AppConstants.WindowTop, out object top) )
                     {
                          this.AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = (int)width, Height = (int)height });
                          this.AppWindow.Move(new Windows.Graphics.PointInt32 { X = (int)left, Y = (int)top });
+                    }
+                    else
+                    {
+                         // If TryGetValue returns false, set to default size
+                         this.AppWindow.Resize(new Windows.Graphics.SizeInt32(mainWindowMinWidth, mainWindowMinHeight));
                     }
                }
                catch
@@ -189,8 +195,6 @@ namespace ColorPaletteBuilder
                          ColorPaletteListView.ItemsSource = null;
                          ApplyFilter();
                          ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
-
-
                     }
                     else
                     {
@@ -201,19 +205,11 @@ namespace ColorPaletteBuilder
                {
                     //TODO: Display error and load default palette
                     // this is null or empty.
-
                }
           }
 
           private async Task LoadLastSession()
           {
-               // Load last palette
-               // load last thumbnail.
-               // load last color picker hex
-
-
-               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-
                if ( localSettings.Values.TryGetValue(AppConstants.LastOpenedFilePath, out var lastOpenedFilePath) )
                {
                     if ( lastOpenedFilePath != null )
@@ -229,14 +225,11 @@ namespace ColorPaletteBuilder
                }
 
                LoadThumbNailImage(ColorPaletteData.ColorSelectorSource);
-
           }
-
 
           // AppWindow Event Handlers
           private void MainWindow_Changed( Microsoft.UI.Windowing.AppWindow sender, object args )
           {
-
                if ( sender.Size.Width < mainWindowMinWidth )
                {
                     this.AppWindow.Resize(new Windows.Graphics.SizeInt32(mainWindowMinWidth, (int)sender.Size.Height));
@@ -250,13 +243,12 @@ namespace ColorPaletteBuilder
           private void MainWindow_Closed( object sender, WindowEventArgs e )
           {
                // Save Values to reopen windows at same size as close position.
-               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-               localSettings.Values["WindowWidth"] = this.AppWindow.Size.Width;
-               localSettings.Values["WindowHeight"] = this.AppWindow.Size.Height;
-               localSettings.Values["WindowLeft"] = this.AppWindow.Position.X;
-               localSettings.Values["WindowTop"] = this.AppWindow.Position.Y;
+               localSettings.Values[AppConstants.WindowWidth] = this.AppWindow.Size.Width;
+               localSettings.Values[AppConstants.WindowHeight] = this.AppWindow.Size.Height;
+               localSettings.Values[AppConstants.WindowLeft] = this.AppWindow.Position.X;
+               localSettings.Values[AppConstants.WindowTop] = this.AppWindow.Position.Y;
 
-               localSettings.Values["LastColorPickerHex"] = currentColorPickerHex;
+               localSettings.Values[AppConstants.LastColorPickerHex] = currentColorPickerHex;
 
                if ( settingsWindow != null )
                {
@@ -268,7 +260,9 @@ namespace ColorPaletteBuilder
                }
           }
 
-          // Timer Event Handlers
+
+          #region // Timer Event Handlers
+
           private void InitializeAutoSaveTimer()
           {
                autoSaveTimer.Interval = TimeSpan.FromSeconds(autoSaveInterval);
@@ -331,7 +325,9 @@ namespace ColorPaletteBuilder
                }
           }
 
-          // Button Click Event Handlers - Color Palette Actions
+          #endregion //End Timer Event Handlers
+
+          #region // Button Click Event Handlers - Color Palette Actions
 
           private void NewPalette_Click( object sender, RoutedEventArgs e )
           {
@@ -352,9 +348,7 @@ namespace ColorPaletteBuilder
                {
                     await LoadPalette_Async(file.Path);
 
-                    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
                     localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
-
                }
           }
 
@@ -650,9 +644,8 @@ namespace ColorPaletteBuilder
                StorageFile file = await picker.PickSingleFileAsync();
                if ( file != null )
                {
-                    // Store the path in local settings
-                    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    localSettings.Values["LastOpenedFilePath"] = file.Path;
+                    // Store the path in palette data for last used retrieval
+                    ColorPaletteData.ColorSelectorSource = file.Path;
 
                     LoadThumbNailImage(file.Path);
 
@@ -667,6 +660,8 @@ namespace ColorPaletteBuilder
                ColorPaletteData.ColorSelectorSource = string.Empty;
           }
 
+          #endregion // Button Click Event Handlers
+
           private void ColorSelectorSource_DragOver( object sender, DragEventArgs e )
           {
                e.AcceptedOperation = DataPackageOperation.Copy;
@@ -680,7 +675,7 @@ namespace ColorPaletteBuilder
                     if ( items.Any() )
                     {
                          var storageFile = items[0] as StorageFile;
-                         if ( IsImageFile(storageFile) )
+                         if ( FileService.IsImageFile(storageFile) )
                          {
                               // Load image into WriteableBitmap
                               LoadThumbNailImage(storageFile.Path);
@@ -690,7 +685,7 @@ namespace ColorPaletteBuilder
                          }
                          else
                          {
-                              TitleBarMessage.Text = "Invalid image / file type";
+                              TitleBarMessage.Text = "Invalid image / file type: .bmp .jpg .png only";
                               titleBarMessageTimer.Start();
                          }
                     }
@@ -739,51 +734,7 @@ namespace ColorPaletteBuilder
                SetColorSelectorImage?.Invoke(this, EventArgs.Empty);
           }
 
-          private async void ColorSelectorSource_Paste( object sender, TextControlPasteEventArgs e )
-          {
-               e.Handled = true; // Prevent the default paste behavior
-
-               var dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
-               try
-               {
-                    if ( dataPackageView.Contains(StandardDataFormats.Bitmap) )
-                    {
-                         var bitmap = await dataPackageView.GetBitmapAsync();
-                         if ( bitmap != null )
-                         {
-                              using ( var stream = await bitmap.OpenReadAsync() )
-                              {
-                                   // Ensure the stream is at the beginning
-                                   stream.Seek(0);
-
-                                   // Decode the bitmap
-                                   var decoder = await BitmapDecoder.CreateAsync(stream);
-                                   var writeableBitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                                   await writeableBitmap.SetSourceAsync(stream);
-
-                                   // Assign the WriteableBitmap to the static variable
-                                   App.ColorSelectorBitmap = writeableBitmap;
-
-                                   // Update the UI
-                                   TitleBarMessage.Text = "Image pasted from clipboard.";
-                                   titleBarMessageTimer.Start();
-                              }
-                         }
-                         else
-                         {
-                              TitleBarMessage.Text = "Failed to retrieve bitmap from clipboard.";
-                         }
-                    }
-                    else
-                    {
-                         TitleBarMessage.Text = "Clipboard does not contain a bitmap.";
-                    }
-               }
-               catch ( Exception ex )
-               {
-                    TitleBarMessage.Text = $"An error occurred: {ex.Message}";
-               }
-          }
+          #region // Combo Box Event Handlers
 
           // ComboBox Event Handlers
           private void ElementStateComboBox_Loaded( object sender, RoutedEventArgs e )
@@ -819,10 +770,16 @@ namespace ColorPaletteBuilder
 
           }
 
+          #endregion // Combo Box Event Handlers
+
           // ScrollViewer Event Handlers
           private void LeftScrollViewerControl_ViewChanged( object sender, ScrollViewerViewChangedEventArgs e )
           {
+               //TODO: Get the left scroll Viewer to scroll the left column
           }
+
+
+          #region // Color Picker Event Handlers
 
           // ColorPicker Event Handlers
           private void CustomColorPicker_ColorChanged( ColorPicker sender, ColorChangedEventArgs args )
@@ -896,6 +853,8 @@ namespace ColorPaletteBuilder
                titleBarMessageTimer.Start();
           }
 
+          #endregion // Color Picker Event Handlers
+
           // SettingsWindow Event Handlers
           private void SettingsWindow_Closed( object sender, WindowEventArgs e )
           {
@@ -953,8 +912,7 @@ namespace ColorPaletteBuilder
                     ColorPaletteData.ColorPaletteFile = file.Path;
                     await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
 
-                    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    localSettings.Values["LastOpenedFilePath"] = file.Path;
+                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
 
                     ColorPaletteData.ColorPaletteName = file.DisplayName;
 
@@ -965,11 +923,7 @@ namespace ColorPaletteBuilder
                     return AppConstants.ReturnCode.GeneralFailure;
                }
           }
-          private bool IsImageFile( StorageFile file )
-          {
-               var imageFileTypes = new[] { ".bmp", ".jpg", ".jpeg", ".png" };
-               return imageFileTypes.Contains(file.FileType.ToLower());
-          }
+
           private void ApplyFilter()
           {
 
@@ -1090,7 +1044,6 @@ namespace ColorPaletteBuilder
                     colorSelectorWindow = new ColorSelectorWindow(this);
                     colorSelectorWindow.AppWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
 
-
                     colorSelectorWindow.Closed += ColorSelectorWindow_Closed;
                     colorSelectorWindow.DataSelected += ColorSelectorWindow_DataSelected;
                     colorSelectorWindow.Activate();
@@ -1101,10 +1054,6 @@ namespace ColorPaletteBuilder
                     titleBarMessageTimer.Start();
                }
           }
-
-
-
-
 
      }
 }
