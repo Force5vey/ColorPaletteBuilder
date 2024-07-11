@@ -7,6 +7,10 @@ using System.IO;
 using System.Text.Json;
 using System.Linq.Expressions;
 using System.Diagnostics;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.Graphics.Imaging;
+using Windows.Storage.Streams;
+using Windows.Storage;
 
 
 namespace ColorPaletteBuilder
@@ -45,7 +49,26 @@ namespace ColorPaletteBuilder
                     return null;
                }
           }
+
+          internal static async Task<WriteableBitmap> LoadDefaultColorSelectorImage()
+          {
+               try
+               {
+                    StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ColorSelectorDefaultImage.png"));
+                    using ( IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read) )
+                    {
+                         BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
+                         WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                         await bitmap.SetSourceAsync(fileStream);
+                         return bitmap;
+                    }
+               }
+               catch
+               {
+                    return null;
+               }
+          }
      }
 
-   
+
 }

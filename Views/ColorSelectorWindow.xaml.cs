@@ -77,7 +77,7 @@ namespace ColorPaletteBuilder
                ScreenshotImage.Source = App.ColorSelectorBitmap;
           }
 
-          private InputCursor? OriginalInputCursor { get; set; }
+          private InputCursor OriginalInputCursor { get; set; }
 
           private void CustomGrid_PointerEntered( object sender, PointerRoutedEventArgs e )
           {

@@ -102,16 +102,13 @@ namespace ColorPaletteBuilder
                InitializeMessageTimer();
                //
                InitializeAutoSaveTimer();
-
-               // Miscellaneous
-
-               string localFolderPath = Windows.Storage.ApplicationData.Current.LocalFolder.Path;
-               Debug.WriteLine($"Local Folder Path: {localFolderPath}");
           }
 
           private async void InitializeAsync()
           {
-               await LoadDefaultColorSelectorImage();
+               // a 'blank' default image loaded from assets to be a place holder in the color selector image
+               // also serves as a sizing mechanism to allow for drag and drop over the image control
+               DefaultColorSelectorImage = await FileService.LoadDefaultColorSelectorImage();
                ColorSelectorImage.Source = DefaultColorSelectorImage;
                App.ColorSelectorBitmap = DefaultColorSelectorImage;
 
@@ -125,17 +122,7 @@ namespace ColorPaletteBuilder
                SortFilteredColorEntries(FontIconSortElementIndex, activeSortCriteria);
           }
 
-          private async Task LoadDefaultColorSelectorImage()
-          {
-               StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ColorSelectorDefaultImage.png"));
-               using ( IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read) )
-               {
-                    BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
-                    WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                    await bitmap.SetSourceAsync(fileStream);
-                    DefaultColorSelectorImage = bitmap;
-               }
-          }
+
 
           // Initialization Methods
           private void ConfigureWindowSize()
@@ -232,7 +219,7 @@ namespace ColorPaletteBuilder
           private async void AutoSaveTimer_Tick( object sender, object e )
           {
                AppConstants.ReturnCode returnCode;
-             returnCode =  await SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
+               returnCode = await SavePaletteToFile(ColorPaletteData.ColorPaletteFile);
 
                if ( TitleBarMessage != null || titleBarMessageTimer != null )
                {
