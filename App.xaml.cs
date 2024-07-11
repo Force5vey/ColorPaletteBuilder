@@ -34,7 +34,7 @@ namespace ColorPaletteBuilder
         private const string ThemeSettingKey = "AppTheme";
 
         public static WriteableBitmap ColorSelectorBitmap;
-        public static Color colorSelectorColor;
+        public static Color ColorSelectorColor;
 
          
         /// <summary>

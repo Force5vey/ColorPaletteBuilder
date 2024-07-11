@@ -326,7 +326,7 @@
 
 
                 <!-- Add and Remove Element States -->
-                <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind ColorPaletteData.ElementStates}" Margin="5,0,5,0"
+                <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind mainViewModel.ColorPaletteData.ElementStates}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header="Element States"/>
 
 
@@ -362,7 +362,7 @@
 
 
                 <!-- Add and Remove Element Groups -->
-                <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
+                <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind mainViewModel.ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header=" Element Groups"/>
 
 

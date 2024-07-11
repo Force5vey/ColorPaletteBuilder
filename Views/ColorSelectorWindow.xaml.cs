@@ -101,7 +101,7 @@ namespace ColorPaletteBuilder
                {
                     var position = e.GetCurrentPoint(ScreenshotImage).Position;
 
-                    App.colorSelectorColor = GetColorAtPosition((int)position.X, (int)position.Y);
+                    App.ColorSelectorColor = GetColorAtPosition((int)position.X, (int)position.Y);
 
                     DataSelected?.Invoke(this, EventArgs.Empty);
                }

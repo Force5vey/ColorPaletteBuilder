@@ -41,11 +41,8 @@ namespace ColorPaletteBuilder
           public event EventHandler SetColorSelectorImage;
 
           // Public Properties
-          //public ColorPalette ColorPaletteData { get; set; } = new ColorPalette();
           public string SelectedState { get; set; }
           public string SelectedGroup { get; set; }
-
-          //public static WriteableBitmap DefaultColorSelectorImage { get; private set; }
 
           // Private Fields
           private string currentColorPickerHex = string.Empty;
@@ -98,13 +95,12 @@ namespace ColorPaletteBuilder
           // Initialization Methods
           private async void InitializeAsync()
           {
-               DefaultColorSelectorImage = await FileService.LoadDefaultColorSelectorImage();
-               ColorSelectorImage.Source = DefaultColorSelectorImage;
-               App.ColorSelectorBitmap = DefaultColorSelectorImage;
+               App.ColorSelectorBitmap = mainViewModel.DefaultColorSelectorImage;
+               ColorSelectorImage.Source = App.ColorSelectorBitmap;
 
                await mainViewModel.LoadLastSession_Async();
 
-               ApplyFilter();
+               mainViewModel.ApplyFilter();
 
                // Data Binding Setup
                ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
@@ -118,9 +114,9 @@ namespace ColorPaletteBuilder
                }
 
                //Do a default Sort by Index
-               SortFilteredColorEntries(FontIconSortElementIndex, activeSortCriteria);
+               SortListView(FontIconSortElementIndex, activeSortCriteria);
 
-               LoadThumbNailImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
+               LoadColorSelectorImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
           }
 
           private void ConfigureWindowSize()
@@ -315,7 +311,9 @@ namespace ColorPaletteBuilder
                // The setting will just be on top or bottom, this will need logic to get the last index then plus 1
                mainViewModel.ColorPaletteData.ColorEntries.Insert(0, newEntry);
 
-               ApplyFilter();
+               mainViewModel.ApplyFilter();
+               ColorPaletteListView.ItemsSource = null;
+               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
 
           }
 
@@ -324,7 +322,9 @@ namespace ColorPaletteBuilder
                var selectedEntry = ColorPaletteListView.SelectedItem as ColorEntry;
                mainViewModel.RemoveColorEntry(selectedEntry);
 
-               ApplyFilter();
+               mainViewModel.ApplyFilter();
+               ColorPaletteListView.ItemsSource = null;
+               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void AssignColor_Click( object sender, RoutedEventArgs e )
@@ -453,12 +453,16 @@ namespace ColorPaletteBuilder
                comboElementStates.SelectedItem = defaultComboBoxText;
                comboElementGroups.SelectedItem = defaultComboBoxText;
 
-               ApplyFilter();
+               mainViewModel.ApplyFilter();
+               ColorPaletteListView.ItemsSource = null;
+               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void RefreshFilterButton_Click( object sender, RoutedEventArgs e )
           {
-               ApplyFilter();
+               mainViewModel.ApplyFilter();
+               ColorPaletteListView.ItemsSource = null;
+               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void ResetSortButtons()
@@ -473,32 +477,32 @@ namespace ColorPaletteBuilder
 
           private void ButtonSortElementIndex_Click( object sender, RoutedEventArgs e )
           {
-               SortFilteredColorEntries(FontIconSortElementIndex, AppConstants.SortCriteria.Index);
+               SortListView(FontIconSortElementIndex, AppConstants.SortCriteria.Index);
           }
 
           private void ButtonSortElementName_Click( object sender, RoutedEventArgs e )
           {
-               SortFilteredColorEntries(FontIconSortElementName, AppConstants.SortCriteria.Name);
+               SortListView(FontIconSortElementName, AppConstants.SortCriteria.Name);
           }
 
           private void ButtonSortElementState_Click( object sender, RoutedEventArgs e )
           {
-               SortFilteredColorEntries(FontIconSortElementState, AppConstants.SortCriteria.State);
+               SortListView(FontIconSortElementState, AppConstants.SortCriteria.State);
           }
 
           private void ButtonSortElementGroup_Click( object sender, RoutedEventArgs e )
           {
-               SortFilteredColorEntries(FontIconSortElementGroup, AppConstants.SortCriteria.Group);
+               SortListView(FontIconSortElementGroup, AppConstants.SortCriteria.Group);
           }
 
           private void ButtonSortColor_Click( object sender, RoutedEventArgs e )
           {
-               SortFilteredColorEntries(FontIconSortColor, AppConstants.SortCriteria.Color);
+               SortListView(FontIconSortColor, AppConstants.SortCriteria.Color);
           }
 
           private void ButtonSortNote_Click( object sender, RoutedEventArgs e )
           {
-               SortFilteredColorEntries(FontIconSortNote, AppConstants.SortCriteria.Note);
+               SortListView(FontIconSortNote, AppConstants.SortCriteria.Note);
           }
 
           // Button Click Event Handlers - Color Selector Actions
@@ -512,11 +516,11 @@ namespace ColorPaletteBuilder
                ColorSelectorButton_Click(sender, e);
           }
 
-          private async Task BrowseColorSelectorPhoto_Click( object sender, RoutedEventArgs e )
+          private async void BrowseColorSelectorPhoto_Click( object sender, RoutedEventArgs e )
           {
                AppConstants.ReturnCode returnCode = await mainViewModel.SelectColorSelectorPhoto();
 
-               LoadThumbNailImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
+              LoadColorSelectorImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
           }
 
           private void ColorSelectorClearImage_Click( object sender, RoutedEventArgs e )
@@ -544,7 +548,7 @@ namespace ColorPaletteBuilder
                          if ( FileService.IsImageFile(storageFile) )
                          {
                               // Load image into WriteableBitmap
-                              LoadThumbNailImage(storageFile.Path);
+                              LoadColorSelectorImage(storageFile.Path);
 
                               TitleBarMessage.Text = $"Image dropped: {storageFile.Name}";
                               titleBarMessageTimer.Start();
@@ -649,6 +653,7 @@ namespace ColorPaletteBuilder
 
           private void CopyColorPickerHex_Click( object sender, RoutedEventArgs e )
           {
+               //TODO: Needs user settings to set if it includes the # tag.
                var dataPackage = new DataPackage();
                dataPackage.SetText(currentColorPickerHex);
                Clipboard.SetContent(dataPackage);
@@ -659,6 +664,7 @@ namespace ColorPaletteBuilder
 
           private void CopyColorPickerHexNoAlpha_Click( object sender, RoutedEventArgs e )
           {
+               //TODO: needs user settings to select if it includes the # tag
                var dataPackage = new DataPackage();
                dataPackage.SetText(currentColorPickerHexNoAlpha);
                Clipboard.SetContent(dataPackage);
@@ -669,6 +675,7 @@ namespace ColorPaletteBuilder
 
           private void CopyColorPickerRGB_Click( object sender, RoutedEventArgs e )
           {
+               //TODO: user setting for this format.
                var dataPackage = new DataPackage();
                dataPackage.SetText(currentColorPickerRGB);
                Clipboard.SetContent(dataPackage);
@@ -702,100 +709,18 @@ namespace ColorPaletteBuilder
           // ColorSelectorWindow Event Handlers
           private void ColorSelectorWindow_DataSelected( object sender, EventArgs e )
           {
-               CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(App.colorSelectorColor);
+               CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(App.ColorSelectorColor);
 
           }
 
           private void ColorSelectorWindow_Closed( object sender, WindowEventArgs e )
           {
                colorSelectorWindow = null;
-
-               CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(App.colorSelectorColor);
-
           }
 
           // Helper Methods
-          private void ClearColorPaletteData()
+          private void SortListView( FontIcon sortIcon, AppConstants.SortCriteria criteria )
           {
-               ColorPaletteData.ColorPaletteFile = "New Palette";
-               ColorPaletteData.ColorPaletteName = "New Palette";
-               ColorPaletteData.ColorEntries.Clear();
-               ColorPaletteData.FilteredColorEntries.Clear();
-
-               ColorPaletteData.ElementStates.Clear();
-               ColorPaletteData.ElementGroups.Clear();
-
-
-               //Add back the default empty string for States and Group
-               ColorPaletteData.ElementStates.Add(defaultComboBoxText);
-               ColorPaletteData.ElementGroups.Add(defaultComboBoxText);
-
-               SelectedState = defaultComboBoxText;
-               SelectedGroup = defaultComboBoxText;
-
-               comboElementGroups.SelectedItem = defaultComboBoxText;
-               comboElementStates.SelectedItem = defaultComboBoxText;
-          }
-
-          private void ClearFilteredColorEntries()
-          {
-               ColorPaletteData.FilteredColorEntries.Clear();
-          }
-
-          private async Task<AppConstants.ReturnCode> SavePaletteToFile( string filePath )
-          {
-               StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);
-               if ( file != null )
-               {
-                    ColorPaletteData.ColorPaletteFile = file.Path;
-                    await FileService.SavePaletteAsync(file.Path, ColorPaletteData);
-
-                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
-
-                    ColorPaletteData.ColorPaletteName = file.DisplayName;
-
-                    return AppConstants.ReturnCode.Success;
-               }
-               else
-               {
-                    return AppConstants.ReturnCode.GeneralFailure;
-               }
-          }
-
-          private void ApplyFilter()
-          {
-
-               ClearFilteredColorEntries();
-
-               foreach ( var colorEntry in ColorPaletteData.ColorEntries )
-               {
-                    if ( SelectedState == defaultComboBoxText && SelectedGroup == defaultComboBoxText )
-                    {
-                         ColorPaletteData.FilteredColorEntries.Add(colorEntry);
-                    }
-                    else if ( SelectedState == defaultComboBoxText && colorEntry.ElementGroup == SelectedGroup )
-                    {
-                         ColorPaletteData.FilteredColorEntries.Add(colorEntry);
-                    }
-                    else if ( SelectedGroup == defaultComboBoxText && colorEntry.ElementState == SelectedState )
-                    {
-                         ColorPaletteData.FilteredColorEntries.Add(colorEntry);
-                    }
-                    else if ( colorEntry.ElementState == SelectedState && colorEntry.ElementGroup == SelectedGroup )
-                    {
-                         ColorPaletteData.FilteredColorEntries.Add(colorEntry);
-                    }
-               }
-
-               ColorPaletteListView.ItemsSource = null;
-               ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
-
-          }
-
-          private void SortFilteredColorEntries( FontIcon sortIcon, AppConstants.SortCriteria criteria )
-          {
-               ResetSortButtons();
-
                if ( activeSortCriteria == criteria )
                {
                     isAscending = !isAscending;
@@ -808,73 +733,17 @@ namespace ColorPaletteBuilder
 
                sortIcon.Glyph = isAscending ? "\uE70E" : "\uE70D";
 
-
-               var sortedEntries = new List<ColorEntry>(ColorPaletteData.FilteredColorEntries);
-
-               switch ( activeSortCriteria )
-               {
-                    case SortCriteria.Index:
-                    {
-                         sortedEntries = isAscending ?
-                              sortedEntries.OrderBy(entry => entry.ElementIndex).ToList() :
-                              sortedEntries.OrderByDescending(entry => entry.ElementIndex).ToList();
-                         break;
-                    }
-                    case SortCriteria.Name:
-                    {
-                         sortedEntries = isAscending ?
-                              sortedEntries.OrderBy(entry => entry.ElementName).ToList() :
-                              sortedEntries.OrderByDescending(entry => entry.ElementName).ToList();
-                         break;
-                    }
-                    case SortCriteria.State:
-                    {
-                         sortedEntries = isAscending ?
-                              sortedEntries.OrderBy(entry => entry.ElementState).ToList() :
-                              sortedEntries.OrderByDescending(entry => entry.ElementState).ToList();
-                         break;
-                    }
-                    case SortCriteria.Group:
-                    {
-                         sortedEntries = isAscending ?
-                              sortedEntries.OrderBy(entry => entry.ElementGroup).ToList() :
-                              sortedEntries.OrderByDescending(entry => entry.ElementGroup).ToList();
-                         break;
-                    }
-                    case SortCriteria.Color:
-                    {
-                         sortedEntries = isAscending ?
-                              sortedEntries.OrderBy(entry => entry.HexCode).ToList() :
-                              sortedEntries.OrderByDescending(entry => entry.HexCode).ToList();
-                         break;
-                    }
-                    case SortCriteria.Note:
-                    {
-                         sortedEntries = isAscending ?
-                              sortedEntries.OrderBy(entry => entry.Note).ToList() :
-                              sortedEntries.OrderByDescending(entry => entry.Note).ToList();
-                         break;
-                    }
-               }
-
-               //Clear and update existing
-               ClearFilteredColorEntries();
-
-               foreach ( var entry in sortedEntries )
-               {
-                    ColorPaletteData.FilteredColorEntries.Add(entry);
-               }
+               mainViewModel.SortFilteredColorEntries(criteria, isAscending);
 
                ColorPaletteListView.ItemsSource = null;
-               ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
-
+               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void StartColorSelector()
           {
                if ( App.ColorSelectorBitmap == null )
                {
-                    App.ColorSelectorBitmap = ColorSelectorProcessor.GetBitmap();
+                    App.ColorSelectorBitmap = mainViewModel.DefaultColorSelectorImage;
                }
 
                if ( colorSelectorWindow == null )

@@ -38,6 +38,12 @@ namespace ColorPaletteBuilder
                // Initialize default values
                SelectedState = defaultComboBoxText;
                SelectedGroup = defaultComboBoxText;
+               LoadDefaultColorSelectorImage().GetAwaiter().GetResult();
+          }
+
+          private async Task LoadDefaultColorSelectorImage()
+          {
+               DefaultColorSelectorImage = await FileService.LoadDefaultColorSelectorImage();
           }
 
           public async Task<AppConstants.ReturnCode> SavePaletteAs_Async()
@@ -146,6 +152,8 @@ namespace ColorPaletteBuilder
 
                //ColorSelectorSource to remain, to retain image between Palettes
 
+               //TODO: Callers need to set state and group combo boxes to defaultcomboboxtext
+
           }
 
           public void ApplyFilter()
@@ -172,10 +180,8 @@ namespace ColorPaletteBuilder
                }
           }
 
-          public void SortFilteredColorEntries( FontIcon sortIcon, AppConstants.SortCriteria criteria, ref bool isAscending )
+          public void SortFilteredColorEntries( AppConstants.SortCriteria criteria, bool isAscending )
           {
-               ResetSortButtons(sortIcon, criteria, ref isAscending);
-
                var sortedEntries = new List<ColorEntry>(ColorPaletteData.FilteredColorEntries);
                switch ( criteria )
                {
@@ -217,18 +223,7 @@ namespace ColorPaletteBuilder
                }
           }
 
-          private void ResetSortButtons( FontIcon sortIcon, AppConstants.SortCriteria criteria, ref bool isAscending )
-          {
-               if ( isAscending )
-               {
-                    sortIcon.Glyph = "\uE70E";
-               }
-               else
-               {
-                    sortIcon.Glyph = "\uE70D";
-               }
-          }
-
+          //TODO: this isn't updating the colorpaletteData for file and name, it may not need to since it is saving current.
           public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async( string filePath )
           {
                StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);

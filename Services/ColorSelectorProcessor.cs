@@ -26,49 +26,25 @@ using Microsoft.UI.Xaml.Hosting;
 
 namespace ColorPaletteBuilder
 {
-    public class ColorSelectorProcessor
-    {
+     public class ColorSelectorProcessor
+     {
 
-        public static WriteableBitmap GetBitmap()
-        {
+          private static WriteableBitmap ConvertBitmapToWriteableBitmap( Bitmap bitmap )
+          {
+               WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap.Width, bitmap.Height);
 
-            // Temporary, sending back bmp from assets folder
-            string assetsFolder = Path.Combine(AppContext.BaseDirectory, "Assets");
-            string imagePath = Path.Combine(assetsFolder, "SampleScreenShot.bmp");
+               using ( MemoryStream memoryStream = new MemoryStream() )
+               {
+                    // Save the bitmap to a memory stream
+                    bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
 
-            if (File.Exists(imagePath))
-            {
-                using (var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
-                {
-                    // Load the bitmap from the file
-                    Bitmap bitmap = new Bitmap(stream);
+                    // Load the memory stream into the WriteableBitmap
+                    writeableBitmap.SetSource(memoryStream.AsRandomAccessStream());
+               }
 
-                    // Convert the bitmap to a WriteableBitmap
-                    return ConvertBitmapToWriteableBitmap(bitmap);
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
+               return writeableBitmap;
+          }
 
-        private static WriteableBitmap ConvertBitmapToWriteableBitmap(Bitmap bitmap)
-        {
-            WriteableBitmap writeableBitmap = new WriteableBitmap(bitmap.Width, bitmap.Height);
-
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                // Save the bitmap to a memory stream
-                bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-
-                // Load the memory stream into the WriteableBitmap
-                writeableBitmap.SetSource(memoryStream.AsRandomAccessStream());
-            }
-
-            return writeableBitmap;
-        }
-
-    }
+     }
 }
