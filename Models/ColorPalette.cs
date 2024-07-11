@@ -9,13 +9,17 @@ namespace ColorPaletteBuilder
 {
      public class ColorPalette :INotifyPropertyChanged
      {
+          private int currentIndex;
           private string colorPaletteName;
           private string colorPaletteFile;
+
           private ObservableCollection<string> elementStates;
           private ObservableCollection<string> elementGroups;
           private ObservableCollection<ColorEntry> colorEntries;
           private ObservableCollection<ColorEntry> filteredColorEntries;
           private string _colorSelectorSource;
+          
+
 
           public ColorPalette()
           {
@@ -23,6 +27,7 @@ namespace ColorPaletteBuilder
 
                ColorPaletteName = "Color Palette";
                ColorPaletteFile = "New Palette";
+               CurrentIndex = 0;
                ElementStates = new ObservableCollection<string>();
                ElementGroups = new ObservableCollection<string>();
                ColorEntries = new ObservableCollection<ColorEntry>();
@@ -30,6 +35,11 @@ namespace ColorPaletteBuilder
 
           }
 
+          public int CurrentIndex
+          {
+               get => currentIndex;
+               set => SetProperty(ref currentIndex, value);
+          }
 
           public string FileHeader { get; set; }
 

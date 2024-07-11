@@ -24,7 +24,7 @@ namespace ColorPaletteBuilder
             try
             {
                 StorageFile backupFile = await GetBackupFileAsync();
-                await FileService.SavePaletteAsync(backupFile.Path, colorPaletteData);
+                await FileService.SavePalette_Async(backupFile.Path, colorPaletteData);
                 return AppConstants.ReturnCode.Success;
             }
             catch (Exception ex)

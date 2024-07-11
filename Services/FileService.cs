@@ -17,7 +17,7 @@ namespace ColorPaletteBuilder
 {
      public static class FileService
      {
-          public static async Task SavePaletteAsync( string filePath, ColorPalette colorPaletteData )
+          public static async Task SavePalette_Async( string filePath, ColorPalette colorPaletteData )
           {
                try
                {

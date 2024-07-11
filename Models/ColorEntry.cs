@@ -23,6 +23,21 @@ namespace ColorPaletteBuilder
           private string sendColor; // This is a placeholder for listview to add a button to send color to color picker
           private string note;
 
+          public ColorEntry()
+          {
+               Id = Guid.NewGuid();
+
+               ElementName = string.Empty;
+               ElementState = string.Empty;
+               ElementGroup = string.Empty;
+               HexCode = string.Empty;
+               DisplayColor = string.Empty;
+               ChangeColor = string.Empty;
+               SendColor = string.Empty;
+               Note = string.Empty;
+               ElementIndex = 0;
+          }
+
           public Guid Id
           {
                get => id;
@@ -100,18 +115,6 @@ namespace ColorPaletteBuilder
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
           }
 
-          public ColorEntry()
-          {
-               Id = Guid.NewGuid();
-
-               ElementName = string.Empty;
-               ElementState = string.Empty;
-               ElementGroup = string.Empty;
-               HexCode = string.Empty;
-               DisplayColor = string.Empty;
-               ChangeColor = string.Empty;
-               SendColor = string.Empty;
-               Note = string.Empty;
-          }
+          
      }
 }

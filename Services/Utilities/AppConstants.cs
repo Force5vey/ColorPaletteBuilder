@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace ColorPaletteBuilder
 {
@@ -42,6 +44,8 @@ namespace ColorPaletteBuilder
 
           public static string BackupFileName = "backup.cpb";
 
+          public static string BackupFilePath = ApplicationData.Current.LocalFolder.Path;
+
           internal static string LastColorPickerHex = "LastColorPickerHex";
           internal static string LastOpenedFilePath = "LastOpenedFilePath";
 
@@ -51,5 +55,15 @@ namespace ColorPaletteBuilder
           internal static string WindowLeft = "WindowLeft";
           internal static string WindowTop = "WindowTop";
 
+
+          public enum SortCriteria
+          {
+               Index,
+               Name,
+               State,
+               Group,
+               Color,
+               Note
+          }
      }
 }
