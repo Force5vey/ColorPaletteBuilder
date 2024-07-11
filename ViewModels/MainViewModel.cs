@@ -38,10 +38,9 @@ namespace ColorPaletteBuilder
                // Initialize default values
                SelectedState = defaultComboBoxText;
                SelectedGroup = defaultComboBoxText;
-               LoadDefaultColorSelectorImage().GetAwaiter().GetResult();
           }
 
-          private async Task LoadDefaultColorSelectorImage()
+          internal async Task LoadDefaultColorSelectorImage()
           {
                DefaultColorSelectorImage = await FileService.LoadDefaultColorSelectorImage();
           }
@@ -78,7 +77,7 @@ namespace ColorPaletteBuilder
                }
           }
 
-          public async Task<AppConstants.ReturnCode> AutoSaveBackupAsync()
+          public async Task<AppConstants.ReturnCode> AutoSaveBackup_Async()
           {
                AppConstants.ReturnCode saveBackupReturnCode;
                saveBackupReturnCode = await BackupService.SaveBackupAsync(ColorPaletteData);
@@ -309,7 +308,7 @@ namespace ColorPaletteBuilder
                return returnCode;
           }
 
-          internal async Task<AppConstants.ReturnCode> SelectColorSelectorPhoto()
+          internal async Task<AppConstants.ReturnCode> SelectColorSelectorPhoto( Window window )
           {
                AppConstants.ReturnCode returnCode;
                // Initialize the picker
@@ -319,7 +318,7 @@ namespace ColorPaletteBuilder
                };
 
                // Initialize with window handle
-               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
 
                // Add file type filters

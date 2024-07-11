@@ -1,6 +1,7 @@
 {
+  "CurrentIndex": 6,
   "FileHeader": "Color Palette Builder - Force5 Development - apps@force5dev.com",
-  "ColorSelectorSource": "C:\\Users\\edmon\\OneDrive\\Pictures\\Friends\\IMG_0280.JPG",
+  "ColorSelectorSource": "C:\\Users\\edmon\\OneDrive\\Pictures\\Friends\\WP_20130803_004.jpg",
   "ColorPaletteName": "ThursdayTest",
   "ColorPaletteFile": "C:\\dev\\ColorPaletteBuilder\\Assets\\ThursdayTest.cpb",
   "ElementStates": [
@@ -14,7 +15,7 @@
       "Id": "034c2fd4-545d-47e4-8d0a-7ad01552362f",
       "ElementIndex": 5,
       "ElementName": "Name",
-      "ElementState": "Any",
+      "ElementState": null,
       "ElementGroup": "Any",
       "HexCode": "#FF2B0B0E",
       "DisplayColor": "",
@@ -88,7 +89,7 @@
       "Id": "034c2fd4-545d-47e4-8d0a-7ad01552362f",
       "ElementIndex": 5,
       "ElementName": "Name",
-      "ElementState": "Any",
+      "ElementState": null,
       "ElementGroup": "Any",
       "HexCode": "#FF2B0B0E",
       "DisplayColor": "",

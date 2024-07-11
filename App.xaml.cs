@@ -45,15 +45,15 @@ namespace ColorPaletteBuilder
         {
             this.InitializeComponent();
 
-            SetTheme(ApplicationTheme.Dark);
+               //SetTheme(ApplicationTheme.Dark);
 
-        }
+          }
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+          /// <summary>
+          /// Invoked when the application is launched.
+          /// </summary>
+          /// <param name="args">Details about the launch request and process.</param>
+          protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             m_window = new MainWindow();
             m_window.ExtendsContentIntoTitleBar = true;
@@ -64,11 +64,11 @@ namespace ColorPaletteBuilder
         }
 
 
-        public void SetTheme(ApplicationTheme theme)
-        {
-            RequestedTheme = theme;
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            localSettings.Values[ThemeSettingKey] = theme.ToString();
-        }
+        //public void SetTheme(ApplicationTheme theme)
+        //{
+        //    RequestedTheme = theme;
+        //    var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+        //    localSettings.Values[ThemeSettingKey] = theme.ToString();
+        //}
     }
 }

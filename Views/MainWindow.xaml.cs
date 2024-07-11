@@ -61,7 +61,7 @@ namespace ColorPaletteBuilder
           private int messageTimerInterval = 2; // seconds
 
           private DispatcherTimer autoSaveTimer = new DispatcherTimer();
-          private int autoSaveInterval = 60; // seconds
+          private int autoSaveInterval = 10; // seconds
 
           // Miscellaneous
 
@@ -95,10 +95,12 @@ namespace ColorPaletteBuilder
           // Initialization Methods
           private async void InitializeAsync()
           {
+               await mainViewModel.LoadDefaultColorSelectorImage();
                App.ColorSelectorBitmap = mainViewModel.DefaultColorSelectorImage;
                ColorSelectorImage.Source = App.ColorSelectorBitmap;
 
                await mainViewModel.LoadLastSession_Async();
+               TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
 
                mainViewModel.ApplyFilter();
 
@@ -117,6 +119,9 @@ namespace ColorPaletteBuilder
                SortListView(FontIconSortElementIndex, activeSortCriteria);
 
                LoadColorSelectorImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
+
+               comboElementStates.SelectedItem = mainViewModel.SelectedState;
+               comboElementGroups.SelectedItem = mainViewModel.SelectedGroup;
           }
 
           private void ConfigureWindowSize()
@@ -224,14 +229,14 @@ namespace ColorPaletteBuilder
           private async void AutoSaveBackupTimer_Tick( object sender, object e )
           {
                AppConstants.ReturnCode returnCode;
-               returnCode = await mainViewModel.SavePaletteToFile_Async(AppConstants.BackupFilePath);
+               returnCode = await mainViewModel.AutoSaveBackup_Async();
 
                if ( TitleBarMessage != null || titleBarMessageTimer != null )
                {
                     switch ( returnCode )
                     {
                          case AppConstants.ReturnCode.Success:
-                         TitleBarMessage.Text = "Auto-Saved To Backup";
+                         TitleBarMessage.Text = "Auto-Saved";
                          titleBarMessageTimer.Start();
                          break;
                          case AppConstants.ReturnCode.GeneralFailure:
@@ -518,9 +523,9 @@ namespace ColorPaletteBuilder
 
           private async void BrowseColorSelectorPhoto_Click( object sender, RoutedEventArgs e )
           {
-               AppConstants.ReturnCode returnCode = await mainViewModel.SelectColorSelectorPhoto();
+               AppConstants.ReturnCode returnCode = await mainViewModel.SelectColorSelectorPhoto(this);
 
-              LoadColorSelectorImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
+               LoadColorSelectorImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
           }
 
           private void ColorSelectorClearImage_Click( object sender, RoutedEventArgs e )
