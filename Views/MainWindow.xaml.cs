@@ -45,13 +45,13 @@ namespace ColorPaletteBuilder
           public string SelectedState { get; set; }
           public string SelectedGroup { get; set; }
 
-          public static WriteableBitmap DefaultColorSelectorImage { get; private set; }
+          //public static WriteableBitmap DefaultColorSelectorImage { get; private set; }
 
           // Private Fields
-          private string currentColorPickerHex = "#FFFFFFFF";
-          private string currentColorPickerHexNoAlpha = "#FFFFFF";
-          private string currentColorPickerRGB = "";
-          private string currentColorPickerCodeSnippet = "";
+          private string currentColorPickerHex = string.Empty;
+          private string currentColorPickerHexNoAlpha = string.Empty;
+          private string currentColorPickerRGB = string.Empty;
+          private string currentColorPickerCodeSnippet = string.Empty;
 
           // Sort and Filter Fields
           private string defaultComboBoxText = "Any";
@@ -396,79 +396,54 @@ namespace ColorPaletteBuilder
           private void RemoveStateConfirmation_Click( object sender, RoutedEventArgs e )
           {
                string stateToRemove = comboElementStates.Text;
+               AppConstants.ReturnCode returnCode = mainViewModel.RemoveState(stateToRemove);
 
-               // Set each ColorEntry with the state to remove to an empty string
-               foreach ( var colorEntry in mainViewModel.ColorPaletteData.ColorEntries )
+               if ( returnCode == AppConstants.ReturnCode.Success )
                {
-                    if ( colorEntry.ElementState == stateToRemove )
-                    {
-                         colorEntry.ElementState = string.Empty;
-                    }
-               }
+                    //TODO: Make a method that accepts the text and then starts the timer.
+                    comboElementStates.SelectedItem = comboElementStates.Items.FirstOrDefault();
 
-               // Now Remove from the ElementStates collection
-               // Check if it is an empty string, for this cannot be removed
-               if ( stateToRemove != defaultComboBoxText )
-               {
-                    ColorPaletteData.ElementStates.Remove(stateToRemove);
+                    TitleBarMessage.Text = $"Removed State: {stateToRemove}";
+                    titleBarMessageTimer.Start();
                }
-               else // Give a message to know it worked but just can't be removed
+               else
                {
                     TitleBarMessage.Text = "State cannot be removed";
                     titleBarMessageTimer.Start();
                }
-
-               comboElementStates.SelectedItem = comboElementStates.Items.FirstOrDefault();
-
-               TitleBarMessage.Text = $"Removed State: {stateToRemove}";
-               titleBarMessageTimer.Start();
-
                RemoveStateFlyout.Hide();
           }
 
           private void AddGroup_Click( object sender, RoutedEventArgs e )
           {
-               if ( ColorPaletteData.ElementGroups.Contains(comboElementGroups.Text) )
+               if ( mainViewModel.ColorPaletteData.ElementGroups.Contains(comboElementGroups.Text) )
                {
                     TitleBarMessage.Text = "Group already exists";
                     titleBarMessageTimer.Start();
                }
                else
                {
-                    ColorPaletteData.ElementGroups.Add(comboElementGroups.Text);
+                    mainViewModel.ColorPaletteData.ElementGroups.Add(comboElementGroups.Text);
                }
           }
 
           private void RemoveGroupConfirmation_Click( object sender, RoutedEventArgs e )
           {
                string groupToRemove = comboElementGroups.Text;
+               AppConstants.ReturnCode returnCode = mainViewModel.RemoveGroup(groupToRemove);
 
-               // Set each ColorEntry with the group to remove to an empty string
-               foreach ( var colorEntry in ColorPaletteData.ColorEntries )
+               if ( returnCode == AppConstants.ReturnCode.Success )
                {
-                    if ( colorEntry.ElementGroup == groupToRemove )
-                    {
-                         colorEntry.ElementGroup = string.Empty;
-                    }
-               }
+                    comboElementGroups.SelectedItem = comboElementGroups.Items.FirstOrDefault();
 
-               // Now Remove from the ElementGroups collection
-               // Check if it is an empty string, for this cannot be removed
-               if ( groupToRemove != defaultComboBoxText )
-               {
-                    ColorPaletteData.ElementGroups.Remove(groupToRemove);
+                    TitleBarMessage.Text = $"Removed Group: {groupToRemove}";
+                    titleBarMessageTimer.Start();
                }
                else
                {
                     TitleBarMessage.Text = "Group cannot be removed";
                     titleBarMessageTimer.Start();
                }
-
-               comboElementGroups.SelectedItem = comboElementGroups.Items.FirstOrDefault();
-
-               TitleBarMessage.Text = $"Removed Group: {groupToRemove}";
-               titleBarMessageTimer.Start();
-
                RemoveGroupFlyout.Hide();
           }
 
@@ -537,42 +512,18 @@ namespace ColorPaletteBuilder
                ColorSelectorButton_Click(sender, e);
           }
 
-          private async void BrowseColorSelectorPhoto_Click( object sender, RoutedEventArgs e )
+          private async Task BrowseColorSelectorPhoto_Click( object sender, RoutedEventArgs e )
           {
-               // Initialize the picker
-               FileOpenPicker picker = new FileOpenPicker
-               {
-                    SuggestedStartLocation = PickerLocationId.PicturesLibrary // More appropriate start location for images
-               };
+               AppConstants.ReturnCode returnCode = await mainViewModel.SelectColorSelectorPhoto();
 
-               // Initialize with window handle
-               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-               WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-
-               // Add file type filters
-               picker.FileTypeFilter.Add(".bmp");
-               picker.FileTypeFilter.Add(".jpg");
-               picker.FileTypeFilter.Add(".jpeg");
-               picker.FileTypeFilter.Add(".png");
-
-               // Pick a single file
-               StorageFile file = await picker.PickSingleFileAsync();
-               if ( file != null )
-               {
-                    // Store the path in palette data for last used retrieval
-                    ColorPaletteData.ColorSelectorSource = file.Path;
-
-                    LoadThumbNailImage(file.Path);
-
-                    ColorPaletteData.ColorSelectorSource = file.Path;
-               }
+               LoadThumbNailImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
           }
 
           private void ColorSelectorClearImage_Click( object sender, RoutedEventArgs e )
           {
-               ColorSelectorImage.Source = DefaultColorSelectorImage;
-               App.ColorSelectorBitmap = DefaultColorSelectorImage;
-               ColorPaletteData.ColorSelectorSource = string.Empty;
+               ColorSelectorImage.Source = mainViewModel.DefaultColorSelectorImage;
+               App.ColorSelectorBitmap = mainViewModel.DefaultColorSelectorImage;
+               mainViewModel.ColorPaletteData.ColorSelectorSource = string.Empty;
           }
 
           #endregion // Button Click Event Handlers
@@ -607,40 +558,23 @@ namespace ColorPaletteBuilder
                }
           }
 
-          private async void LoadThumbNailImage( string imagePath )
+          private async void LoadColorSelectorImage( string imagePath )
           {
-               try
+               AppConstants.ReturnCode returnCode = await mainViewModel.ProcessColorSelectorImage_Async(imagePath);
+               if ( App.ColorSelectorBitmap != null && returnCode == AppConstants.ReturnCode.Success )
                {
-
-                    if ( File.Exists(imagePath) || !string.IsNullOrEmpty(imagePath) )
-                    {
-                         using ( IRandomAccessStream fileStream = await StorageFile.GetFileFromPathAsync(imagePath).AsTask().Result.OpenAsync(FileAccessMode.Read) )
-                         {
-                              BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
-                              WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
-                              await bitmap.SetSourceAsync(fileStream);
-
-                              // Set the properties
-                              App.ColorSelectorBitmap = bitmap;
-                              ColorPaletteData.ColorSelectorSource = imagePath;
-                              ColorSelectorImage.Source = App.ColorSelectorBitmap;
-
-                              ColorSelectorImageUpdated();
-                         }
-                    }
-                    else
-                    {
-                         Debug.WriteLine($"File does not exist: {imagePath}");
-
-                         App.ColorSelectorBitmap = DefaultColorSelectorImage;
-                         ColorPaletteData.ColorSelectorSource = string.Empty;
-                         ColorSelectorImage.Source = App.ColorSelectorBitmap;
-                    }
+                    ColorSelectorImage.Source = App.ColorSelectorBitmap;
+                    ColorSelectorImageUpdated();
                }
-               catch ( Exception ex )
+               else if ( returnCode == AppConstants.ReturnCode.FileNotFound )
                {
-                    Debug.WriteLine($"Error loading thumbnail image: {ex.Message}");
-                    Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                    TitleBarMessage.Text = "Image File note found";
+                    titleBarMessageTimer.Start();
+               }
+               else
+               {
+                    TitleBarMessage.Text = "Erro Processing Selected Image";
+                    titleBarMessageTimer.Start();
                }
           }
 
@@ -657,7 +591,7 @@ namespace ColorPaletteBuilder
                var comboBox = sender as ComboBox;
                if ( comboBox != null )
                {
-                    comboBox.ItemsSource = ColorPaletteData.ElementStates;
+                    comboBox.ItemsSource = mainViewModel.ColorPaletteData.ElementStates;
                }
           }
 
@@ -666,9 +600,10 @@ namespace ColorPaletteBuilder
                var comboBox = sender as ComboBox;
                if ( comboBox != null )
                {
-                    comboBox.ItemsSource = ColorPaletteData.ElementGroups;
+                    comboBox.ItemsSource = mainViewModel.ColorPaletteData.ElementGroups;
                }
           }
+
           private void OnFilterSelectionChanged( object sender, SelectionChangedEventArgs e )
           {
                if ( (ComboBox)sender == comboElementStates )
@@ -680,9 +615,8 @@ namespace ColorPaletteBuilder
                     SelectedGroup = comboElementGroups.SelectedItem as string;
                }
 
-               TitleBarMessage.Text = $"Filter: {SelectedState} - {SelectedGroup}";
+               TitleBarMessage.Text = $"Filter Settings: {SelectedState} AND {SelectedGroup}";
                titleBarMessageTimer.Start();
-
           }
 
           #endregion // Combo Box Event Handlers
@@ -699,29 +633,18 @@ namespace ColorPaletteBuilder
           // ColorPicker Event Handlers
           private void CustomColorPicker_ColorChanged( ColorPicker sender, ColorChangedEventArgs args )
           {
-               if ( currentColorPickerHex != null )
-               {
-                    currentColorPickerHex = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: true);
-               }
-               if ( currentColorPickerHexNoAlpha != null )
-               {
-                    currentColorPickerHexNoAlpha = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: false);
-               }
-               if ( currentColorPickerRGB != null )
-               {
-                    currentColorPickerRGB = $"{args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}";
-               }
-               if ( currentColorPickerCodeSnippet != null )
-               {
-                    //TODO: Settings will allow the desired snippet to be created and then use that to form the snippet with selected color
-                    currentColorPickerCodeSnippet = $"new SolidColorBrush(Color.FromArgb({args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}));";
-               }
+               //Set Fields
+               currentColorPickerHex = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: true);
+               currentColorPickerHexNoAlpha = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: false);
+               currentColorPickerRGB = $"{args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}";
+               //TODO: Settings will allow the desired snippet to be created and then use that to form the snippet with selected color
+               currentColorPickerCodeSnippet = $"new SolidColorBrush(Color.FromArgb({args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}));";
 
+               // Set Controls
                TextBoxColorPickerHex.Text = currentColorPickerHex;
                TextBoxColorPickerHexNoAlpha.Text = currentColorPickerHexNoAlpha;
                TextBoxColorPickerRGB.Text = currentColorPickerRGB;
                TextBoxColorPickerCodeSnippet.Text = currentColorPickerCodeSnippet;
-
           }
 
           private void CopyColorPickerHex_Click( object sender, RoutedEventArgs e )

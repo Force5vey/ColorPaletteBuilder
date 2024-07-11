@@ -1,12 +1,23 @@
 ﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Microsoft.UI.Xaml;
+using System.Drawing;
+using Windows.ApplicationModel.DataTransfer;
+using Microsoft.UI.Windowing;
+using System.Drawing.Text;
+using System.Data;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace ColorPaletteBuilder
 {
@@ -18,6 +29,7 @@ namespace ColorPaletteBuilder
           private const string defaultComboBoxText = "Any";
           private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
+          internal WriteableBitmap DefaultColorSelectorImage { get; private set; }
 
 
 
@@ -243,12 +255,139 @@ namespace ColorPaletteBuilder
                }
           }
 
-          internal void RemoveColorEntry(ColorEntry selectedEntry)
+          internal void RemoveColorEntry( ColorEntry selectedEntry )
           {
-               if (selectedEntry != null )
+               if ( selectedEntry != null )
                {
                     ColorPaletteData.ColorEntries.Remove(selectedEntry);
                }
+          }
+
+          internal AppConstants.ReturnCode RemoveState( string stateToRemove )
+          {
+               AppConstants.ReturnCode returnCode;
+               // Set each ColorEntry with the state to remove to an empty string
+               foreach ( var colorEntry in ColorPaletteData.ColorEntries )
+               {
+                    if ( colorEntry.ElementState == stateToRemove )
+                    {
+                         colorEntry.ElementState = string.Empty;
+                    }
+               }
+
+               if ( stateToRemove != defaultComboBoxText )
+               {
+                    ColorPaletteData.ElementStates.Remove(stateToRemove);
+                    returnCode = AppConstants.ReturnCode.Success;
+               }
+               else
+               {
+                    returnCode = AppConstants.ReturnCode.Unauthorized;
+               }
+
+               return returnCode;
+
+          }
+
+          internal AppConstants.ReturnCode RemoveGroup( string groupToRemove )
+          {
+               AppConstants.ReturnCode returnCode;
+               // Set each ColorEntry with the group to remove to an empty string
+               foreach ( var colorEntry in ColorPaletteData.ColorEntries )
+               {
+                    if ( colorEntry.ElementGroup == groupToRemove )
+                    {
+                         colorEntry.ElementGroup = string.Empty;
+                    }
+               }
+
+               if ( groupToRemove != defaultComboBoxText )
+               {
+                    ColorPaletteData.ElementGroups.Remove(groupToRemove);
+                    returnCode = AppConstants.ReturnCode.Success;
+               }
+               else
+               {
+                    returnCode = AppConstants.ReturnCode.Unauthorized;
+               }
+
+               return returnCode;
+          }
+
+          internal async Task<AppConstants.ReturnCode> SelectColorSelectorPhoto()
+          {
+               AppConstants.ReturnCode returnCode;
+               // Initialize the picker
+               FileOpenPicker picker = new FileOpenPicker
+               {
+                    SuggestedStartLocation = PickerLocationId.PicturesLibrary // More appropriate start location for images
+               };
+
+               // Initialize with window handle
+               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+               WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+
+               // Add file type filters
+               picker.FileTypeFilter.Add(".bmp");
+               picker.FileTypeFilter.Add(".jpg");
+               picker.FileTypeFilter.Add(".jpeg");
+               picker.FileTypeFilter.Add(".png");
+
+               // Pick a single file
+               StorageFile file = await picker.PickSingleFileAsync();
+               if ( file != null )
+               {
+                    // Store the path in palette data for last used retrieval
+                    ColorPaletteData.ColorSelectorSource = file.Path;
+                    returnCode = AppConstants.ReturnCode.Success;
+               }
+               else
+               {
+                    returnCode = AppConstants.ReturnCode.FileNotFound;
+               }
+
+               return returnCode;
+          }
+
+          //TODO: this might be simplified by using colorpalette data over a parameter for imagePath
+          internal async Task<AppConstants.ReturnCode> ProcessColorSelectorImage_Async( string imagePath )
+          {
+               AppConstants.ReturnCode returnCode;
+               try
+               {
+                    if ( File.Exists(imagePath) || !string.IsNullOrEmpty(imagePath) )
+                    {
+                         using ( IRandomAccessStream fileStream = await StorageFile.GetFileFromPathAsync(imagePath).AsTask().Result.OpenAsync(FileAccessMode.Read) )
+                         {
+                              BitmapDecoder decoder = await BitmapDecoder.CreateAsync(fileStream);
+                              WriteableBitmap bitmap = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                              await bitmap.SetSourceAsync(fileStream);
+
+                              // Set the properties
+                              App.ColorSelectorBitmap = bitmap;
+                              ColorPaletteData.ColorSelectorSource = imagePath;
+                         }
+
+                         returnCode = AppConstants.ReturnCode.Success;
+                    }
+                    else
+                    {
+                         //TODO: Error handling back to CodeBehind
+                         Debug.WriteLine($"File does not exist: {imagePath}");
+
+                         App.ColorSelectorBitmap = DefaultColorSelectorImage;
+                         ColorPaletteData.ColorSelectorSource = string.Empty;
+                         returnCode = AppConstants.ReturnCode.FileNotFound;
+                    }
+               }
+               catch ( Exception ex )
+               {
+                    Debug.WriteLine($"Error loading thumbnail image: {ex.Message}");
+                    Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                    returnCode = AppConstants.ReturnCode.ProcessingError;
+               }
+
+               return returnCode;
           }
      }
 }
