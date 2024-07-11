@@ -104,6 +104,7 @@ namespace ColorPaletteBuilder
                InitializeAutoSaveTimer();
           }
 
+          // Initialization Methods
           private async void InitializeAsync()
           {
                // a 'blank' default image loaded from assets to be a place holder in the color selector image
@@ -122,9 +123,6 @@ namespace ColorPaletteBuilder
                SortFilteredColorEntries(FontIconSortElementIndex, activeSortCriteria);
           }
 
-
-
-          // Initialization Methods
           private void ConfigureWindowSize()
           {
                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
@@ -146,19 +144,94 @@ namespace ColorPaletteBuilder
                }
           }
 
+          /// <summary>
+          /// Get's Designated Palette Loaded from file and loads ColorPaletteData
+          /// </summary>
+          /// <param name="paletteFilePath"></param>
+          /// <returns></returns>
+          private async Task LoadPalette_Async( string paletteFilePath )
+          {
+               if ( !string.IsNullOrEmpty(paletteFilePath) )
+               {
+                    ColorPalette colorPalette = await FileService.LoadPaletteFile_Async(paletteFilePath);
+                    if ( colorPalette != null )
+                    {
+                         ClearColorPaletteData();
+
+                         ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
+                         ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+                         ColorPaletteData.ColorSelectorSource = colorPalette.ColorSelectorSource;
+
+                         TitleBarFileName.Text = ColorPaletteData.ColorPaletteName;
+
+                         foreach ( var entry in colorPalette.ColorEntries )
+                         {
+                              ColorPaletteData.ColorEntries.Add(entry);
+                         }
+                         foreach ( var group in colorPalette.ElementGroups )
+                         {
+                              if ( group != defaultComboBoxText )
+                              {
+                                   ColorPaletteData.ElementGroups.Add(group);
+                              }
+                         }
+                         foreach ( var state in colorPalette.ElementStates )
+                         {
+                              if ( state != defaultComboBoxText )
+                              {
+                                   ColorPaletteData.ElementStates.Add(state);
+                              }
+                         }
+
+                         currentElementIndex = ColorPaletteData.ColorEntries.Max(entry => entry.ElementIndex) + 1;
+
+                         // force a rebind of the ListView to ensure it updates
+                         ColorPaletteListView.ItemsSource = null;
+                         ApplyFilter();
+                         ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
+
+
+                    }
+                    else
+                    {
+                         //TODO: hand null loaded colorpalette
+                    }
+               }
+               else
+               {
+                    //TODO: Display error and load default palette
+                    // this is null or empty.
+
+               }
+          }
+
           private async Task LoadLastSession()
           {
-               await LoadLastOpenedFileAsync(); //TODO: Conduct checks for if the last file was an autosave backup file that isn't saved then load that
+               // Load last palette
+               // load last thumbnail.
+               // load last color picker hex
+
 
                var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-               if ( localSettings.Values.TryGetValue("LastColorPickerHex", out object lastColorPickerHex) )
+
+               if ( localSettings.Values.TryGetValue(AppConstants.LastOpenedFilePath, out var lastOpenedFilePath) )
+               {
+                    if ( lastOpenedFilePath != null )
+                    {
+                         await LoadPalette_Async(lastOpenedFilePath as string);
+                    }
+               }
+
+               if ( localSettings.Values.TryGetValue(AppConstants.LastColorPickerHex, out object lastColorPickerHex) )
                {
                     currentColorPickerHex = lastColorPickerHex as string;
                     CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(ColorConverter.FromHex(currentColorPickerHex));
                }
 
+               LoadThumbNailImage(ColorPaletteData.ColorSelectorSource);
 
           }
+
 
           // AppWindow Event Handlers
           private void MainWindow_Changed( Microsoft.UI.Windowing.AppWindow sender, object args )
@@ -277,10 +350,10 @@ namespace ColorPaletteBuilder
                StorageFile file = await picker.PickSingleFileAsync();
                if ( file != null )
                {
-                    await LoadPaletteFromFileAsync(file.Path);
+                    await LoadPalette_Async(file.Path);
 
                     var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-                    localSettings.Values["LastOpenedFilePath"] = file.Path;
+                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
 
                }
           }
@@ -870,73 +943,6 @@ namespace ColorPaletteBuilder
           private void ClearFilteredColorEntries()
           {
                ColorPaletteData.FilteredColorEntries.Clear();
-          }
-          private async Task LoadLastOpenedFileAsync()
-          {
-               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-               if ( localSettings.Values.TryGetValue("LastOpenedFilePath", out object filePath) )
-               {
-                    string lastOpenedFilePath = filePath as string;
-                    if ( !string.IsNullOrEmpty(lastOpenedFilePath) && File.Exists(lastOpenedFilePath) )
-                    {
-                         await LoadPaletteFromFileAsync(lastOpenedFilePath);
-                         LoadThumbNailImage(ColorPaletteData.ColorSelectorSource);
-                    }
-               }
-          }
-
-          private async Task<int> LoadPaletteFromFileAsync( string filePath )
-          {
-               try
-               {
-                    ColorPalette colorPalette = await FileService.LoadPaletteAsync(filePath);
-                    if ( colorPalette != null )
-                    {
-                         ClearColorPaletteData();
-
-                         ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
-                         ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
-                         ColorPaletteData.ColorSelectorSource = colorPalette.ColorSelectorSource;
-
-                         LoadThumbNailImage(colorPalette.ColorSelectorSource);
-
-                         TitleBarFileName.Text = ColorPaletteData.ColorPaletteName;
-
-                         foreach ( var entry in colorPalette.ColorEntries )
-                         {
-                              ColorPaletteData.ColorEntries.Add(entry);
-                         }
-                         foreach ( var group in colorPalette.ElementGroups )
-                         {
-                              if ( group != defaultComboBoxText )
-                              {
-                                   ColorPaletteData.ElementGroups.Add(group);
-                              }
-                         }
-                         foreach ( var state in colorPalette.ElementStates )
-                         {
-                              if ( state != defaultComboBoxText )
-                              {
-                                   ColorPaletteData.ElementStates.Add(state);
-                              }
-                         }
-
-                         currentElementIndex = ColorPaletteData.ColorEntries.Max(entry => entry.ElementIndex) + 1;
-
-                         // force a rebind of the ListView to ensure it updates
-                         ColorPaletteListView.ItemsSource = null;
-                         ApplyFilter();
-                         ColorPaletteListView.ItemsSource = ColorPaletteData.FilteredColorEntries;
-
-
-                    }
-                    return 0;
-               }
-               catch
-               {
-                    //TODO: Handle errors
-                    return -1;
-               }
           }
 
           private async Task<AppConstants.ReturnCode> SavePaletteToFile( string filePath )

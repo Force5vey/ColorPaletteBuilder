@@ -42,5 +42,8 @@ namespace ColorPaletteBuilder
 
           public static string BackupFileName = "backup.cpb";
 
+          internal static string LastColorPickerHex = "LastColorPickerHex";
+          internal static string LastOpenedFilePath = "LastOpenedFilePath";
+
      }
 }

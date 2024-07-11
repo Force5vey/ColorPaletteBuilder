@@ -36,7 +36,7 @@ namespace ColorPaletteBuilder
 
           }
 
-          public static async Task<ColorPalette> LoadPaletteAsync( string filePath )
+          public static async Task<ColorPalette> LoadPaletteFile_Async( string filePath )
           {
                try
                {
@@ -68,6 +68,23 @@ namespace ColorPaletteBuilder
                     return null;
                }
           }
+
+          internal static string GetLocalSettings(string settingString)
+          {
+               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+
+               if ( localSettings.Values.TryGetValue(settingString, out object setting) )
+               {
+                    string settingValue = setting as string;
+                    if ( !string.IsNullOrEmpty(settingString) && File.Exists(settingValue) )
+                    {
+                         return settingValue;
+                    }
+               }
+               return null;
+          }
+
+
      }
 
 

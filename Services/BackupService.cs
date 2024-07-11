@@ -39,7 +39,7 @@ namespace ColorPaletteBuilder
             try
             {
                 StorageFile backupFile = await GetBackupFileAsync();
-                return await FileService.LoadPaletteAsync(backupFile.Path);
+                return await FileService.LoadPaletteFile_Async(backupFile.Path);
             }
             catch (Exception ex)
             {
