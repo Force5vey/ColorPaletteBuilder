@@ -1,15 +1,12 @@
-﻿using ColorPaletteBuilder;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace ColorPaletteBuilder
 {
      public class ColorPalette :INotifyPropertyChanged
      {
-          private int currentIndex;
+          private int currentEntryIndex;
           private string colorPaletteName;
           private string colorPaletteFile;
 
@@ -27,7 +24,7 @@ namespace ColorPaletteBuilder
 
                ColorPaletteName = "Color Palette";
                ColorPaletteFile = "New Palette";
-               CurrentIndex = 0;
+               CurrentEntryIndex = 0;
                ElementStates = new ObservableCollection<string>();
                ElementGroups = new ObservableCollection<string>();
                ColorEntries = new ObservableCollection<ColorEntry>();
@@ -35,10 +32,10 @@ namespace ColorPaletteBuilder
 
           }
 
-          public int CurrentIndex
+          public int CurrentEntryIndex
           {
-               get => currentIndex;
-               set => SetProperty(ref currentIndex, value);
+               get => currentEntryIndex;
+               set => SetProperty(ref currentEntryIndex, value);
           }
 
           public string FileHeader { get; set; }

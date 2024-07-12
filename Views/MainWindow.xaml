@@ -33,7 +33,7 @@
 
         <MenuBar Grid.Row="1">
             <MenuBarItem Title="File">
-                <MenuFlyoutItem Text="New Palette" Icon="NewFolder" Click="NewPalette_Click">
+                <MenuFlyoutItem Text="New Palette" Icon="NewFolder" Click="NewPaletteButton_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="N"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
@@ -108,7 +108,7 @@
         <!-- ===================================================================================================================== -->
 
         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Orientation="Horizontal">
-            <Button x:Name="NewPaletteButton" Margin="10,0,0,5" Style="{StaticResource AccentButtonStyle}" Click="NewPalette_Click">
+            <Button x:Name="NewPaletteButton" Margin="10,0,0,5" Style="{StaticResource AccentButtonStyle}" Click="NewPaletteButton_Click">
                 <Button.Content>
                     <StackPanel>
                         <SymbolIcon Symbol="NewFolder"/>

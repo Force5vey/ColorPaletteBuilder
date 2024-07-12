@@ -40,10 +40,6 @@ namespace ColorPaletteBuilder
           // Events
           public event EventHandler SetColorSelectorImage;
 
-          // Public Properties
-          public string SelectedState { get; set; }
-          public string SelectedGroup { get; set; }
-
           // Private Fields
           private string currentColorPickerHex = string.Empty;
           private string currentColorPickerHexNoAlpha = string.Empty;
@@ -73,8 +69,8 @@ namespace ColorPaletteBuilder
                InitializeAsync();
 
                // Setting Default Values
-               SelectedState = defaultComboBoxText;
-               SelectedGroup = defaultComboBoxText;
+               mainViewModel.SelectedState = defaultComboBoxText;
+               mainViewModel.SelectedGroup = defaultComboBoxText;
                CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(Color.FromArgb(255, Color.White));
 
                // Event Handlers Setup
@@ -251,11 +247,13 @@ namespace ColorPaletteBuilder
 
           #region // Button Click Event Handlers - Color Palette Actions
 
-          private void NewPalette_Click( object sender, RoutedEventArgs e )
+          private void NewPaletteButton_Click( object sender, RoutedEventArgs e )
           {
                mainViewModel.ClearColorPaletteData();
 
-               //TODO: any ui level clearing or changes
+               TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
+               comboElementStates.SelectedItem = mainViewModel.SelectedState;
+               comboElementGroups.SelectedItem = mainViewModel.SelectedGroup;
           }
 
           private async void OpenPalette_Click( object sender, RoutedEventArgs e )
@@ -280,10 +278,13 @@ namespace ColorPaletteBuilder
                if ( string.IsNullOrEmpty(mainViewModel.ColorPaletteData.ColorPaletteFile) || mainViewModel.ColorPaletteData.ColorPaletteFile == "New Palette" )
                {
                     SavePaletteAs_Click(sender, e);
-                    return;
+               }
+               else
+               {
+                    await mainViewModel.SavePaletteToFile_Async(mainViewModel.ColorPaletteData.ColorPaletteFile);
                }
 
-               await mainViewModel.SavePaletteToFile_Async(mainViewModel.ColorPaletteData.ColorPaletteFile);
+
           }
 
           private async void SavePaletteAs_Click( object sender, RoutedEventArgs e )
@@ -303,7 +304,7 @@ namespace ColorPaletteBuilder
           {
                ColorEntry newEntry = new ColorEntry
                {
-                    ElementIndex = mainViewModel.ColorPaletteData.CurrentIndex++,
+                    ElementIndex = mainViewModel.ColorPaletteData.CurrentEntryIndex++,
                     ElementName = "Name",
                     ElementGroup = mainViewModel.ColorPaletteData.ElementGroups.FirstOrDefault(),
                     ElementState = mainViewModel.ColorPaletteData.ElementStates.FirstOrDefault(),
@@ -617,14 +618,14 @@ namespace ColorPaletteBuilder
           {
                if ( (ComboBox)sender == comboElementStates )
                {
-                    SelectedState = comboElementStates.SelectedItem as string;
+                    mainViewModel.SelectedState = comboElementStates.SelectedItem as string;
                }
                else if ( (ComboBox)sender == comboElementGroups )
                {
-                    SelectedGroup = comboElementGroups.SelectedItem as string;
+                    mainViewModel.SelectedGroup = comboElementGroups.SelectedItem as string;
                }
 
-               TitleBarMessage.Text = $"Filter Settings: {SelectedState} AND {SelectedGroup}";
+               TitleBarMessage.Text = $"Filter Settings: {mainViewModel.SelectedState} AND {mainViewModel.SelectedGroup}";
                titleBarMessageTimer.Start();
           }
 

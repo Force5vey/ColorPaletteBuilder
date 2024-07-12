@@ -126,14 +126,14 @@ namespace ColorPaletteBuilder
 
                          //Color Entries is never decrmented; so counting doesn't work. So get highest value in the Index and use that next
                          //This is primarily for sorting by order addded and is not a unique ID for the entry.
-                         ColorPaletteData.CurrentIndex = ColorPaletteData.ColorEntries.Max(entry => entry.ElementIndex) + 1;
+                         ColorPaletteData.CurrentEntryIndex = ColorPaletteData.ColorEntries.Max(entry => entry.ElementIndex) + 1;
                     }
                }
           }
 
           public void ClearColorPaletteData()
           {
-               ColorPaletteData.CurrentIndex = 0;
+               ColorPaletteData.CurrentEntryIndex = 0;
                ColorPaletteData.ColorPaletteName = "New Palette";
                ColorPaletteData.ColorPaletteFile = "New Palette";
 

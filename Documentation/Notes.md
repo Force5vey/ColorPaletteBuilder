@@ -22,7 +22,7 @@ auto save after clicking new returns an error in mainView at the await storage f
 
 ​		resetting all of the colorpalette data
 
-​		resetting the titlbar title
+​		resetting the titlbar title  **** friday evening before softball.... the titlebar is reset and the combo boxes, as of now the next issue is that we get to SavePaletteAs_Async in the MainViewModel and that is not triggering a file picker. -- probably noted below, but without this happening, the autosave on the timer will have an issue trying to save to a "New Palette" file name that is in the reset palette data, so there will need to be a check there...probably kick that to the auto save method not at the tick method.
 
 ​		resetting the save file etc to New Palette
 
