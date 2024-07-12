@@ -5,17 +5,20 @@
   "ColorPaletteName": "ThursdayTest",
   "ColorPaletteFile": "C:\\dev\\ColorPaletteBuilder\\Assets\\ThursdayTest.cpb",
   "ElementStates": [
-    "Any"
+    "Any",
+    "Enabled",
+    "Diabled"
   ],
   "ElementGroups": [
-    "Any"
+    "Any",
+    "Level"
   ],
   "ColorEntries": [
     {
       "Id": "034c2fd4-545d-47e4-8d0a-7ad01552362f",
       "ElementIndex": 5,
       "ElementName": "Name",
-      "ElementState": null,
+      "ElementState": "Enabled",
       "ElementGroup": "Any",
       "HexCode": "#FF2B0B0E",
       "DisplayColor": "",
@@ -89,7 +92,7 @@
       "Id": "034c2fd4-545d-47e4-8d0a-7ad01552362f",
       "ElementIndex": 5,
       "ElementName": "Name",
-      "ElementState": null,
+      "ElementState": "Enabled",
       "ElementGroup": "Any",
       "HexCode": "#FF2B0B0E",
       "DisplayColor": "",

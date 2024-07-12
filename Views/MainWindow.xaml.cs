@@ -61,7 +61,7 @@ namespace ColorPaletteBuilder
           private int messageTimerInterval = 2; // seconds
 
           private DispatcherTimer autoSaveTimer = new DispatcherTimer();
-          private int autoSaveInterval = 10; // seconds
+          private int autoSaveInterval = 60; // seconds
 
           // Miscellaneous
 
