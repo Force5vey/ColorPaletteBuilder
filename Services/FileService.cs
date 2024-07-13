@@ -36,7 +36,7 @@ namespace ColorPaletteBuilder
 
           }
 
-          public static async Task<ColorPalette> LoadPaletteFile_Async( string filePath )
+          public static async Task<ColorPalette> DeserializePaletteFile_Async( string filePath )
           {
                try
                {

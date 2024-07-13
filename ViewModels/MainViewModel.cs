@@ -18,6 +18,7 @@ using System.Drawing.Text;
 using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Windows.Security.Authentication.Web.Core;
 
 namespace ColorPaletteBuilder
 {
@@ -26,24 +27,105 @@ namespace ColorPaletteBuilder
           public ColorPalette ColorPaletteData { get; set; } = new ColorPalette();
           public string SelectedState { get; set; }
           public string SelectedGroup { get; set; }
-          private const string defaultComboBoxText = "Any";
           private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
           internal WriteableBitmap DefaultColorSelectorImage { get; private set; }
 
 
-
           public MainViewModel()
           {
                // Initialize default values
-               SelectedState = defaultComboBoxText;
-               SelectedGroup = defaultComboBoxText;
+               SelectedState = AppConstants.DefaultComboBoxText;
+               SelectedGroup = AppConstants.DefaultComboBoxText;
           }
 
-          internal async Task LoadDefaultColorSelectorImage()
+
+          public async Task<AppConstants.ReturnCode> OpenPalette_Async( Window window )
           {
-               DefaultColorSelectorImage = await FileService.LoadDefaultColorSelectorImage();
+               var picker = new FileOpenPicker();
+               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+               WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+               picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+               picker.FileTypeFilter.Add(".cpb");
+
+               StorageFile file = await picker.PickSingleFileAsync();
+               if ( file != null )
+               {
+                    await LoadPalette_Async(file.Path);
+
+                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+
+                    return AppConstants.ReturnCode.Success;
+               }
+
+               return AppConstants.ReturnCode.FileNotFound;
           }
+
+          public async Task LoadPalette_Async( string paletteFilePath )
+          {
+               if ( !string.IsNullOrEmpty(paletteFilePath) )
+               {
+                    ColorPalette colorPalette = await FileService.DeserializePaletteFile_Async(paletteFilePath);
+                    if ( colorPalette != null )
+                    {
+                         ClearColorPaletteData(true);
+
+                         // Set Initial values for a palette that is loaded from file
+                         ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
+                         ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+
+                         ColorPaletteData.ColorSelectorSource = colorPalette.ColorSelectorSource;
+
+                         foreach ( var entry in colorPalette.ColorEntries )
+                         {
+                              ColorPaletteData.ColorEntries.Add(entry);
+                         }
+                         foreach ( var group in colorPalette.ElementGroups )
+                         {
+                              if ( group != AppConstants.DefaultComboBoxText )
+                              {
+                                   ColorPaletteData.ElementGroups.Add(group);
+                              }
+                         }
+                         foreach ( var state in colorPalette.ElementStates )
+                         {
+                              if ( state != AppConstants.DefaultComboBoxText )
+                              {
+                                   ColorPaletteData.ElementStates.Add(state);
+                              }
+                         }
+
+
+                         // Check for entries, if it is zero then the loop can't run; just assign zero to start at beginning.
+                         if ( ColorPaletteData.ElementStates.Count > 0 )
+                         {
+                              int maxIndex = int.MinValue;
+
+                              foreach ( var entry in ColorPaletteData.ColorEntries )
+                              {
+                                   if ( entry.ElementIndex > maxIndex )
+                                   {
+                                        maxIndex = entry.ElementIndex;
+                                   }
+                              }
+                              ColorPaletteData.CurrentEntryIndex = maxIndex + 1;
+                         }
+                         else
+                         {
+                              ColorPaletteData.CurrentEntryIndex = 0;
+                         }
+
+                         ApplyFilter();
+                    }
+               }
+               else
+               {
+                    ClearColorPaletteData(false);
+                    ApplyFilter();
+               }
+
+          }
+
 
           public async Task<AppConstants.ReturnCode> SavePaletteAs_Async( Window window )
           {
@@ -77,27 +159,6 @@ namespace ColorPaletteBuilder
                }
           }
 
-          public async Task<AppConstants.ReturnCode> OpenPalette_Async (Window window)
-          {
-               var picker = new FileOpenPicker();
-               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-               WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-               picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-               picker.FileTypeFilter.Add(".cpb");
-
-               StorageFile file = await picker.PickSingleFileAsync();
-               if ( file != null )
-               {
-                    await LoadPalette_Async(file.Path);
-
-                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
-
-                    return AppConstants.ReturnCode.Success;
-               }
-
-               return AppConstants.ReturnCode.FileNotFound;
-          }
-
           public async Task<AppConstants.ReturnCode> AutoSaveBackup_Async()
           {
                AppConstants.ReturnCode saveBackupReturnCode;
@@ -113,94 +174,44 @@ namespace ColorPaletteBuilder
                }
           }
 
-          public async Task LoadPalette_Async( string paletteFilePath )
+          public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async()
           {
-               if ( !string.IsNullOrEmpty(paletteFilePath) )
+               StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
+               if ( file != null )
                {
-                    ColorPalette colorPalette = await FileService.LoadPaletteFile_Async(paletteFilePath);
-                    if ( colorPalette != null )
-                    {
-                         ClearColorPaletteData();
+                    ColorPaletteData.IsSaved = true;
+                    await FileService.SavePalette_Async(file.Path, ColorPaletteData);
 
-                         // Set Initial values for a palette that is loaded from file
-                         ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
-                         ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
-                         // Clearing color paletteData sets IsSaved to false, so since this is being loaded from file we will reset to true to use the existing file path and name
-                         ColorPaletteData.IsSaved = true;
-
-                         ColorPaletteData.ColorSelectorSource = colorPalette.ColorSelectorSource;
-
-                         foreach ( var entry in colorPalette.ColorEntries )
-                         {
-                              ColorPaletteData.ColorEntries.Add(entry);
-                         }
-                         foreach ( var group in colorPalette.ElementGroups )
-                         {
-                              if ( group != defaultComboBoxText )
-                              {
-                                   ColorPaletteData.ElementGroups.Add(group);
-                              }
-                         }
-                         foreach ( var state in colorPalette.ElementStates )
-                         {
-                              if ( state != defaultComboBoxText )
-                              {
-                                   ColorPaletteData.ElementStates.Add(state);
-                              }
-                         }
-
-                         //Color Entries is never decrmented; so counting doesn't work. So get highest value in the Index and use that next
-                         //This is primarily for sorting by order addded and is not a unique ID for the entry.
-
-                         //Set to int min value, this can be zero but to protect possible changes in logic elsewhere using min value so if
-                         // i decide to add a feature to inject an entry earlier in the order it will still be found.
-                         int maxIndex = int.MinValue;
-
-                         // Check for entries, if it is zero then the loop can't run. If it is zero just assign zero to start at beginning.
-                         if ( ColorPaletteData.ElementStates.Count > 0 )
-                         {
-                              foreach ( var entry in ColorPaletteData.ColorEntries )
-                              {
-                                   if ( entry.ElementIndex > maxIndex )
-                                   {
-                                        maxIndex = entry.ElementIndex;
-                                   }
-                              }
-                              ColorPaletteData.CurrentEntryIndex = maxIndex + 1;
-                         }
-                         else
-                         {
-                              ColorPaletteData.CurrentEntryIndex = 0;
-                         }
-
-
-                         ApplyFilter();
-                    }
+                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+                    return AppConstants.ReturnCode.Success;
+               }
+               else
+               {
+                    ColorPaletteData.IsSaved = false;
+                    return AppConstants.ReturnCode.GeneralFailure;
                }
           }
 
-          public void ClearColorPaletteData()
+          public void ClearColorPaletteData( bool isSaved )
           {
                ColorPaletteData.CurrentEntryIndex = 0;
                ColorPaletteData.ColorPaletteName = "New Palette";
                ColorPaletteData.ColorPaletteFile = "New Palette";
-               ColorPaletteData.IsSaved = false;
+
 
                ColorPaletteData.ElementStates.Clear();
                ColorPaletteData.ElementGroups.Clear();
 
-               ColorPaletteData.ElementStates.Add(defaultComboBoxText);
-               ColorPaletteData.ElementGroups.Add(defaultComboBoxText);
+               ColorPaletteData.ElementStates.Add(AppConstants.DefaultComboBoxText);
+               ColorPaletteData.ElementGroups.Add(AppConstants.DefaultComboBoxText);
 
                ColorPaletteData.ColorEntries.Clear();
                ColorPaletteData.FilteredColorEntries.Clear();
 
-               SelectedState = defaultComboBoxText;
-               SelectedGroup = defaultComboBoxText;
+               SelectedState = AppConstants.DefaultComboBoxText;
+               SelectedGroup = AppConstants.DefaultComboBoxText;
 
-               //ColorSelectorSource to remain, to retain image between Palettes
-
-               //TODO: Callers need to set state and group combo boxes to defaultcomboboxtext
+               ColorPaletteData.IsSaved = isSaved;
 
           }
 
@@ -209,15 +220,15 @@ namespace ColorPaletteBuilder
                ColorPaletteData.FilteredColorEntries.Clear();
                foreach ( var colorEntry in ColorPaletteData.ColorEntries )
                {
-                    if ( SelectedState == defaultComboBoxText && SelectedGroup == defaultComboBoxText )
+                    if ( SelectedState == AppConstants.DefaultComboBoxText && SelectedGroup == AppConstants.DefaultComboBoxText )
                     {
                          ColorPaletteData.FilteredColorEntries.Add(colorEntry);
                     }
-                    else if ( SelectedState == defaultComboBoxText && colorEntry.ElementGroup == SelectedGroup )
+                    else if ( SelectedState == AppConstants.DefaultComboBoxText && colorEntry.ElementGroup == SelectedGroup )
                     {
                          ColorPaletteData.FilteredColorEntries.Add(colorEntry);
                     }
-                    else if ( SelectedGroup == defaultComboBoxText && colorEntry.ElementState == SelectedState )
+                    else if ( SelectedGroup == AppConstants.DefaultComboBoxText && colorEntry.ElementState == SelectedState )
                     {
                          ColorPaletteData.FilteredColorEntries.Add(colorEntry);
                     }
@@ -271,36 +282,6 @@ namespace ColorPaletteBuilder
                }
           }
 
-          //TODO: this isn't updating the colorpaletteData for file and name, it may not need to since it is saving current.
-          public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async()
-          {
-               StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
-               if ( file != null )
-               {
-                    ColorPaletteData.IsSaved = true;
-                    await FileService.SavePalette_Async(file.Path, ColorPaletteData);
-                    
-                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
-                    return AppConstants.ReturnCode.Success;
-               }
-               else
-               {
-                    ColorPaletteData.IsSaved = false;
-                    return AppConstants.ReturnCode.GeneralFailure;
-               }
-          }
-
-          public async Task LoadLastSession_Async()
-          {
-               if ( localSettings.Values.TryGetValue(AppConstants.LastOpenedFilePath, out var lastOpenedFilePath) )
-               {
-                    if ( lastOpenedFilePath != null )
-                    {
-                         await LoadPalette_Async(lastOpenedFilePath as string);
-                    }
-               }
-          }
-
           internal void RemoveColorEntry( ColorEntry selectedEntry )
           {
                if ( selectedEntry != null )
@@ -321,7 +302,7 @@ namespace ColorPaletteBuilder
                     }
                }
 
-               if ( stateToRemove != defaultComboBoxText )
+               if ( stateToRemove != AppConstants.DefaultComboBoxText )
                {
                     ColorPaletteData.ElementStates.Remove(stateToRemove);
                     returnCode = AppConstants.ReturnCode.Success;
@@ -347,7 +328,7 @@ namespace ColorPaletteBuilder
                     }
                }
 
-               if ( groupToRemove != defaultComboBoxText )
+               if ( groupToRemove != AppConstants.DefaultComboBoxText )
                {
                     ColorPaletteData.ElementGroups.Remove(groupToRemove);
                     returnCode = AppConstants.ReturnCode.Success;
@@ -358,6 +339,11 @@ namespace ColorPaletteBuilder
                }
 
                return returnCode;
+          }
+
+          internal async Task LoadDefaultColorSelectorImage()
+          {
+               DefaultColorSelectorImage = await FileService.LoadDefaultColorSelectorImage();
           }
 
           internal async Task<AppConstants.ReturnCode> SelectColorSelectorPhoto( Window window )
@@ -395,7 +381,6 @@ namespace ColorPaletteBuilder
                return returnCode;
           }
 
-          //TODO: this might be simplified by using colorpalette data over a parameter for imagePath
           internal async Task<AppConstants.ReturnCode> ProcessColorSelectorImage_Async( string imagePath )
           {
                AppConstants.ReturnCode returnCode;

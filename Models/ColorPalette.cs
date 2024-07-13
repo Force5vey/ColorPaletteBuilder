@@ -21,8 +21,6 @@ namespace ColorPaletteBuilder
 
           public ColorPalette()
           {
-               FileHeader = MakeFileHeader();
-
                CurrentEntryIndex = 0;
 
                ColorPaletteName = "Color Palette";
@@ -42,8 +40,6 @@ namespace ColorPaletteBuilder
                get => currentEntryIndex;
                set => SetProperty(ref currentEntryIndex, value);
           }
-
-          public string FileHeader { get; set; }
 
           public string ColorSelectorSource
           {
@@ -112,9 +108,5 @@ namespace ColorPaletteBuilder
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
           }
 
-          private string MakeFileHeader()
-          {
-               return "Color Palette Builder - Force5 Development - apps@force5dev.com";
-          }
      }
 }

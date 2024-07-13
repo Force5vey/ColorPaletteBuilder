@@ -1,7 +1,6 @@
 {
   "CurrentEntryIndex": 1,
-  "FileHeader": "Color Palette Builder - Force5 Development - apps@force5dev.com",
-  "ColorSelectorSource": "C:\\Users\\edmon\\OneDrive\\Pictures\\Friends\\WP_20130803_004.jpg",
+  "ColorSelectorSource": "C:\\Users\\edmon\\OneDrive\\Pictures\\MSC\\Howling-Wolf.png",
   "ColorPaletteName": "FridayTest_1.cpb",
   "ColorPaletteFile": "C:\\dev\\ColorPaletteBuilder\\Assets\\FridayTest_1.cpb",
   "IsSaved": true,
@@ -25,18 +24,5 @@
       "Note": ""
     }
   ],
-  "FilteredColorEntries": [
-    {
-      "Id": "60e65f9b-db89-45cb-acd2-953ae819db31",
-      "ElementIndex": 0,
-      "ElementName": "Name",
-      "ElementState": "Any",
-      "ElementGroup": "Any",
-      "HexCode": "#FF09142B",
-      "DisplayColor": "",
-      "ChangeColor": "",
-      "SendColor": "",
-      "Note": ""
-    }
-  ]
+  "FilteredColorEntries": []
 }

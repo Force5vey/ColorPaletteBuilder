@@ -65,5 +65,7 @@ namespace ColorPaletteBuilder
                Color,
                Note
           }
+
+          internal static string DefaultComboBoxText = "All";
      }
 }

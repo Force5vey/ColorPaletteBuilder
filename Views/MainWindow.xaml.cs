@@ -24,7 +24,7 @@ namespace ColorPaletteBuilder
      public sealed partial class MainWindow :Window
      {
           // View Model
-          private MainViewModel mainViewModel = new MainViewModel();
+          private MainViewModel MainViewModel { get; } = new MainViewModel();
 
           // Window and UI Elements
           private SettingsWindow settingsWindow;
@@ -69,8 +69,8 @@ namespace ColorPaletteBuilder
                InitializeAsync();
 
                // Setting Default Values
-               mainViewModel.SelectedState = defaultComboBoxText;
-               mainViewModel.SelectedGroup = defaultComboBoxText;
+               MainViewModel.SelectedState = defaultComboBoxText;
+               MainViewModel.SelectedGroup = defaultComboBoxText;
                CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(Color.FromArgb(255, Color.White));
 
                // Event Handlers Setup
@@ -91,18 +91,14 @@ namespace ColorPaletteBuilder
           // Initialization Methods
           private async void InitializeAsync()
           {
-               await mainViewModel.LoadDefaultColorSelectorImage();
-               App.ColorSelectorBitmap = mainViewModel.DefaultColorSelectorImage;
+               await MainViewModel.LoadDefaultColorSelectorImage();
+               App.ColorSelectorBitmap = MainViewModel.DefaultColorSelectorImage;
                ColorSelectorImage.Source = App.ColorSelectorBitmap;
 
-               await mainViewModel.LoadLastSession_Async();
-               TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
-
-               mainViewModel.ApplyFilter();
-
                // Data Binding Setup
-               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
-               ColorPaletteListView.DataContext = mainViewModel.ColorPaletteData.FilteredColorEntries;
+               ColorPaletteListView.ItemsSource = MainViewModel.ColorPaletteData.FilteredColorEntries;
+               ColorPaletteListView.DataContext = MainViewModel.ColorPaletteData.FilteredColorEntries;
+               
 
                // Last Color Picker Color Used
                if ( localSettings.Values.TryGetValue(AppConstants.LastColorPickerHex, out object lastColorPickerHex) )
@@ -110,14 +106,30 @@ namespace ColorPaletteBuilder
                     currentColorPickerHex = lastColorPickerHex as string;
                     CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(ColorConverter.FromHex(currentColorPickerHex));
                }
+               else
+               {
+                    currentColorPickerHex = "#FFFFFFFF";
+                    CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(ColorConverter.FromHex(currentColorPickerHex));
+               }
+
+               if ( localSettings.Values.TryGetValue(AppConstants.LastOpenedFilePath, out var lastOpenedFilePath) )
+               {
+                    string path = lastOpenedFilePath as string;
+                    if ( !string.IsNullOrEmpty(path) )
+                    {
+                         await MainViewModel.LoadPalette_Async(path);
+                    }
+               }
 
                //Do a default Sort by Index
                SortListView(FontIconSortElementIndex, activeSortCriteria);
 
-               LoadColorSelectorImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
+               LoadColorSelectorImage(MainViewModel.ColorPaletteData.ColorSelectorSource);
 
-               comboElementStates.SelectedItem = mainViewModel.SelectedState;
-               comboElementGroups.SelectedItem = mainViewModel.SelectedGroup;
+               comboElementStates.SelectedItem = MainViewModel.SelectedState;
+               comboElementGroups.SelectedItem = MainViewModel.SelectedGroup;
+
+               MainViewModel.ApplyFilter();
           }
 
           private void ConfigureWindowSize()
@@ -204,7 +216,7 @@ namespace ColorPaletteBuilder
           private async void AutoSaveTimer_Tick( object sender, object e )
           {
                AppConstants.ReturnCode returnCode;
-               returnCode = await mainViewModel.SavePaletteToFile_Async();
+               returnCode = await MainViewModel.SavePaletteToFile_Async();
 
                if ( TitleBarMessage != null || titleBarMessageTimer != null )
                {
@@ -225,7 +237,7 @@ namespace ColorPaletteBuilder
           private async void AutoSaveBackupTimer_Tick( object sender, object e )
           {
                AppConstants.ReturnCode returnCode;
-               returnCode = await mainViewModel.AutoSaveBackup_Async();
+               returnCode = await MainViewModel.AutoSaveBackup_Async();
 
                if ( TitleBarMessage != null || titleBarMessageTimer != null )
                {
@@ -249,30 +261,28 @@ namespace ColorPaletteBuilder
 
           private void NewPaletteButton_Click( object sender, RoutedEventArgs e )
           {
-               mainViewModel.ClearColorPaletteData();
+               MainViewModel.ClearColorPaletteData(false);
 
-               TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
-               comboElementStates.SelectedItem = mainViewModel.SelectedState;
-               comboElementGroups.SelectedItem = mainViewModel.SelectedGroup;
+               comboElementStates.SelectedItem = MainViewModel.SelectedState;
+               comboElementGroups.SelectedItem = MainViewModel.SelectedGroup;
           }
 
           private async void OpenPalette_Click( object sender, RoutedEventArgs e )
           {
-               AppConstants.ReturnCode returnCode = await mainViewModel.OpenPalette_Async(this);
+               AppConstants.ReturnCode returnCode = await MainViewModel.OpenPalette_Async(this);
 
                if ( returnCode == AppConstants.ReturnCode.Success )
                {
-                    TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
-                    TitleBarMessage.Text = $"Opened Color Palette: {mainViewModel.ColorPaletteData.ColorPaletteName}";
+                    TitleBarMessage.Text = $"Opened Color Palette: {MainViewModel.ColorPaletteData.ColorPaletteName}";
                     titleBarMessageTimer.Start();
                }
           }
 
           private async void SavePalette_Click( object sender, RoutedEventArgs e )
           {
-               if ( mainViewModel.ColorPaletteData.IsSaved )
+               if ( MainViewModel.ColorPaletteData.IsSaved )
                {
-                    await mainViewModel.SavePaletteToFile_Async();
+                    await MainViewModel.SavePaletteToFile_Async();
                }
                else
                {
@@ -282,10 +292,9 @@ namespace ColorPaletteBuilder
 
           private async void SavePaletteAs_Click( object sender, RoutedEventArgs e )
           {
-               var returnCode = await mainViewModel.SavePaletteAs_Async(this);
+               var returnCode = await MainViewModel.SavePaletteAs_Async(this);
                if ( returnCode == AppConstants.ReturnCode.Success )
                {
-                    TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
                     TitleBarMessage.Text = "File Saved Succesfully";
                     titleBarMessageTimer.Start();
                }
@@ -297,10 +306,10 @@ namespace ColorPaletteBuilder
           {
                ColorEntry newEntry = new ColorEntry
                {
-                    ElementIndex = mainViewModel.ColorPaletteData.CurrentEntryIndex++,
+                    ElementIndex = MainViewModel.ColorPaletteData.CurrentEntryIndex++,
                     ElementName = "Name",
-                    ElementGroup = mainViewModel.ColorPaletteData.ElementGroups.FirstOrDefault(),
-                    ElementState = mainViewModel.ColorPaletteData.ElementStates.FirstOrDefault(),
+                    ElementGroup = MainViewModel.ColorPaletteData.ElementGroups.FirstOrDefault(),
+                    ElementState = MainViewModel.ColorPaletteData.ElementStates.FirstOrDefault(),
                     HexCode = currentColorPickerHex
                };
 
@@ -308,22 +317,22 @@ namespace ColorPaletteBuilder
                // add settingsValue to appConstants. viewModel method for loading all user settings. pull a value from mainViewModel UserSettings
                // Make a model UserSettings. this can get populated in MainViewModel on initialization us that value below to set insert location.
                // The setting will just be on top or bottom, this will need logic to get the last index then plus 1
-               mainViewModel.ColorPaletteData.ColorEntries.Insert(0, newEntry);
+               MainViewModel.ColorPaletteData.ColorEntries.Insert(0, newEntry);
 
-               mainViewModel.ApplyFilter();
+               MainViewModel.ApplyFilter();
                ColorPaletteListView.ItemsSource = null;
-               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
+               ColorPaletteListView.ItemsSource = MainViewModel.ColorPaletteData.FilteredColorEntries;
 
           }
 
           private void RemoveColorEntry_Click( object sender, RoutedEventArgs e )
           {
                var selectedEntry = ColorPaletteListView.SelectedItem as ColorEntry;
-               mainViewModel.RemoveColorEntry(selectedEntry);
+               MainViewModel.RemoveColorEntry(selectedEntry);
 
-               mainViewModel.ApplyFilter();
+               MainViewModel.ApplyFilter();
                ColorPaletteListView.ItemsSource = null;
-               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
+               ColorPaletteListView.ItemsSource = MainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void AssignColor_Click( object sender, RoutedEventArgs e )
@@ -381,21 +390,21 @@ namespace ColorPaletteBuilder
           // Button Click Event Handlers - State and Group Management
           private void AddState_Click( object sender, RoutedEventArgs e )
           {
-               if ( mainViewModel.ColorPaletteData.ElementStates.Contains(comboElementStates.Text) )
+               if ( MainViewModel.ColorPaletteData.ElementStates.Contains(comboElementStates.Text) )
                {
                     TitleBarMessage.Text = "State already exists";
                     titleBarMessageTimer.Start();
                }
                else
                {
-                    mainViewModel.ColorPaletteData.ElementStates.Add(comboElementStates.Text);
+                    MainViewModel.ColorPaletteData.ElementStates.Add(comboElementStates.Text);
                }
           }
 
           private void RemoveStateConfirmation_Click( object sender, RoutedEventArgs e )
           {
                string stateToRemove = comboElementStates.Text;
-               AppConstants.ReturnCode returnCode = mainViewModel.RemoveState(stateToRemove);
+               AppConstants.ReturnCode returnCode = MainViewModel.RemoveState(stateToRemove);
 
                if ( returnCode == AppConstants.ReturnCode.Success )
                {
@@ -415,21 +424,21 @@ namespace ColorPaletteBuilder
 
           private void AddGroup_Click( object sender, RoutedEventArgs e )
           {
-               if ( mainViewModel.ColorPaletteData.ElementGroups.Contains(comboElementGroups.Text) )
+               if ( MainViewModel.ColorPaletteData.ElementGroups.Contains(comboElementGroups.Text) )
                {
                     TitleBarMessage.Text = "Group already exists";
                     titleBarMessageTimer.Start();
                }
                else
                {
-                    mainViewModel.ColorPaletteData.ElementGroups.Add(comboElementGroups.Text);
+                    MainViewModel.ColorPaletteData.ElementGroups.Add(comboElementGroups.Text);
                }
           }
 
           private void RemoveGroupConfirmation_Click( object sender, RoutedEventArgs e )
           {
                string groupToRemove = comboElementGroups.Text;
-               AppConstants.ReturnCode returnCode = mainViewModel.RemoveGroup(groupToRemove);
+               AppConstants.ReturnCode returnCode = MainViewModel.RemoveGroup(groupToRemove);
 
                if ( returnCode == AppConstants.ReturnCode.Success )
                {
@@ -452,16 +461,16 @@ namespace ColorPaletteBuilder
                comboElementStates.SelectedItem = defaultComboBoxText;
                comboElementGroups.SelectedItem = defaultComboBoxText;
 
-               mainViewModel.ApplyFilter();
+               MainViewModel.ApplyFilter();
                ColorPaletteListView.ItemsSource = null;
-               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
+               ColorPaletteListView.ItemsSource = MainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void RefreshFilterButton_Click( object sender, RoutedEventArgs e )
           {
-               mainViewModel.ApplyFilter();
+               MainViewModel.ApplyFilter();
                ColorPaletteListView.ItemsSource = null;
-               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
+               ColorPaletteListView.ItemsSource = MainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void ResetSortButtons()
@@ -517,16 +526,16 @@ namespace ColorPaletteBuilder
 
           private async void BrowseColorSelectorPhoto_Click( object sender, RoutedEventArgs e )
           {
-               AppConstants.ReturnCode returnCode = await mainViewModel.SelectColorSelectorPhoto(this);
+               AppConstants.ReturnCode returnCode = await MainViewModel.SelectColorSelectorPhoto(this);
 
-               LoadColorSelectorImage(mainViewModel.ColorPaletteData.ColorSelectorSource);
+               LoadColorSelectorImage(MainViewModel.ColorPaletteData.ColorSelectorSource);
           }
 
           private void ColorSelectorClearImage_Click( object sender, RoutedEventArgs e )
           {
-               ColorSelectorImage.Source = mainViewModel.DefaultColorSelectorImage;
-               App.ColorSelectorBitmap = mainViewModel.DefaultColorSelectorImage;
-               mainViewModel.ColorPaletteData.ColorSelectorSource = string.Empty;
+               ColorSelectorImage.Source = MainViewModel.DefaultColorSelectorImage;
+               App.ColorSelectorBitmap = MainViewModel.DefaultColorSelectorImage;
+               MainViewModel.ColorPaletteData.ColorSelectorSource = string.Empty;
           }
 
           #endregion // Button Click Event Handlers
@@ -563,7 +572,7 @@ namespace ColorPaletteBuilder
 
           private async void LoadColorSelectorImage( string imagePath )
           {
-               AppConstants.ReturnCode returnCode = await mainViewModel.ProcessColorSelectorImage_Async(imagePath);
+               AppConstants.ReturnCode returnCode = await MainViewModel.ProcessColorSelectorImage_Async(imagePath);
                if ( App.ColorSelectorBitmap != null && returnCode == AppConstants.ReturnCode.Success )
                {
                     ColorSelectorImage.Source = App.ColorSelectorBitmap;
@@ -594,7 +603,7 @@ namespace ColorPaletteBuilder
                var comboBox = sender as ComboBox;
                if ( comboBox != null )
                {
-                    comboBox.ItemsSource = mainViewModel.ColorPaletteData.ElementStates;
+                    comboBox.ItemsSource = MainViewModel.ColorPaletteData.ElementStates;
                }
           }
 
@@ -603,7 +612,7 @@ namespace ColorPaletteBuilder
                var comboBox = sender as ComboBox;
                if ( comboBox != null )
                {
-                    comboBox.ItemsSource = mainViewModel.ColorPaletteData.ElementGroups;
+                    comboBox.ItemsSource = MainViewModel.ColorPaletteData.ElementGroups;
                }
           }
 
@@ -611,14 +620,14 @@ namespace ColorPaletteBuilder
           {
                if ( (ComboBox)sender == comboElementStates )
                {
-                    mainViewModel.SelectedState = comboElementStates.SelectedItem as string;
+                    MainViewModel.SelectedState = comboElementStates.SelectedItem as string;
                }
                else if ( (ComboBox)sender == comboElementGroups )
                {
-                    mainViewModel.SelectedGroup = comboElementGroups.SelectedItem as string;
+                    MainViewModel.SelectedGroup = comboElementGroups.SelectedItem as string;
                }
 
-               TitleBarMessage.Text = $"Filter Settings: {mainViewModel.SelectedState} AND {mainViewModel.SelectedGroup}";
+               TitleBarMessage.Text = $"Filter Settings: {MainViewModel.SelectedState} AND {MainViewModel.SelectedGroup}";
                titleBarMessageTimer.Start();
           }
 
@@ -732,17 +741,17 @@ namespace ColorPaletteBuilder
 
                sortIcon.Glyph = isAscending ? "\uE70E" : "\uE70D";
 
-               mainViewModel.SortFilteredColorEntries(criteria, isAscending);
+               MainViewModel.SortFilteredColorEntries(criteria, isAscending);
 
                ColorPaletteListView.ItemsSource = null;
-               ColorPaletteListView.ItemsSource = mainViewModel.ColorPaletteData.FilteredColorEntries;
+               ColorPaletteListView.ItemsSource = MainViewModel.ColorPaletteData.FilteredColorEntries;
           }
 
           private void StartColorSelector()
           {
                if ( App.ColorSelectorBitmap == null )
                {
-                    App.ColorSelectorBitmap = mainViewModel.DefaultColorSelectorImage;
+                    App.ColorSelectorBitmap = MainViewModel.DefaultColorSelectorImage;
                }
 
                if ( colorSelectorWindow == null )

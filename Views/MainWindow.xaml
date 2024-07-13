@@ -19,14 +19,15 @@
         <!-- ===================================================================================================================== -->
         <!--                                                       TITLE BAR                                                       -->
         <!-- ===================================================================================================================== -->
-
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="2000" Height="30">
             <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
             <TextBlock Text="Color Palette Builder             Current Palette:" Margin="0,5,0,0"/>
-            <TextBlock x:Name="TitleBarFileName" Text="" Width="200" Margin="10,7,0,0"  FontWeight="SemiBold" FontSize="14" FontFamily="Courier"  Foreground="#FFFF9364"/>
+                                    
+                        <TextBlock x:Name="TitleBarFileName" Text="{x:Bind MainViewModel.ColorPaletteData.ColorPaletteName}" Width="200" Margin="10,7,0,0"  FontWeight="SemiBold" FontSize="14" FontFamily="Courier"  Foreground="#FFFF9364"/>
+                   
+                    
             <TextBlock x:Name="TitleBarMessage" Text="" Margin="10,5,0,0" Foreground="#FFFFD864"/>
         </StackPanel>
-
         <!-- ===================================================================================================================== -->
         <!--                                                       MENU BAR                                                        -->
         <!-- ===================================================================================================================== -->
@@ -326,7 +327,7 @@
 
 
                 <!-- Add and Remove Element States -->
-                <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind mainViewModel.ColorPaletteData.ElementStates}" Margin="5,0,5,0"
+                <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind MainViewModel.ColorPaletteData.ElementStates}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header="Element States"/>
 
 
@@ -362,7 +363,7 @@
 
 
                 <!-- Add and Remove Element Groups -->
-                <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind mainViewModel.ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
+                <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind MainViewModel.ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header=" Element Groups"/>
 
 
