@@ -9,22 +9,27 @@ namespace ColorPaletteBuilder
           private int currentEntryIndex;
           private string colorPaletteName;
           private string colorPaletteFile;
+          private bool isSaved;
 
           private ObservableCollection<string> elementStates;
           private ObservableCollection<string> elementGroups;
           private ObservableCollection<ColorEntry> colorEntries;
           private ObservableCollection<ColorEntry> filteredColorEntries;
           private string _colorSelectorSource;
-          
+
 
 
           public ColorPalette()
           {
                FileHeader = MakeFileHeader();
 
+               CurrentEntryIndex = 0;
+
                ColorPaletteName = "Color Palette";
                ColorPaletteFile = "New Palette";
-               CurrentEntryIndex = 0;
+
+               IsSaved = false;
+
                ElementStates = new ObservableCollection<string>();
                ElementGroups = new ObservableCollection<string>();
                ColorEntries = new ObservableCollection<ColorEntry>();
@@ -56,6 +61,12 @@ namespace ColorPaletteBuilder
           {
                get => colorPaletteFile;
                set => SetProperty(ref colorPaletteFile, value);
+          }
+
+          public bool IsSaved
+          {
+               get => isSaved;
+               set => SetProperty(ref isSaved, value);
           }
 
 

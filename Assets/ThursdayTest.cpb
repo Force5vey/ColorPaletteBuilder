@@ -1,9 +1,10 @@
 {
-  "CurrentIndex": 6,
+  "CurrentEntryIndex": 6,
   "FileHeader": "Color Palette Builder - Force5 Development - apps@force5dev.com",
   "ColorSelectorSource": "C:\\Users\\edmon\\OneDrive\\Pictures\\Friends\\WP_20130803_004.jpg",
   "ColorPaletteName": "ThursdayTest",
   "ColorPaletteFile": "C:\\dev\\ColorPaletteBuilder\\Assets\\ThursdayTest.cpb",
+  "IsSaved": true,
   "ElementStates": [
     "Any",
     "Enabled",

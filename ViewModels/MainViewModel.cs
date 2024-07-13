@@ -45,12 +45,12 @@ namespace ColorPaletteBuilder
                DefaultColorSelectorImage = await FileService.LoadDefaultColorSelectorImage();
           }
 
-          public async Task<AppConstants.ReturnCode> SavePaletteAs_Async()
+          public async Task<AppConstants.ReturnCode> SavePaletteAs_Async( Window window )
           {
                try
                {
                     var picker = new FileSavePicker();
-                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
                     WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
                     picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
                     picker.FileTypeChoices.Add("Color Palette Builder", new List<string> { ".cpb" });
@@ -62,7 +62,7 @@ namespace ColorPaletteBuilder
                          ColorPaletteData.ColorPaletteFile = file.Path;
                          ColorPaletteData.ColorPaletteName = file.Name;
 
-                         await SavePaletteToFile_Async(file.Path);
+                         await SavePaletteToFile_Async();
                          return AppConstants.ReturnCode.Success;
                     }
                     else
@@ -75,6 +75,27 @@ namespace ColorPaletteBuilder
                     //TODO: Add additional return codes for null, etc.
                     return AppConstants.ReturnCode.GeneralFailure;
                }
+          }
+
+          public async Task<AppConstants.ReturnCode> OpenPalette_Async (Window window)
+          {
+               var picker = new FileOpenPicker();
+               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+               WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+               picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+               picker.FileTypeFilter.Add(".cpb");
+
+               StorageFile file = await picker.PickSingleFileAsync();
+               if ( file != null )
+               {
+                    await LoadPalette_Async(file.Path);
+
+                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+
+                    return AppConstants.ReturnCode.Success;
+               }
+
+               return AppConstants.ReturnCode.FileNotFound;
           }
 
           public async Task<AppConstants.ReturnCode> AutoSaveBackup_Async()
@@ -101,8 +122,12 @@ namespace ColorPaletteBuilder
                     {
                          ClearColorPaletteData();
 
+                         // Set Initial values for a palette that is loaded from file
                          ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
                          ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+                         // Clearing color paletteData sets IsSaved to false, so since this is being loaded from file we will reset to true to use the existing file path and name
+                         ColorPaletteData.IsSaved = true;
+
                          ColorPaletteData.ColorSelectorSource = colorPalette.ColorSelectorSource;
 
                          foreach ( var entry in colorPalette.ColorEntries )
@@ -126,7 +151,30 @@ namespace ColorPaletteBuilder
 
                          //Color Entries is never decrmented; so counting doesn't work. So get highest value in the Index and use that next
                          //This is primarily for sorting by order addded and is not a unique ID for the entry.
-                         ColorPaletteData.CurrentEntryIndex = ColorPaletteData.ColorEntries.Max(entry => entry.ElementIndex) + 1;
+
+                         //Set to int min value, this can be zero but to protect possible changes in logic elsewhere using min value so if
+                         // i decide to add a feature to inject an entry earlier in the order it will still be found.
+                         int maxIndex = int.MinValue;
+
+                         // Check for entries, if it is zero then the loop can't run. If it is zero just assign zero to start at beginning.
+                         if ( ColorPaletteData.ElementStates.Count > 0 )
+                         {
+                              foreach ( var entry in ColorPaletteData.ColorEntries )
+                              {
+                                   if ( entry.ElementIndex > maxIndex )
+                                   {
+                                        maxIndex = entry.ElementIndex;
+                                   }
+                              }
+                              ColorPaletteData.CurrentEntryIndex = maxIndex + 1;
+                         }
+                         else
+                         {
+                              ColorPaletteData.CurrentEntryIndex = 0;
+                         }
+
+
+                         ApplyFilter();
                     }
                }
           }
@@ -136,6 +184,7 @@ namespace ColorPaletteBuilder
                ColorPaletteData.CurrentEntryIndex = 0;
                ColorPaletteData.ColorPaletteName = "New Palette";
                ColorPaletteData.ColorPaletteFile = "New Palette";
+               ColorPaletteData.IsSaved = false;
 
                ColorPaletteData.ElementStates.Clear();
                ColorPaletteData.ElementGroups.Clear();
@@ -223,17 +272,20 @@ namespace ColorPaletteBuilder
           }
 
           //TODO: this isn't updating the colorpaletteData for file and name, it may not need to since it is saving current.
-          public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async( string filePath )
+          public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async()
           {
-               StorageFile file = await StorageFile.GetFileFromPathAsync(filePath);
+               StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
                if ( file != null )
                {
+                    ColorPaletteData.IsSaved = true;
                     await FileService.SavePalette_Async(file.Path, ColorPaletteData);
+                    
                     localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
                     return AppConstants.ReturnCode.Success;
                }
                else
                {
+                    ColorPaletteData.IsSaved = false;
                     return AppConstants.ReturnCode.GeneralFailure;
                }
           }

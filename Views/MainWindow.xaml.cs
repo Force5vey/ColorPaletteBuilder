@@ -204,7 +204,7 @@ namespace ColorPaletteBuilder
           private async void AutoSaveTimer_Tick( object sender, object e )
           {
                AppConstants.ReturnCode returnCode;
-               returnCode = await mainViewModel.SavePaletteToFile_Async(mainViewModel.ColorPaletteData.ColorPaletteFile);
+               returnCode = await mainViewModel.SavePaletteToFile_Async();
 
                if ( TitleBarMessage != null || titleBarMessageTimer != null )
                {
@@ -258,38 +258,31 @@ namespace ColorPaletteBuilder
 
           private async void OpenPalette_Click( object sender, RoutedEventArgs e )
           {
-               var picker = new FileOpenPicker();
-               var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-               WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-               picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-               picker.FileTypeFilter.Add(".cpb");
+               AppConstants.ReturnCode returnCode = await mainViewModel.OpenPalette_Async(this);
 
-               StorageFile file = await picker.PickSingleFileAsync();
-               if ( file != null )
+               if ( returnCode == AppConstants.ReturnCode.Success )
                {
-                    await mainViewModel.LoadPalette_Async(file.Path);
-
-                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+                    TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
+                    TitleBarMessage.Text = $"Opened Color Palette: {mainViewModel.ColorPaletteData.ColorPaletteName}";
+                    titleBarMessageTimer.Start();
                }
           }
 
           private async void SavePalette_Click( object sender, RoutedEventArgs e )
           {
-               if ( string.IsNullOrEmpty(mainViewModel.ColorPaletteData.ColorPaletteFile) || mainViewModel.ColorPaletteData.ColorPaletteFile == "New Palette" )
+               if ( mainViewModel.ColorPaletteData.IsSaved )
                {
-                    SavePaletteAs_Click(sender, e);
+                    await mainViewModel.SavePaletteToFile_Async();
                }
                else
                {
-                    await mainViewModel.SavePaletteToFile_Async(mainViewModel.ColorPaletteData.ColorPaletteFile);
+                    SavePaletteAs_Click(sender, e);
                }
-
-
           }
 
           private async void SavePaletteAs_Click( object sender, RoutedEventArgs e )
           {
-               var returnCode = await mainViewModel.SavePaletteAs_Async();
+               var returnCode = await mainViewModel.SavePaletteAs_Async(this);
                if ( returnCode == AppConstants.ReturnCode.Success )
                {
                     TitleBarFileName.Text = mainViewModel.ColorPaletteData.ColorPaletteName;
