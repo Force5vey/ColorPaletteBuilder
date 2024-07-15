@@ -71,8 +71,8 @@ namespace ColorPaletteBuilder
                          ClearColorPaletteData(true);
 
                          // Set Initial values for a palette that is loaded from file
-                         ColorPaletteData.ColorPaletteName = colorPalette.ColorPaletteName;
-                         ColorPaletteData.ColorPaletteFile = colorPalette.ColorPaletteFile;
+                         ColorPaletteData.FileName = colorPalette.FileName;
+                         ColorPaletteData.FullFilePath = colorPalette.FullFilePath;
 
                          ColorPaletteData.ColorSelectorSource = colorPalette.ColorSelectorSource;
 
@@ -108,11 +108,11 @@ namespace ColorPaletteBuilder
                                         maxIndex = entry.ElementIndex;
                                    }
                               }
-                              ColorPaletteData.CurrentEntryIndex = maxIndex + 1;
+                              ColorPaletteData.HighestEntryIndex = maxIndex + 1;
                          }
                          else
                          {
-                              ColorPaletteData.CurrentEntryIndex = 0;
+                              ColorPaletteData.HighestEntryIndex = 0;
                          }
 
                          ApplyFilter();
@@ -141,8 +141,8 @@ namespace ColorPaletteBuilder
                     StorageFile file = picker.PickSaveFileAsync().AsTask().Result;
                     if ( file != null )
                     {
-                         ColorPaletteData.ColorPaletteFile = file.Path;
-                         ColorPaletteData.ColorPaletteName = file.Name;
+                         ColorPaletteData.FullFilePath = file.Path;
+                         ColorPaletteData.FileName = file.Name;
 
                          await SavePaletteToFile_Async();
                          return AppConstants.ReturnCode.Success;
@@ -161,7 +161,7 @@ namespace ColorPaletteBuilder
 
           public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async()
           {
-               StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
+               StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.FullFilePath);
                if ( file != null )
                {
                     ColorPaletteData.IsSaved = true;
@@ -196,9 +196,9 @@ namespace ColorPaletteBuilder
 
           public void ClearColorPaletteData( bool isSaved )
           {
-               ColorPaletteData.CurrentEntryIndex = 0;
-               ColorPaletteData.ColorPaletteName = "New Palette";
-               ColorPaletteData.ColorPaletteFile = "New Palette";
+               ColorPaletteData.HighestEntryIndex = 0;
+               ColorPaletteData.FileName = "New Palette";
+               ColorPaletteData.FullFilePath = "New Palette";
 
 
                ColorPaletteData.ElementStates.Clear();

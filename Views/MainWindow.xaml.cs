@@ -95,7 +95,7 @@ namespace ColorPaletteBuilder
                // Data Binding Setup
                ColorPaletteListView.ItemsSource = MainViewModel.ColorPaletteData.FilteredColorEntries;
                ColorPaletteListView.DataContext = MainViewModel.ColorPaletteData.FilteredColorEntries;
-               
+
 
                // Last Color Picker Color Used
                if ( localSettings.Values.TryGetValue(AppConstants.LastColorPickerHex, out object lastColorPickerHex) )
@@ -114,9 +114,10 @@ namespace ColorPaletteBuilder
                     string path = lastOpenedFilePath as string;
                     if ( !string.IsNullOrEmpty(path) )
                     {
-                         await MainViewModel.LoadPalette_Async(path);
+                         await MainViewModel.LoadPalette_Async(path);                         
                     }
                }
+
 
                //Do a default Sort by Index
                SortListView(FontIconSortElementIndex, activeSortCriteria);
@@ -270,7 +271,7 @@ namespace ColorPaletteBuilder
 
                if ( returnCode == AppConstants.ReturnCode.Success )
                {
-                    TitleBarMessage.Text = $"Opened Color Palette: {MainViewModel.ColorPaletteData.ColorPaletteName}";
+                    TitleBarMessage.Text = $"Opened Color Palette: {MainViewModel.ColorPaletteData.FileName}";
                     titleBarMessageTimer.Start();
                }
           }
@@ -303,7 +304,7 @@ namespace ColorPaletteBuilder
           {
                ColorEntry newEntry = new ColorEntry
                {
-                    ElementIndex = MainViewModel.ColorPaletteData.CurrentEntryIndex++,
+                    ElementIndex = MainViewModel.ColorPaletteData.HighestEntryIndex++,
                     ElementName = "Name",
                     ElementGroup = MainViewModel.ColorPaletteData.ElementGroups.FirstOrDefault(),
                     ElementState = MainViewModel.ColorPaletteData.ElementStates.FirstOrDefault(),

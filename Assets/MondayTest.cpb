@@ -1,0 +1,91 @@
+{
+  "CurrentEntryIndex": 3,
+  "ColorSelectorSource": "C:\\Users\\edmon\\OneDrive\\Pictures\\MSC\\Howling-Wolf.png",
+  "ColorPaletteName": "MondayTest.cpb",
+  "ColorPaletteFile": "C:\\dev\\ColorPaletteBuilder\\Assets\\MondayTest.cpb",
+  "IsSaved": true,
+  "ElementStates": [
+    "All",
+    "Any"
+  ],
+  "ElementGroups": [
+    "All",
+    "Any"
+  ],
+  "ColorEntries": [
+    {
+      "Id": "04122f5d-7a1f-4ac1-85ce-17f9944c8046",
+      "ElementIndex": 2,
+      "ElementName": "Name",
+      "ElementState": "All",
+      "ElementGroup": "All",
+      "HexCode": "#FF082B07",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
+    {
+      "Id": "bdd94155-5328-40d9-b8de-822a34414006",
+      "ElementIndex": 1,
+      "ElementName": "Name",
+      "ElementState": "All",
+      "ElementGroup": "All",
+      "HexCode": "#FF141D2B",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
+    {
+      "Id": "60e65f9b-db89-45cb-acd2-953ae819db31",
+      "ElementIndex": 0,
+      "ElementName": "Name",
+      "ElementState": "Any",
+      "ElementGroup": "Any",
+      "HexCode": "#FF09142B",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    }
+  ],
+  "FilteredColorEntries": [
+    {
+      "Id": "04122f5d-7a1f-4ac1-85ce-17f9944c8046",
+      "ElementIndex": 2,
+      "ElementName": "Name",
+      "ElementState": "All",
+      "ElementGroup": "All",
+      "HexCode": "#FF082B07",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
+    {
+      "Id": "bdd94155-5328-40d9-b8de-822a34414006",
+      "ElementIndex": 1,
+      "ElementName": "Name",
+      "ElementState": "All",
+      "ElementGroup": "All",
+      "HexCode": "#FF141D2B",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    },
+    {
+      "Id": "60e65f9b-db89-45cb-acd2-953ae819db31",
+      "ElementIndex": 0,
+      "ElementName": "Name",
+      "ElementState": "Any",
+      "ElementGroup": "Any",
+      "HexCode": "#FF09142B",
+      "DisplayColor": "",
+      "ChangeColor": "",
+      "SendColor": "",
+      "Note": ""
+    }
+  ]
+}

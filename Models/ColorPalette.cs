@@ -6,9 +6,9 @@ namespace ColorPaletteBuilder
 {
      public class ColorPalette :INotifyPropertyChanged
      {
-          private int currentEntryIndex;
-          private string colorPaletteName;
-          private string colorPaletteFile;
+          private int highestEntryIndex;
+          private string fileName;
+          private string fullFilePath;
           private bool isSaved;
 
           private ObservableCollection<string> elementStates;
@@ -21,10 +21,10 @@ namespace ColorPaletteBuilder
 
           public ColorPalette()
           {
-               CurrentEntryIndex = 0;
+               HighestEntryIndex = 0;
 
-               ColorPaletteName = "Color Palette";
-               ColorPaletteFile = "New Palette";
+               FileName = "Color Palette";
+               FullFilePath = "New Palette";
 
                IsSaved = false;
 
@@ -35,10 +35,10 @@ namespace ColorPaletteBuilder
 
           }
 
-          public int CurrentEntryIndex
+          public int HighestEntryIndex
           {
-               get => currentEntryIndex;
-               set => SetProperty(ref currentEntryIndex, value);
+               get => highestEntryIndex;
+               set => SetProperty(ref highestEntryIndex, value);
           }
 
           public string ColorSelectorSource
@@ -47,16 +47,16 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _colorSelectorSource, value);
           }
 
-          public string ColorPaletteName
+          public string FileName
           {
-               get => colorPaletteName;
-               set => SetProperty(ref colorPaletteName, value);
+               get => fileName;
+               set => SetProperty(ref fileName, value);
           }
 
-          public string ColorPaletteFile
+          public string FullFilePath
           {
-               get => colorPaletteFile;
-               set => SetProperty(ref colorPaletteFile, value);
+               get => fullFilePath;
+               set => SetProperty(ref fullFilePath, value);
           }
 
           public bool IsSaved
