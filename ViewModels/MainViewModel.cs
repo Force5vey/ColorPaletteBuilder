@@ -159,21 +159,6 @@ namespace ColorPaletteBuilder
                }
           }
 
-          public async Task<AppConstants.ReturnCode> AutoSaveBackup_Async()
-          {
-               AppConstants.ReturnCode saveBackupReturnCode;
-               saveBackupReturnCode = await BackupService.SaveBackupAsync(ColorPaletteData);
-
-               if ( saveBackupReturnCode == AppConstants.ReturnCode.Success )
-               {
-                    return AppConstants.ReturnCode.Success;
-               }
-               else
-               {
-                    return AppConstants.ReturnCode.GeneralFailure;
-               }
-          }
-
           public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async()
           {
                StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.ColorPaletteFile);
@@ -191,6 +176,23 @@ namespace ColorPaletteBuilder
                     return AppConstants.ReturnCode.GeneralFailure;
                }
           }
+
+
+          public async Task<AppConstants.ReturnCode> AutoSaveBackup_Async()
+          {
+               AppConstants.ReturnCode saveBackupReturnCode;
+               saveBackupReturnCode = await BackupService.SaveBackupAsync(ColorPaletteData);
+
+               if ( saveBackupReturnCode == AppConstants.ReturnCode.Success )
+               {
+                    return AppConstants.ReturnCode.Success;
+               }
+               else
+               {
+                    return AppConstants.ReturnCode.GeneralFailure;
+               }
+          }
+
 
           public void ClearColorPaletteData( bool isSaved )
           {

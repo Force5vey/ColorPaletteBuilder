@@ -47,7 +47,6 @@ namespace ColorPaletteBuilder
           private string currentColorPickerCodeSnippet = string.Empty;
 
           // Sort and Filter Fields
-          private string defaultComboBoxText = "Any";
           private AppConstants.SortCriteria activeSortCriteria = AppConstants.SortCriteria.Index;
           private bool isAscending = true;
 
@@ -69,8 +68,6 @@ namespace ColorPaletteBuilder
                InitializeAsync();
 
                // Setting Default Values
-               MainViewModel.SelectedState = defaultComboBoxText;
-               MainViewModel.SelectedGroup = defaultComboBoxText;
                CustomColorPicker.Color = ColorConverter.ConvertColorToWinUIColor(Color.FromArgb(255, Color.White));
 
                // Event Handlers Setup
@@ -458,8 +455,8 @@ namespace ColorPaletteBuilder
           // Button Click Event Handlers - Filters and Sorting
           private void ClearFilterButton_Click( object sender, RoutedEventArgs e )
           {
-               comboElementStates.SelectedItem = defaultComboBoxText;
-               comboElementGroups.SelectedItem = defaultComboBoxText;
+               comboElementStates.SelectedItem = AppConstants.DefaultComboBoxText;
+               comboElementGroups.SelectedItem = AppConstants.DefaultComboBoxText;
 
                MainViewModel.ApplyFilter();
                ColorPaletteListView.ItemsSource = null;
