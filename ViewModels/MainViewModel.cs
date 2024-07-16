@@ -24,7 +24,9 @@ namespace ColorPaletteBuilder
 {
      internal class MainViewModel
      {
-          public ColorPalette ColorPaletteData { get; set; } = new ColorPalette();
+          public ColorPalette ColorPaletteData = new ColorPalette();
+
+
           public string SelectedState { get; set; }
           public string SelectedGroup { get; set; }
           private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;

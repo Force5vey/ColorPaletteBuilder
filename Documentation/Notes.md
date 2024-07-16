@@ -8,15 +8,16 @@ Custom Button: Border Brush
 
 ​	Theme Resource Line for Border Brush is commented out until further resolution.
 
-TitleBar File Name Binding: Sets to the default value, does not update.
-
-​	While sorting this out, I deleted the several areas the titlebar filename was updated on open and save etc.
-
-so if I don't get binding sorted out then I need to read add the updated file name appropriately.
-
-otherwise I left off after getting rid of loadlastsession and setting it up to use loadpalette directly with the local value for lastsession filename.
 
 
 
-so either fix the binding or the next thing is to go through and continue organizing and streaminling the viewmodel methods to get rid of redundancy.
 
+binding:
+
+
+
+so, followed binding from the msdn file.
+
+it works kind of but still having troubles. there was a change going to the full setup where load and save worked but not open. and then I removed the private field and just kept the public property of colorpalettedata in mainviewmodel and then it stoped showing on load.
+
+continue to change around the properties etc to nail down the issue with the update to the property and it loading.

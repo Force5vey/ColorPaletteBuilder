@@ -24,7 +24,7 @@ namespace ColorPaletteBuilder
      public sealed partial class MainWindow :Window
      {
           // View Model
-          private MainViewModel MainViewModel { get; } = new MainViewModel();
+          private MainViewModel MainViewModel { get; set; } = new MainViewModel();
 
           // Window and UI Elements
           private SettingsWindow settingsWindow;
@@ -114,7 +114,7 @@ namespace ColorPaletteBuilder
                     string path = lastOpenedFilePath as string;
                     if ( !string.IsNullOrEmpty(path) )
                     {
-                         await MainViewModel.LoadPalette_Async(path);                         
+                         await MainViewModel.LoadPalette_Async(path);
                     }
                }
 
