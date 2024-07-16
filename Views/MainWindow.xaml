@@ -19,14 +19,27 @@
         <!-- ===================================================================================================================== -->
         <!--                                                       TITLE BAR                                                       -->
         <!-- ===================================================================================================================== -->
-        
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Width="2000" Height="30">
-            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
-            <TextBlock Text="Color Palette Builder             Current Palette:" Margin="0,5,0,0"/>
-            <TextBlock x:Name="TitleBarFileName" Text="{x:Bind MainViewModel.ColorPaletteData.FileName, Mode=OneWay}" Width="200" Margin="10,7,0,0"  FontWeight="SemiBold" FontSize="14" FontFamily="Courier"  Foreground="#FFFF9364"/>
-            <TextBlock x:Name="TitleBarMessage" Text="" Margin="10,5,0,0" Foreground="#FFFFD864"/>
-        </StackPanel>
-        
+
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="175" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <FontIcon Grid.Column="0" FontFamily="Segoe MDL2 Assets" Glyph="&#xE790;" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,20,0"/>
+            <TextBlock Grid.Column="1" Text="Color Palette Builder" Margin="0,5,0,0"/>
+            <TextBlock Grid.Column="2" Text="Current Palette:" Margin="0,5,0,0"/>
+            <TextBlock Grid.Column="3" x:Name="TitleBarFileName" Text="{x:Bind MainViewModel.ColorPaletteData.FileName, Mode=OneWay}" Width="200" Margin="10,7,0,0" FontWeight="SemiBold" FontSize="14" FontFamily="Courier" Foreground="#FFFF9364"/>
+            <TextBlock Grid.Column="4" x:Name="TitleBarMessage" Text="" Margin="10,5,0,0" Foreground="#FFFFD864"/>
+             <ProgressRing Grid.Column="6" x:Name="AutoSaveIndicator" IsActive="False" Height="5" Width="5" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5,150,0"/>
+        </Grid>
+
+
         <!-- ===================================================================================================================== -->
         <!--                                                       MENU BAR                                                        -->
         <!-- ===================================================================================================================== -->

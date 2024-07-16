@@ -53,13 +53,16 @@ namespace ColorPaletteBuilder
 
           // Timers
           private DispatcherTimer titleBarMessageTimer = new DispatcherTimer();
-          private int messageTimerInterval = 2; // seconds
+          private int messageTimerInterval = 3; // seconds
+
+          private DispatcherTimer autoSaveIndicatorTimer = new DispatcherTimer();
+          private int autoSaveIndicatorInterval = 2;
 
           private DispatcherTimer autoSaveTimer = new DispatcherTimer();
           private int autoSaveInterval = 60; // seconds
 
-          // Miscellaneous
-
+          private DispatcherTimer backupSaveTimer = new DispatcherTimer();
+          private int backupSaveInterval = 20;
 
           public MainWindow()
           {
@@ -80,9 +83,7 @@ namespace ColorPaletteBuilder
                ConfigureWindowSize();
 
                // Timers
-               InitializeMessageTimer();
-               //
-               InitializeAutoSaveTimer();
+               InitializeTimers();
           }
 
           // Initialization Methods
@@ -191,18 +192,27 @@ namespace ColorPaletteBuilder
 
           #region // Timer Event Handlers
 
-          private void InitializeAutoSaveTimer()
+          private void InitializeTimers()
           {
                autoSaveTimer.Interval = TimeSpan.FromSeconds(autoSaveInterval);
-               autoSaveTimer.Tick += AutoSaveBackupTimer_Tick;
                autoSaveTimer.Tick += AutoSaveTimer_Tick;
                autoSaveTimer.Start();
-          }
 
-          private void InitializeMessageTimer()
-          {
+               backupSaveTimer.Interval = TimeSpan.FromSeconds(backupSaveInterval);
+               backupSaveTimer.Tick += AutoSaveBackupTimer_Tick;
+               backupSaveTimer.Start();
+
                titleBarMessageTimer.Interval = TimeSpan.FromSeconds(messageTimerInterval);
                titleBarMessageTimer.Tick += TitleMessageTimer_Tick;
+
+               autoSaveIndicatorTimer.Interval = TimeSpan.FromSeconds(autoSaveIndicatorInterval);
+               autoSaveIndicatorTimer.Tick += AutoSaveProgressRingTimer_Tick;
+          }
+
+          private void AutoSaveProgressRingTimer_Tick( object sender, object e )
+          {
+               AutoSaveIndicator.IsActive = false;
+               autoSaveIndicatorTimer.Stop();
           }
 
           private void TitleMessageTimer_Tick( object sender, object e )
@@ -221,8 +231,8 @@ namespace ColorPaletteBuilder
                     switch ( returnCode )
                     {
                          case AppConstants.ReturnCode.Success:
-                         TitleBarMessage.Text = "Auto-Saved";
-                         titleBarMessageTimer.Start();
+                         AutoSaveIndicator.IsActive = true;
+                         autoSaveIndicatorTimer.Start();
                          break;
                          case AppConstants.ReturnCode.GeneralFailure:
                          TitleBarMessage.Text = "Auto-Save Failed";
@@ -242,11 +252,11 @@ namespace ColorPaletteBuilder
                     switch ( returnCode )
                     {
                          case AppConstants.ReturnCode.Success:
-                         TitleBarMessage.Text = "Auto-Saved";
-                         titleBarMessageTimer.Start();
+                         AutoSaveIndicator.IsActive = true;
+                         autoSaveIndicatorTimer.Start();
                          break;
                          case AppConstants.ReturnCode.GeneralFailure:
-                         TitleBarMessage.Text = "Auto-Save Failed";
+                         TitleBarMessage.Text = "Backup-Save Failed";
                          titleBarMessageTimer.Start();
                          break;
                     }
