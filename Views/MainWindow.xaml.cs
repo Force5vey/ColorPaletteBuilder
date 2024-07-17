@@ -119,8 +119,6 @@ namespace ColorPaletteBuilder
                     }
                }
 
-
-               //Do a default Sort by Index
                SortListView(FontIconSortElementIndex, activeSortCriteria);
 
                LoadColorSelectorImage(MainViewModel.ColorPaletteData.ColorSelectorSource);
@@ -393,7 +391,6 @@ namespace ColorPaletteBuilder
                     settingsWindow.Activate();
                }
           }
-
 
           // Button Click Event Handlers - State and Group Management
           private void AddState_Click( object sender, RoutedEventArgs e )
@@ -778,5 +775,9 @@ namespace ColorPaletteBuilder
                }
           }
 
+          private void AutoSaveIndicator_PointerPressed( object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e )
+          {
+
+          }
      }
 }

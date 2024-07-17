@@ -41,6 +41,8 @@
 - **Assign color to color picker**: Add functionality to set the color picker to a color entry's color for adjustments.
 - **Sort by hex**: Add user settings for sorting methods, including light-to-dark and group sorting options.
 - **Saved color code format**: Make the saved color code format (e.g., hex with alpha, HSV, RGB) a user setting.
+- Camera interface to take photo and assign to colorselector
+- add a browser (webview2) to get image for color selector
 
 ### User Interface Enhancements
 

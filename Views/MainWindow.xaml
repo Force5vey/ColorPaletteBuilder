@@ -36,8 +36,10 @@
             <TextBlock Grid.Column="2" Text="Current Palette:" Margin="0,5,0,0"/>
             <TextBlock Grid.Column="3" x:Name="TitleBarFileName" Text="{x:Bind MainViewModel.ColorPaletteData.FileName, Mode=OneWay}" Width="200" Margin="10,7,0,0" FontWeight="SemiBold" FontSize="14" FontFamily="Courier" Foreground="#FFFF9364"/>
             <TextBlock Grid.Column="4" x:Name="TitleBarMessage" Text="" Margin="10,5,0,0" Foreground="#FFFFD864"/>
-             <ProgressRing Grid.Column="6" x:Name="AutoSaveIndicator" IsActive="False" Height="5" Width="5" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5,150,0"/>
+            <ProgressRing Grid.Column="6" x:Name="AutoSaveIndicator" IsActive="False" Height="5" Width="5" 
+                           HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5,150,0"/>
         </Grid>
+
 
 
         <!-- ===================================================================================================================== -->
@@ -247,19 +249,19 @@
 
 
 
-            <StackPanel Grid.RowSpan="3" Grid.Column="0" Padding="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <!--<StackPanel Grid.RowSpan="3" Grid.Column="0" Padding="10" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">-->
 
 
-                <ScrollViewer Height="Auto" Width="400" ZoomMode="Disabled"
-            IsTabStop="True" IsVerticalScrollChainingEnabled="True"
-            HorizontalAlignment="Left" VerticalAlignment="Top"
+            <ScrollViewer Grid.RowSpan="3" Grid.Column="0" Padding="10"
+                              Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            ZoomMode="Disabled" IsTabStop="True" IsVerticalScrollChainingEnabled="True"
+            HorizontalAlignment="Left" VerticalAlignment="Stretch"
             ViewChanged="LeftScrollViewerControl_ViewChanged"
-            HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Auto"
-            VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <StackPanel>
+            HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Visible">
 
-                            <ColorPicker x:Name="CustomColorPicker"
+                <StackPanel>
+                    <ColorPicker x:Name="CustomColorPicker"
                       ColorSpectrumShape="Box"
                       IsMoreButtonVisible="True"
                       IsColorSliderVisible="True"
@@ -270,78 +272,69 @@
                       IsAlphaTextInputVisible="True" 
                       ColorChanged="CustomColorPicker_ColorChanged"/>
 
+                    <StackPanel Background="#FF161717">
+                        <TextBlock Width="250" Height="3"/>
+                    </StackPanel>
 
-                        </StackPanel>
-
-                        <StackPanel Background="#FF161717">
-                            <TextBlock Width="250" Height="3"/>
-                        </StackPanel>
-
-                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,5,0,0">
 
 
-                            <!-- ===================================================================================================================== -->
-                            <!--                                                 COLOR CODE SHORTCUTS                                                  -->
-                            <!-- ===================================================================================================================== -->
+                        <!-- ===================================================================================================================== -->
+                        <!--                                                 COLOR CODE SHORTCUTS                                                  -->
+                        <!-- ===================================================================================================================== -->
 
-                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Margin="0,25,0,0">
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Vertical" Margin="0,25,0,0">
 
-                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox x:Name="TextBoxColorPickerHex" Text="Copy Hex w/ Alpha" Width="275" />
-                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerHex_Click">
-                                        <Button.Content>
-                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
-                                        </Button.Content>
-                                    </Button>
-                                </StackPanel>
-
-                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox x:Name="TextBoxColorPickerHexNoAlpha" Text="Copy Hex w/o Alpha;" Width="275"/>
-                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerHexNoAlpha_Click">
-                                        <Button.Content>
-                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
-                                        </Button.Content>
-                                    </Button>
-                                </StackPanel>
-
-                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox  x:Name="TextBoxColorPickerRGB" Text="Copy RGB" Width="275" />
-                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerRGB_Click">
-                                        <Button.Content>
-                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
-                                        </Button.Content>
-                                    </Button>
-                                </StackPanel>
-
-                                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox x:Name="TextBoxColorPickerCodeSnippet" Text="Color.FromRGB(1,2,3,4);" Width="275" />
-                                    <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerCodeSnippet_Click">
-                                        <Button.Content>
-                                            <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
-                                        </Button.Content>
-                                    </Button>
-                                </StackPanel>
-
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox x:Name="TextBoxColorPickerHex" Text="Copy Hex w/ Alpha" Width="275" />
+                                <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerHex_Click">
+                                    <Button.Content>
+                                        <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                    </Button.Content>
+                                </Button>
                             </StackPanel>
+
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox x:Name="TextBoxColorPickerHexNoAlpha" Text="Copy Hex w/o Alpha;" Width="275"/>
+                                <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerHexNoAlpha_Click">
+                                    <Button.Content>
+                                        <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox  x:Name="TextBoxColorPickerRGB" Text="Copy RGB" Width="275" />
+                                <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerRGB_Click">
+                                    <Button.Content>
+                                        <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBox x:Name="TextBoxColorPickerCodeSnippet" Text="Color.FromRGB(1,2,3,4);" Width="275" />
+                                <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerCodeSnippet_Click">
+                                    <Button.Content>
+                                        <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+
                         </StackPanel>
                     </StackPanel>
-                </ScrollViewer>
-            </StackPanel>
-
+                </StackPanel>
+            </ScrollViewer>
 
             <!-- ===================================================================================================================== -->
             <!--                                                    Category Lists                                                     -->
             <!-- ===================================================================================================================== -->
 
-
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,5,0">
-
-
 
                 <!-- Add and Remove Element States -->
                 <ComboBox x:Name="comboElementStates" ItemsSource="{x:Bind MainViewModel.ColorPaletteData.ElementStates}" Margin="5,0,5,0"
                           Width="150" IsEditable="True" Header="Element States"/>
-
 
                 <Button x:Name="AddStateButton" Margin="0,25,2,0" Height="30" Click="AddState_Click">
                     <Button.Content>
@@ -372,7 +365,6 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
-
 
                 <!-- Add and Remove Element Groups -->
                 <ComboBox x:Name="comboElementGroups" ItemsSource="{x:Bind MainViewModel.ColorPaletteData.ElementGroups}" Margin="5,0,5,0"
@@ -414,8 +406,6 @@
                 <Button x:Name="ClearFilterButton" Content="Clear" Margin="5,25,0,0" Click="ClearFilterButton_Click"/>
 
             </StackPanel>
-
-
 
             <!-- ===================================================================================================================== -->
             <!--                                                       LISTVIEW                                                        -->
