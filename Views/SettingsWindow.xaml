@@ -142,6 +142,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"
                         Grid.Row="2">
             <Button Content="Save" Click="SaveSettings_Click" Margin="0,0,0,10" Width="100"/>
+            <Button Content="Close" Click="CloseSettingsWindow_Click" Margin="10,0,0,0" Width="100"/>
         </StackPanel>
 
     </Grid>

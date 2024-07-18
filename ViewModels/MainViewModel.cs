@@ -167,7 +167,7 @@ namespace ColorPaletteBuilder
                if ( file != null )
                {
                     ColorPaletteData.IsSaved = true;
-                    await FileService.SavePalette_Async(file.Path, ColorPaletteData);
+                    await FileService.SerializePalette_Async(file.Path, ColorPaletteData);
 
                     localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
                     return AppConstants.ReturnCode.Success;

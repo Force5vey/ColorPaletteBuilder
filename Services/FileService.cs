@@ -17,7 +17,7 @@ namespace ColorPaletteBuilder
 {
      public static class FileService
      {
-          public static async Task SavePalette_Async( string filePath, ColorPalette colorPaletteData )
+          public static async Task SerializePalette_Async( string filePath, ColorPalette colorPaletteData )
           {
                try
                {
@@ -69,27 +69,26 @@ namespace ColorPaletteBuilder
                }
           }
 
-          internal static string GetLocalSettings(string settingString)
-          {
-               var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+          //internal static string GetLocalSettings( string settingString )
+          //{
+          //     var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
-               if ( localSettings.Values.TryGetValue(settingString, out object setting) )
-               {
-                    string settingValue = setting as string;
-                    if ( !string.IsNullOrEmpty(settingString) && File.Exists(settingValue) )
-                    {
-                         return settingValue;
-                    }
-               }
-               return null;
-          }
+          //     if ( localSettings.Values.TryGetValue(settingString, out object setting) )
+          //     {
+          //          string settingValue = setting as string;
+          //          if ( !string.IsNullOrEmpty(settingString) && File.Exists(settingValue) )
+          //          {
+          //               return settingValue;
+          //          }
+          //     }
+          //     return null;
+          //}
 
-          internal static bool IsImageFile(StorageFile file)
+          internal static bool IsImageFile( StorageFile file )
           {
                var imageFileTypes = new[] { ".bmp", ".jpg", ".jpeg", ".png" };
                return imageFileTypes.Contains(file.FileType.ToLower());
           }
-
 
      }
 

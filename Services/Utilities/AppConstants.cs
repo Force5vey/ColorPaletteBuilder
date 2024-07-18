@@ -10,7 +10,41 @@ namespace ColorPaletteBuilder
 {
      internal static class AppConstants
      {
-          public enum ReturnCode
+          internal static readonly string UserSettingsLocation = ApplicationData.Current.LocalFolder.Path + "\\UserSettings.json";
+
+          public const string BackupFileName = "backup.cpb";
+          public static string BackupFilePath = ApplicationData.Current.LocalFolder.Path;
+
+
+          internal static string LastColorPickerHex = "LastColorPickerHex";
+          internal static string LastOpenedFilePath = "LastOpenedFilePath";
+          internal static string DefaultComboBoxText = "All";
+
+          //Window Sizing
+          internal static string WindowWidth = "WindowWidth";
+          internal static string WindowHeight = "WindowHeight";
+          internal static string WindowLeft = "WindowLeft";
+          internal static string WindowTop = "WindowTop";
+
+
+          internal enum SortCriteria
+          {
+               Index,
+               Name,
+               State,
+               Group,
+               Color,
+               Note
+          }
+
+          internal enum Theme
+          {
+               Dark,
+               Light,
+               SystemDefault
+          }
+
+          internal enum ReturnCode
           {
                // General
                Success = 0,
@@ -42,30 +76,6 @@ namespace ColorPaletteBuilder
                InvalidState = 501
           }
 
-          public static string BackupFileName = "backup.cpb";
 
-          public static string BackupFilePath = ApplicationData.Current.LocalFolder.Path;
-
-          internal static string LastColorPickerHex = "LastColorPickerHex";
-          internal static string LastOpenedFilePath = "LastOpenedFilePath";
-
-          //Window Sizing
-          internal static string WindowWidth = "WindowWidth";
-          internal static string WindowHeight = "WindowHeight";
-          internal static string WindowLeft = "WindowLeft";
-          internal static string WindowTop = "WindowTop";
-
-
-          public enum SortCriteria
-          {
-               Index,
-               Name,
-               State,
-               Group,
-               Color,
-               Note
-          }
-
-          internal static string DefaultComboBoxText = "All";
      }
 }

@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace ColorPaletteBuilder
 {
-    internal class UserSettings
-    {
-    }
+     public class UserSettings
+     {
+          public string Theme { get; set; }
+
+          public UserSettings()
+          {
+               Theme = "Dark";
+          }
+     }
 }
