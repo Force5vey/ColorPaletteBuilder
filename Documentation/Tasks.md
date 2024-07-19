@@ -48,6 +48,8 @@
 
 - **Adaptive layout**: Implement an adaptive layout for different screen sizes and resolutions.
 - **Tooltips**: Add tooltips for all interactive elements.
+- Theme: For none system colors, need to ensure the light theme is set (example TitleBarMessage Color)
+- Theme: Light theme is having some issues with some of the built in features like minimize / maximize buttons, need to look over anywhere I have custom brushes or colors set.
 
 ### Additional Features for Usability and Customization
 

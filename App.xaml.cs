@@ -33,8 +33,7 @@ namespace ColorPaletteBuilder
 
                SettingsService.DeserializeUserSettings();
 
-
-               //SetTheme(ApplicationTheme.Dark);
+               RequestedTheme = UserSettings.Theme;
 
           }
 
@@ -52,9 +51,5 @@ namespace ColorPaletteBuilder
                m_window.Activate();
           }
 
-          public void SetTheme( ApplicationTheme theme )
-          {
-               RequestedTheme = theme;
-          }
      }
 }

@@ -16,6 +16,8 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using System.Threading.Tasks;
+using System.Drawing;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,6 +29,8 @@ namespace ColorPaletteBuilder
      /// </summary>
      public sealed partial class SettingsWindow :Window
      {
+          private SettingsViewModel settingsViewModel { get; set; } = new SettingsViewModel();
+
           private const int settingsWindowStartWidth = 650;
           private const int settingsWindowStartHeight = 1000;
           private const int settingsWindowMinWidth = 425;
@@ -46,6 +50,53 @@ namespace ColorPaletteBuilder
 
                LoadLocalFilePath();
 
+               LoadThemeSetting();
+
+          }
+
+          private void LoadThemeSetting()
+          {
+               if ( App.UserSettings.Theme == ApplicationTheme.Dark )
+               {
+                    ThemeComboBox.SelectedItem = "Dark";
+               }
+               else
+               {
+                    ThemeComboBox.SelectedItem = "Light";
+               }
+          }
+
+          private void ThemeComboBox_SelectionChanged( object sender, SelectionChangedEventArgs e )
+          {
+               switch ( ThemeComboBox.SelectedIndex )
+               {
+                    case 0:
+                    {
+                         if ( App.UserSettings.Theme == ApplicationTheme.Light )
+                         {
+                              ThemeMessage.Text = "";
+                         }
+                         else
+                         {
+                              ThemeMessage.Text = "Requires restart.";
+                         }
+                         break;
+                    }
+                    case 1:
+                    {
+                         if ( App.UserSettings.Theme == ApplicationTheme.Dark )
+                         {
+                              ThemeMessage.Text = "";
+                         }
+                         else
+                         {
+                              ThemeMessage.Text = "Requires restart.";
+                         }
+                         break;
+                    }
+               }
+
+
           }
 
           private void LoadLocalFilePath()
@@ -55,13 +106,7 @@ namespace ColorPaletteBuilder
 
           private void SaveSettings_Click( object sender, RoutedEventArgs e )
           {
-               App.UserSettings.Theme = "Dark";
-               SaveSettings();
-          }
-
-          private async Task SaveSettings()
-          {
-               await SettingsService.SerializeUserSettings_Async();
+               settingsViewModel.SaveSettings();
           }
 
           private void CloseSettingsWindow_Click( object sender, RoutedEventArgs e )

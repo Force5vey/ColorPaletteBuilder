@@ -8,7 +8,7 @@ using Windows.Storage;
 
 namespace ColorPaletteBuilder
 {
-     internal static class AppConstants
+     public static class AppConstants
      {
           internal static readonly string UserSettingsLocation = ApplicationData.Current.LocalFolder.Path + "\\UserSettings.json";
 
@@ -35,13 +35,6 @@ namespace ColorPaletteBuilder
                Group,
                Color,
                Note
-          }
-
-          internal enum Theme
-          {
-               Dark,
-               Light,
-               SystemDefault
           }
 
           internal enum ReturnCode
@@ -76,6 +69,12 @@ namespace ColorPaletteBuilder
                InvalidState = 501
           }
 
+          public enum SnippetLanguage
+          {
+               CSharp,
+               Python,
+               Javascript
+          }
 
      }
 }
