@@ -30,7 +30,7 @@ namespace ColorPaletteBuilder
      /// </summary>
      public sealed partial class SettingsWindow :Window
      {
-          private SettingsViewModel settingsViewModel { get; set; } = new SettingsViewModel();
+          private SettingsViewModel settingsViewModel { get; set; }
 
           private const int settingsWindowStartWidth = 650;
           private const int settingsWindowStartHeight = 1000;
@@ -41,62 +41,20 @@ namespace ColorPaletteBuilder
           public SettingsWindow()
           {
                this.InitializeComponent();
+               settingsViewModel = new SettingsViewModel(App.UserSettings);
 
                ExtendsContentIntoTitleBar = true;
 
                this.AppWindow.Resize(new Windows.Graphics.SizeInt32(settingsWindowStartWidth, settingsWindowStartHeight));
-
                this.AppWindow.Changed += SettingsWindow_Changed;
 
                LoadLocalFilePath();
 
-               LoadThemeSetting();
-
           }
 
-          private void LoadThemeSetting()
+          private void BrowsePreferredSaveFolder_Click( object sender, RoutedEventArgs e )
           {
-               if ( App.UserSettings.Theme == ApplicationTheme.Dark )
-               {
-                    ThemeComboBox.SelectedItem = "Dark";
-               }
-               else
-               {
-                    ThemeComboBox.SelectedItem = "Light";
-               }
-          }
-
-          private void ThemeComboBox_SelectionChanged( object sender, SelectionChangedEventArgs e )
-          {
-               switch ( ThemeComboBox.SelectedIndex )
-               {
-                    case 0:
-                    {
-                         if ( App.UserSettings.Theme == ApplicationTheme.Light )
-                         {
-                              ThemeMessage.Text = "";
-                         }
-                         else
-                         {
-                              ThemeMessage.Text = "Requires restart.";
-                         }
-                         break;
-                    }
-                    case 1:
-                    {
-                         if ( App.UserSettings.Theme == ApplicationTheme.Dark )
-                         {
-                              ThemeMessage.Text = "";
-                         }
-                         else
-                         {
-                              ThemeMessage.Text = "Requires restart.";
-                         }
-                         break;
-                    }
-               }
-
-
+               settingsViewModel.BrowsePreferredPaletteSaveFolder(this);
           }
 
           private void LoadLocalFilePath()
@@ -126,6 +84,21 @@ namespace ColorPaletteBuilder
                {
                     this.AppWindow.Resize(new Windows.Graphics.SizeInt32((int)sender.Size.Width, settingsWindowMinHeight));
                }
+          }
+
+          private void MyDocsButton_Click( object sender, RoutedEventArgs e )
+          {
+               DefaultPaletteLocationTextBox.Text = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+          }
+
+          private void DesktopButton_Click( object sender, RoutedEventArgs e )
+          {
+               DefaultPaletteLocationTextBox.Text = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+          }
+
+          private void FavoritesButton_Click( object sender, RoutedEventArgs e )
+          {
+               DefaultPaletteLocationTextBox.Text = Environment.GetFolderPath(Environment.SpecialFolder.Favorites);
           }
 
      }

@@ -21,7 +21,8 @@ namespace ColorPaletteBuilder
           internal static WriteableBitmap ColorSelectorBitmap;
           internal static Color ColorSelectorColor;
 
-          internal static UserSettings UserSettings { get; set; } = new UserSettings();
+          //private static UserSettings _userSettings;
+          internal static UserSettings UserSettings { get; set; }
 
           /// <summary>
           /// Initializes the singleton application object.  This is the first line of authored code

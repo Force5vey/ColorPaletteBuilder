@@ -9,13 +9,13 @@
     mc:Ignorable="d"
     Title="Color Palette Builder">
 
-    
+
 
     <Grid>
         <Grid.Resources>
             <local:MinutesToStringConverter x:Key="MinutesToStringConverter"/>
         </Grid.Resources>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*" />
@@ -41,21 +41,21 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 
                     <ComboBox x:Name="ThemeComboBox" Width="200"
-                          SelectedIndex="{x:Bind settingsViewModel.ThemeSelection, Mode=TwoWay}"
-                          SelectionChanged="ThemeComboBox_SelectionChanged">
+                          SelectedIndex="{x:Bind settingsViewModel.ThemeSelection, Mode=TwoWay}">
                         <ComboBoxItem Content="Light"/>
                         <ComboBoxItem Content="Dark"/>
                     </ComboBox>
 
-                    <TextBlock x:Name="ThemeMessage" Margin="10,5,0,0" Foreground="#FFFFD864"/>
+                    <TextBlock x:Name="ThemeMessage" Margin="10,5,0,0" Foreground="#FFFFD864"
+                              Text="{x:Bind settingsViewModel.ThemeMessage, Mode=OneWay}" />
 
                 </StackPanel>
 
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
                 <!-- Enable Auto-save -->
                 <TextBlock Text="Auto-Save" FontWeight="Bold" Margin="0,10,0,5"/>
-                <CheckBox x:Name="EnableAutoSaveCheckBox" IsChecked="True" Content="Enable Auto-save"/>
+                <CheckBox x:Name="EnableAutoSaveCheckBox" IsChecked="{x:Bind settingsViewModel.AutoSave, Mode=TwoWay}" Content="Enable Auto-save"/>
 
                 <!-- Auto-save Interval -->
                 <TextBlock Text="Auto-save Interval (seconds)" FontWeight="Bold" Margin="0,10,0,5"/>
@@ -63,74 +63,63 @@
                         Value="{x:Bind settingsViewModel.AutoSaveInterval,Mode=TwoWay}" />
 
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="AutoSaveInterval" Text="{x:Bind settingsViewModel.AutoSaveInterval, Mode=OneWay}" HorizontalAlignment="Left"/>
-                    <TextBlock Text="Seconds" Margin="10,0,0,0"/>
-                    <TextBlock x:Name="AutoSaveIntervalMinutes" Text="{x:Bind settingsViewModel.AutoSaveIntervalMinutes,Mode=OneWay}" Margin="50,0,0,0"/>
-                    <TextBlock Text=" Minutes" Margin="10,0,0,0"/>
+                    <TextBlock x:Name="AutoSaveIntervalMinutes" HorizontalAlignment="Left"
+                               Text="{x:Bind settingsViewModel.AutoSaveIntervalMinutes, Mode=OneWay}" />
+
+                    <TextBlock Text="Min" Margin="10,0,0,0"/>
+
+                    <TextBlock x:Name="AutoSaveIntervalRemainingSeconds"  Margin="10,0,0,0"
+                               Text="{x:Bind settingsViewModel.AutoSaveIntervalRemainingSeconds,Mode=OneWay}"/>
+
+                    <TextBlock Text="Sec" Margin="10,0,0,0"/>
                 </StackPanel>
 
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
                 <!-- Back Up Save -->
                 <TextBlock Text="Backup-Save" FontWeight="Bold" Margin="0,10,0,5"/>
-                <CheckBox x:Name="EnableBackupSaveCheckBox" IsChecked="True" Content="Enable Backup Saves"/>
+                <CheckBox x:Name="EnableBackupSaveCheckBox" IsChecked="{x:Bind settingsViewModel.BackupSave, Mode=TwoWay}" Content="Enable Backup Saves"/>
 
                 <!-- Backup-save Interval -->
                 <TextBlock Text="Backup-Save Interval (seconds)" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Slider x:Name="BackupSaveSlider" Minimum="10" Maximum="180" Width="200" Value="10" HorizontalAlignment="Left" StepFrequency="10"/>
+                <Slider x:Name="BackupSaveSlider" Minimum="10" Maximum="180" Width="200" HorizontalAlignment="Left" StepFrequency="10"
+                        Value="{x:Bind settingsViewModel.BackupSaveInterval, Mode=TwoWay}"/>
 
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="BackupSaveInterval" Text="{x:Bind BackupSaveSlider.Value, Mode=OneWay}" Width="75" HorizontalAlignment="Left"/>
-                    <TextBlock x:Name="BackupSaveIntervalMinutes"/>
+                    <TextBlock x:Name="BackupSaveInterval"  HorizontalAlignment="Left"
+                               Text="{x:Bind settingsViewModel.BackupSaveIntervalMinutes, Mode=OneWay}"/>
+
+                    <TextBlock Text="Min" Margin="10,0,0,0"/>
+
+                    <TextBlock x:Name="BackupSaveIntervalMinutes" Margin="50,0,0,0"
+                               Text="{x:Bind settingsViewModel.BackupSaveIntervalRemainingSeconds, Mode=OneWay}" />
+
+                    <TextBlock Text="Sec" Margin="10,0,0,0"/>
                 </StackPanel>
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
+
+                <!-- Copy Shortcut Settings -->
+                <TextBlock Text="Copy Shortcut Settings" FontWeight="Bold" Margin="0,10,0,5"/>
+                <CheckBox x:Name="CopyWithHashtag" IsChecked="{x:Bind settingsViewModel.CopyWithHashtag, Mode=TwoWay}" Content="Copy Hashtag with Hex Code"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
                 <!-- Default Palette Location -->
                 <TextBlock Text="Default Palette Location" FontWeight="Bold" Margin="0,10,0,5"/>
-                <ComboBox x:Name="PrefferedPaletteLocationComboBox" HorizontalAlignment="Left" Margin="0,10,0,0" Width="300">
-                    <ComboBoxItem Content="My documents"/>
-                    <ComboBoxItem Content="Desktop"/>
-                </ComboBox>
-                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <TextBox x:Name="DefaultPaletteLocationTextBox" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <Button Content="Browse" Margin="10,5,0,0"/>
+
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Browse" Click="BrowsePreferredSaveFolder_Click" Margin="0,0,0,0" />
+                    <Button x:Name="MyDocsButton" Content="My Docs" Click="MyDocsButton_Click" Margin="5,0,0,0"  Style="{StaticResource PagerControlNumberPanelButtonStyle}"/>
+                    <Button x:Name="DesktopButton" Content="Desktop" Click="DesktopButton_Click"  Margin="5,0,0,0"  Style="{StaticResource PagerControlNumberPanelButtonStyle}"/>
+                    <Button x:Name="FavoritesButton" Content="Favorites" Click="FavoritesButton_Click"  Margin="5,0,0,0"  Style="{StaticResource PagerControlNumberPanelButtonStyle}"/>
                 </StackPanel>
 
-                <!-- Recent Palettes -->
-                <TextBlock Text="Recent Palettes" FontWeight="Bold" Margin="0,10,0,5"/>
-                <ListView x:Name="RecentPalettesListView" Width="300" Height="100"/>
+                <TextBox x:Name="DefaultPaletteLocationTextBox"  HorizontalAlignment="Stretch"  Margin="0,10,0,0" 
+                             Text="{x:Bind settingsViewModel.PreferredPaletteSaveFolder, Mode=TwoWay}"/>
 
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
-
-                <!-- Color Format Preference -->
-                <TextBlock Text="Color Format Preference" FontWeight="Bold" Margin="0,10,0,5"/>
-                <ComboBox x:Name="ColorFormatComboBox" Width="200">
-                    <ComboBoxItem Content="Hex" />
-                    <ComboBoxItem Content="RGBA" />
-                    <ComboBoxItem Content="HSLA" />
-                </ComboBox>
-
-                <!-- Palette Sorting Options -->
-                <TextBlock Text="Palette Sorting Options" FontWeight="Bold" Margin="0,10,0,5"/>
-                <ComboBox x:Name="PaletteSortingComboBox" Width="200">
-                    <ComboBoxItem Content="Name" />
-                    <ComboBoxItem Content="Color Value" />
-                    <ComboBoxItem Content="Custom Order" />
-                </ComboBox>
-
-                <!-- Color Preview Size -->
-                <TextBlock Text="Color Preview Size" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Slider x:Name="ColorPreviewSizeSlider" Minimum="1" Maximum="3" Width="200" Value="2" HorizontalAlignment="Left"/>
-
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
-
-                <!-- Export Options -->
-                <TextBlock Text="Export Options" FontWeight="Bold" Margin="0,10,0,5"/>
-                <ComboBox x:Name="ExportOptionsComboBox" Width="200">
-                    <ComboBoxItem Content="JSON" />
-                    <ComboBoxItem Content="XML" />
-                    <ComboBoxItem Content="CSV" />
-                </ComboBox>
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
                 <!-- Backup and Restore -->
                 <TextBlock Text="Backup and Restore" FontWeight="Bold" Margin="0,30,0,5"/>
@@ -138,40 +127,24 @@
                     <Button Content="Backup" Margin="0,0,10,0"/>
                     <Button Content="Restore"/>
                 </StackPanel>
-                <TextBlock Text="Autosave / Backup Location" Margin="0,10,0,5"/>
+                <TextBlock Text="Backup File Location:" Margin="0,10,0,5"/>
                 <TextBox x:Name="LocalFolderPathTextbox" IsReadOnly="True" HorizontalAlignment="Stretch" Margin="0,0,10,0"/>
 
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
-
-                <!-- Undo/Redo History Limit -->
-                <TextBlock Text="Undo/Redo History Limit" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Slider x:Name="UndoRedoHistoryLimitSlider" Minimum="1" Maximum="100" Width="200" Value="20" HorizontalAlignment="Left"/>
-
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
                 <!-- Language Preference -->
                 <TextBlock Text="Language Preference" FontWeight="Bold" Margin="0,10,0,5"/>
-                <ComboBox x:Name="LanguageComboBox" Width="200">
+                <ComboBox x:Name="LanguageComboBox" Width="200"
+                          SelectedIndex="{x:Bind settingsViewModel.SnippetLanguage, Mode=TwoWay}">
                     <ComboBoxItem Content="C#" />
                     <ComboBoxItem Content="Javascript" />
                     <ComboBoxItem Content="Python" />
                 </ComboBox>
 
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
-
-                <!-- Other Settings -->
-                <TextBlock Text="Other Settings" FontWeight="Bold" Margin="0,10,0,5"/>
-                <CheckBox x:Name="EnableLoggingCheckBox" IsChecked="False" Content="Enable Logging"/>
-                <CheckBox x:Name="EnableBetaFeaturesCheckBox" IsChecked="False" Content="Enable Beta Features"/>
-
-
-
-
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
             </StackPanel>
         </ScrollViewer>
-
-
 
         <!-- Save Button -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"

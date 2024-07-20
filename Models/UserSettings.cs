@@ -14,8 +14,9 @@ namespace ColorPaletteBuilder
           int _autoSaveInterval; // In Seconds
           bool _backupSave;
           int _backupSaveInterval; // In Seconds
-          string _preferredPaletteSaveFolder;
           bool _copyWithHashtag;
+          string _preferredPaletteSaveFolder;
+
           AppConstants.SnippetLanguage _snippetLanguage;
 
 
@@ -38,20 +39,14 @@ namespace ColorPaletteBuilder
           }
           public bool BackupSave
           {
-               get =>_backupSave;
+               get => _backupSave;
                set => SetProperty(ref _backupSave, value);
           }
 
           public int BackupSaveInterval
           {
-               get =>_backupSaveInterval;
+               get => _backupSaveInterval;
                set => SetProperty(ref _backupSaveInterval, value);
-          }
-
-          public string PreferredPaletteSaveFolder
-          {
-               get => _preferredPaletteSaveFolder;
-               set => SetProperty(ref _preferredPaletteSaveFolder, value);
           }
 
           public bool CopyWithHashtag
@@ -60,12 +55,17 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _copyWithHashtag, value);
           }
 
+          public string PreferredPaletteSaveFolder
+          {
+               get => _preferredPaletteSaveFolder;
+               set => SetProperty(ref _preferredPaletteSaveFolder, value);
+          }
+
           public AppConstants.SnippetLanguage SnippetLanguage
           {
                get => _snippetLanguage;
                set => SetProperty(ref _snippetLanguage, value);
           }
-
 
           // Constructor
           public UserSettings()

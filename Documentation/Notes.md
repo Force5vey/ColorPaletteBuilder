@@ -47,13 +47,3 @@ Code Snippet Language preference (C#, Python, Javascript)
 Textblock showing code snippet
 
 
-
-
-
----
-
-still working on settings, but doing specific things with binding settingsviewmodel with singleton usersettings in app. right now there is some basic binding but it is with viewmodel prperties taht aren't properly translating to the singleton usersettings so in the gpt CPB_Build_13 go back through what the latest process is. basically, crate the singleton. create a variable / property in settings viewmodel. in the constructor assign this viewmodel property the singleton values. then do properties to get and set to the singleton then update bindings to ensure it is referencing correct properties.
-
-
-
-review the questions I had for udnerstanding. I need to do all of last. I am stopping in a state of things workig but not doing anything because it is essentially just UI binding and it isn't translating to the underlying model..

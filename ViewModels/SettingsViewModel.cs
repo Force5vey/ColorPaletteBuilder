@@ -8,74 +8,213 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.UI.Xaml;
+using Windows.Storage.Pickers;
+using Windows.Storage;
 
 namespace ColorPaletteBuilder
 {
      internal class SettingsViewModel :INotifyPropertyChanged
      {
-          private int _autoSaveInterval;
-          private string _autoSaveIntervalMinutes;
+          private UserSettings _userSettings;
 
-          public int ThemeSelection { get; set; }
-          
+          public SettingsViewModel( UserSettings userSettings )
+          {
+               _userSettings = userSettings;
+          }
+
+          #region // Theme ...
+          private int _themeSelection;
+          public int ThemeSelection
+          {
+               get => (int)_userSettings.Theme;
+               set
+               {
+                    if ( (int)_userSettings.Theme != value )
+                    {
+                         _userSettings.Theme = (ApplicationTheme)value;
+                         OnPropertyChanged();
+                         OnPropertyChanged(nameof(ThemeMessage));
+                    }
+               }
+          }
+
+          public string ThemeMessage
+          {
+               get
+               {
+                    return ThemeSelection switch
+                    {
+                         0 => _userSettings.Theme == ApplicationTheme.Light ? "" : "Requires restart.",
+                         1 => _userSettings.Theme == ApplicationTheme.Dark ? "" : "Requires restart.",
+                         _ => ""
+                    };
+               }
+          }        
+
+          #endregion
+
+          #region // Auto Save and BackupSave ...
+
+          public bool AutoSave
+          {
+               get => _userSettings.AutoSave;
+               set
+               {
+                    if ( _userSettings.AutoSave != value )
+                    {
+                         _userSettings.AutoSave = value;
+                         OnPropertyChanged();
+                         OnPropertyChanged(nameof(AutoSave));
+                    }
+               }
+          }
+
           public int AutoSaveInterval
           {
-               get => _autoSaveInterval;
+               get => _userSettings.AutoSaveInterval;
                set
                {
-                    if ( SetProperty(ref _autoSaveInterval, value) )
+                    if ( _userSettings.AutoSaveInterval != value )
                     {
+                         _userSettings.AutoSaveInterval = value;
+                         OnPropertyChanged();
                          OnPropertyChanged(nameof(AutoSaveIntervalMinutes));
+                         OnPropertyChanged(nameof(AutoSaveIntervalRemainingSeconds));
                     }
                }
           }
 
-          public double AutoSaveIntervalMinutes
-          {
-               get => _autoSaveInterval / 60;
+          public int AutoSaveIntervalMinutes => (int)Math.Floor((double)_userSettings.AutoSaveInterval / 60);
 
+          public int AutoSaveIntervalRemainingSeconds
+          {
+               get
+               {
+                    double totalMinutes = (double)_userSettings.AutoSaveInterval / 60;
+                    double fractionalMinutes = totalMinutes - Math.Floor(totalMinutes);
+                    return (int)Math.Round(fractionalMinutes * 60);
+               }
+          }
+
+          public bool BackupSave
+          {
+               get => _userSettings.BackupSave;
                set
                {
-                    int newInterval = (int)(value * 60);
-                    if ( SetProperty(ref _autoSaveInterval, newInterval) )
+                    if ( _userSettings.BackupSave != value )
                     {
-                         OnPropertyChanged(nameof(AutoSaveInterval));
+                         _userSettings.BackupSave = value;
+                         OnPropertyChanged();
+                         OnPropertyChanged(nameof(_userSettings.BackupSave));
                     }
                }
           }
 
-          public SettingsViewModel()
+          public int BackupSaveInterval
           {
-               if ( App.UserSettings.Theme == ApplicationTheme.Light )
+               get => _userSettings.BackupSaveInterval;
+               set
                {
-                    ThemeSelection = 0;
-               }
-               else if ( App.UserSettings.Theme == ApplicationTheme.Dark )
-               {
-                    ThemeSelection = 1;
+                    if ( _userSettings.BackupSaveInterval != value )
+                    {
+                         _userSettings.BackupSaveInterval = value;
+                         OnPropertyChanged();
+                         OnPropertyChanged(nameof(BackupSaveIntervalMinutes));
+                         OnPropertyChanged(nameof(BackupSaveIntervalRemainingSeconds));
+                    }
                }
           }
+
+          public double BackupSaveIntervalMinutes => (int)Math.Floor((double)_userSettings.BackupSaveInterval / 60);
+
+          public int BackupSaveIntervalRemainingSeconds
+          {
+               get
+               {
+                    double totalMinutes = (double)_userSettings.BackupSaveInterval / 60;
+                    double fractionalMinutes = totalMinutes - Math.Floor(totalMinutes);
+                    return (int)Math.Round(fractionalMinutes * 60);
+               }
+          }
+
+          #endregion
+
+          public bool CopyWithHashtag
+          {
+               get => _userSettings.CopyWithHashtag;
+               set
+               {
+                    if ( _userSettings.CopyWithHashtag != value )
+                    {
+                         _userSettings.CopyWithHashtag = value;
+                         OnPropertyChanged();
+                         OnPropertyChanged(nameof(_userSettings.CopyWithHashtag));
+                    }
+               }
+          }
+
+
+          public string PreferredPaletteSaveFolder
+          {
+               get => _userSettings.PreferredPaletteSaveFolder;
+               set
+               {
+                    if ( _userSettings.PreferredPaletteSaveFolder != value )
+                    {
+                         _userSettings.PreferredPaletteSaveFolder = value;
+                         OnPropertyChanged();
+                    }
+               }
+          }
+
+          public async void BrowsePreferredPaletteSaveFolder( Window window )
+          {
+               try
+               {
+                    var picker = new FolderPicker();
+                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+                    WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
+                    picker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
+
+                    StorageFolder folder = await picker.PickSingleFolderAsync();
+                    if ( folder != null )
+                    {
+                         PreferredPaletteSaveFolder = folder.Path;
+
+                    }
+               }
+               catch
+               {
+                    //TODO: Add additional return codes for null, etc.
+               }
+          }
+
+          public int SnippetLanguage
+          {
+               get => (int)_userSettings.SnippetLanguage;
+               set
+               {
+                    if ( (int)_userSettings.SnippetLanguage != value )
+                    {
+                         _userSettings.SnippetLanguage = (AppConstants.SnippetLanguage)value;
+                         OnPropertyChanged();
+                    }
+               }
+          }
+
+         
+          #region // Window Controls
 
           public async Task SaveSettings()
           {
-               switch ( ThemeSelection )
-               {
-                    case 0: //Light
-                    {
-                         App.UserSettings.Theme = ApplicationTheme.Light;
-
-                         break;
-                    }
-                    case 1: //Dark
-                    {
-                         App.UserSettings.Theme = ApplicationTheme.Dark;
-                         break;
-                    }
-               }
-
                await SettingsService.SerializeUserSettings_Async();
+               App.UserSettings = _userSettings;
           }
 
+
+          #endregion
+
+          #region // Property Change Events
 
           public event PropertyChangedEventHandler PropertyChanged;
 
@@ -89,9 +228,12 @@ namespace ColorPaletteBuilder
                return true;
           }
 
-          protected void OnPropertyChanged( string propertyName )
+          protected void OnPropertyChanged( [CallerMemberName] string propertyName = null )
           {
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
           }
+
+          #endregion
+
      }
 }
