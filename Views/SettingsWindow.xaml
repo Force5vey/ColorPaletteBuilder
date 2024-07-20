@@ -9,8 +9,13 @@
     mc:Ignorable="d"
     Title="Color Palette Builder">
 
+    
 
     <Grid>
+        <Grid.Resources>
+            <local:MinutesToStringConverter x:Key="MinutesToStringConverter"/>
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*" />
@@ -49,26 +54,46 @@
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
                 <!-- Enable Auto-save -->
-                <TextBlock Text="Enable Auto-save" FontWeight="Bold" Margin="0,10,0,5"/>
+                <TextBlock Text="Auto-Save" FontWeight="Bold" Margin="0,10,0,5"/>
                 <CheckBox x:Name="EnableAutoSaveCheckBox" IsChecked="True" Content="Enable Auto-save"/>
 
                 <!-- Auto-save Interval -->
-                <TextBlock Text="Auto-save Interval (minutes)" FontWeight="Bold" Margin="0,10,0,5"/>
-                <Slider x:Name="AutoSaveSlider" Minimum="1" Maximum="20" Width="200" Value="10" HorizontalAlignment="Left" />
+                <TextBlock Text="Auto-save Interval (seconds)" FontWeight="Bold" Margin="0,10,0,5"/>
+                <Slider x:Name="AutoSaveSlider" Minimum="10" Maximum="600" Width="200" HorizontalAlignment="Left" StepFrequency="10"
+                        Value="{x:Bind settingsViewModel.AutoSaveInterval,Mode=TwoWay}" />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="AutoSaveInterval" Text="{x:Bind settingsViewModel.AutoSaveInterval, Mode=OneWay}" HorizontalAlignment="Left"/>
+                    <TextBlock Text="Seconds" Margin="10,0,0,0"/>
+                    <TextBlock x:Name="AutoSaveIntervalMinutes" Text="{x:Bind settingsViewModel.AutoSaveIntervalMinutes,Mode=OneWay}" Margin="50,0,0,0"/>
+                    <TextBlock Text=" Minutes" Margin="10,0,0,0"/>
+                </StackPanel>
 
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
-                <!-- Show notifications -->
-                <TextBlock Text="Notifications" FontWeight="Bold" Margin="0,10,0,5"/>
-                <CheckBox x:Name="ShowNotificationsCheckBox" IsChecked="True" Content="Show Notifications"/>
+                <!-- Back Up Save -->
+                <TextBlock Text="Backup-Save" FontWeight="Bold" Margin="0,10,0,5"/>
+                <CheckBox x:Name="EnableBackupSaveCheckBox" IsChecked="True" Content="Enable Backup Saves"/>
 
+                <!-- Backup-save Interval -->
+                <TextBlock Text="Backup-Save Interval (seconds)" FontWeight="Bold" Margin="0,10,0,5"/>
+                <Slider x:Name="BackupSaveSlider" Minimum="10" Maximum="180" Width="200" Value="10" HorizontalAlignment="Left" StepFrequency="10"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="BackupSaveInterval" Text="{x:Bind BackupSaveSlider.Value, Mode=OneWay}" Width="75" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="BackupSaveIntervalMinutes"/>
+                </StackPanel>
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="300" Y2="0" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,20,0,10"/>
 
                 <!-- Default Palette Location -->
                 <TextBlock Text="Default Palette Location" FontWeight="Bold" Margin="0,10,0,5"/>
-                <StackPanel Orientation="Horizontal">
-                    <TextBox x:Name="DefaultPaletteLocationTextBox" Width="300" Margin="0,0,10,0"/>
-                    <Button Content="Browse"/>
+                <ComboBox x:Name="PrefferedPaletteLocationComboBox" HorizontalAlignment="Left" Margin="0,10,0,0" Width="300">
+                    <ComboBoxItem Content="My documents"/>
+                    <ComboBoxItem Content="Desktop"/>
+                </ComboBox>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <TextBox x:Name="DefaultPaletteLocationTextBox" Width="300" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <Button Content="Browse" Margin="10,5,0,0"/>
                 </StackPanel>
 
                 <!-- Recent Palettes -->

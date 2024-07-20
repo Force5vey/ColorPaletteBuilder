@@ -18,6 +18,7 @@ using Windows.Storage;
 using System.Threading.Tasks;
 using System.Drawing;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.ComponentModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -35,7 +36,6 @@ namespace ColorPaletteBuilder
           private const int settingsWindowStartHeight = 1000;
           private const int settingsWindowMinWidth = 425;
           private const int settingsWindowMinHeight = 700;
-
 
           //check git changes for branch
           public SettingsWindow()
@@ -127,7 +127,6 @@ namespace ColorPaletteBuilder
                     this.AppWindow.Resize(new Windows.Graphics.SizeInt32((int)sender.Size.Width, settingsWindowMinHeight));
                }
           }
-
 
      }
 }

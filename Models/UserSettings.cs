@@ -12,6 +12,7 @@ namespace ColorPaletteBuilder
           ApplicationTheme _theme;
           bool _autoSave;
           int _autoSaveInterval; // In Seconds
+          bool _backupSave;
           int _backupSaveInterval; // In Seconds
           string _preferredPaletteSaveFolder;
           bool _copyWithHashtag;
@@ -34,6 +35,11 @@ namespace ColorPaletteBuilder
           {
                get => _autoSaveInterval;
                set => SetProperty(ref _autoSaveInterval, value);
+          }
+          public bool BackupSave
+          {
+               get =>_backupSave;
+               set => SetProperty(ref _backupSave, value);
           }
 
           public int BackupSaveInterval
