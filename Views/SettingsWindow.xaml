@@ -133,14 +133,20 @@
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
                 <!-- Language Preference -->
-                <TextBlock Text="Language Preference" FontWeight="Bold" Margin="0,10,0,5"/>
+                <TextBlock Text="Code Snippet" FontWeight="Bold" Margin="0,10,0,5"/>
                 <ComboBox x:Name="LanguageComboBox" Width="200"
                           SelectedIndex="{x:Bind settingsViewModel.SnippetLanguage, Mode=TwoWay}">
+                    <ComboBoxItem Content="Custom"/>
                     <ComboBoxItem Content="C#" />
                     <ComboBoxItem Content="Javascript" />
                     <ComboBoxItem Content="Python" />
                 </ComboBox>
 
+                <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
+                <TextBox x:Name="CodeSnippetEditBox" Margin="0,10,0,0" TextWrapping="Wrap" Height="100" AcceptsReturn="True"
+                         Text="{x:Bind settingsViewModel.Snippet, Mode=TwoWay}"/>
+                </ScrollViewer>
+                
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
             </StackPanel>

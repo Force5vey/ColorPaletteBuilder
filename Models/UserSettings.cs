@@ -18,6 +18,11 @@ namespace ColorPaletteBuilder
           string _preferredPaletteSaveFolder;
 
           AppConstants.SnippetLanguage _snippetLanguage;
+          string _snippet;
+          string _snippetCustom;
+          string _snippetCSharp;
+          string _snippetJavascript;
+          string _snippetPython;
 
 
           public ApplicationTheme Theme
@@ -67,6 +72,36 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _snippetLanguage, value);
           }
 
+          public string Snippet
+          {
+               get => _snippet;
+               set => SetProperty(ref _snippet, value);
+          }
+
+          public string SnippetCustom
+          {
+               get => _snippetCustom;
+               set => SetProperty(ref _snippetCustom, value);
+          }
+
+          public string SnippetCSharp
+          {
+               get => _snippetCSharp;
+               set => SetProperty(ref _snippetCSharp, value);
+          }
+
+          public string SnippetJavascript
+          {
+               get => _snippetJavascript;
+               set => SetProperty(ref _snippetJavascript, value);
+          }
+
+          public string SnippetPython
+          {
+               get => _snippetPython;
+               set => SetProperty(ref _snippetPython, value);
+          }
+
           // Constructor
           public UserSettings()
           {
@@ -77,6 +112,7 @@ namespace ColorPaletteBuilder
                PreferredPaletteSaveFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                CopyWithHashtag = true;
                SnippetLanguage = AppConstants.SnippetLanguage.CSharp;
+               Snippet = "new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));";
           }
 
 

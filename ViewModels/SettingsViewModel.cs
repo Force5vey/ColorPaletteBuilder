@@ -49,7 +49,7 @@ namespace ColorPaletteBuilder
                          _ => ""
                     };
                }
-          }        
+          }
 
           #endregion
 
@@ -189,6 +189,8 @@ namespace ColorPaletteBuilder
                }
           }
 
+          #region // Code Snippet ...
+
           public int SnippetLanguage
           {
                get => (int)_userSettings.SnippetLanguage;
@@ -198,11 +200,65 @@ namespace ColorPaletteBuilder
                     {
                          _userSettings.SnippetLanguage = (AppConstants.SnippetLanguage)value;
                          OnPropertyChanged();
+                         OnPropertyChanged(nameof(Snippet));
+                         UpdateSnippet();
                     }
                }
           }
 
-         
+          public string Snippet
+          {
+               get => _userSettings.Snippet;
+               set
+               {
+                    if ( _userSettings.Snippet != value )
+                    {
+                         _userSettings.Snippet = value;
+                         OnPropertyChanged();
+                    }
+               }
+          }
+
+          private string GetSnippetForCurrentLanguage()
+          {
+               return SnippetLanguage switch
+               {
+                    0 => _userSettings.SnippetCustom,
+                    1 => _userSettings.SnippetCSharp,
+                    2 => _userSettings.SnippetJavascript,
+                    3 => _userSettings.SnippetPython,
+                    _ => _userSettings.SnippetCustom
+               };
+          }
+
+          private void SetSnippetForCurrentLanguage(string value)
+          {
+               switch ( SnippetLanguage )
+               {
+                    case 0:
+                         _userSettings.SnippetCustom = value;
+                    break;
+
+                    case 1: 
+                         _userSettings.SnippetCSharp = value;
+                    break;
+
+                    case 2:
+                         _userSettings.SnippetJavascript = value;
+                    break;
+
+                    case 3: 
+                    _userSettings.SnippetPython = value;
+                    break;
+
+                    default:
+                         _userSettings.SnippetCustom = value;
+                    break;
+               }
+          }
+
+          #endregion
+
           #region // Window Controls
 
           public async Task SaveSettings()

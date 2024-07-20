@@ -96,7 +96,7 @@
 
                 <MenuFlyoutItem Text="Settings" Icon="Setting" Click="OpenSettings_Click">
                     <MenuFlyoutItem.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="I"/>
+                        <KeyboardAccelerator Modifiers="Control" Key="E"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
             </MenuBarItem>
@@ -313,7 +313,11 @@
                             </StackPanel>
 
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                <TextBox x:Name="TextBoxColorPickerCodeSnippet" Text="Color.FromRGB(1,2,3,4);" Width="275" />
+                                
+                                <ScrollViewer Height="50" VerticalScrollBarVisibility="Visible">
+                                    <TextBox x:Name="TextBoxColorPickerCodeSnippet" Width="275" Height="100" TextWrapping="Wrap" IsReadOnly="True" />
+                                </ScrollViewer>
+                                
                                 <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerCodeSnippet_Click">
                                     <Button.Content>
                                         <FontIcon Glyph="&#xe8c8;" FontSize="12"/>

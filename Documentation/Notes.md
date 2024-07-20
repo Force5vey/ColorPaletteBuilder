@@ -17,33 +17,3 @@ also, SavePaletteToFile_Async also creates a file object, gets file from path (c
 in save as it is probably necessary because the filepicker returns a file object. then get the path.
 
 Whereas backup is not getting it from a picker (maybe in settings but the full path will be saved) as well as settings it is just getting from the default location or creating a new one.
-
-
-
-Settings:
-
-Theme - light dark system default
-
-Enable Auto Save
-
-Auto save interval (seconds)
-
-Default Palette Location:
-
-radio buttons (2) for use system folder or custom
-
-combobox for selecting a default system folder
-
-text box and browse for a custom location
-
-
-
-Auto copy preference:
-
-Copy hex code w/ or without hashtag
-
-Code Snippet Language preference (C#, Python, Javascript)
-
-Textblock showing code snippet
-
-

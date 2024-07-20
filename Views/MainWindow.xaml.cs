@@ -44,7 +44,7 @@ namespace ColorPaletteBuilder
           private string currentColorPickerHex = string.Empty;
           private string currentColorPickerHexNoAlpha = string.Empty;
           private string currentColorPickerRGB = string.Empty;
-          private string currentColorPickerCodeSnippet = string.Empty;
+          private Windows.UI.Color currentColorPickerCodeSnippetColor = Windows.UI.Color.FromArgb(255, 1, 1, 1);
 
           // Sort and Filter Fields
           private AppConstants.SortCriteria activeSortCriteria = AppConstants.SortCriteria.Index;
@@ -655,13 +655,26 @@ namespace ColorPaletteBuilder
                currentColorPickerHexNoAlpha = ColorConverter.ToHex(ColorConverter.ConvertColorToSysDrawColor(args.NewColor), includeAlpha: false);
                currentColorPickerRGB = $"{args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}";
                //TODO: Settings will allow the desired snippet to be created and then use that to form the snippet with selected color
-               currentColorPickerCodeSnippet = $"new SolidColorBrush(Color.FromArgb({args.NewColor.A}, {args.NewColor.R}, {args.NewColor.G}, {args.NewColor.B}));";
+               currentColorPickerCodeSnippetColor = args.NewColor;
 
                // Set Controls
                TextBoxColorPickerHex.Text = currentColorPickerHex;
                TextBoxColorPickerHexNoAlpha.Text = currentColorPickerHexNoAlpha;
                TextBoxColorPickerRGB.Text = currentColorPickerRGB;
-               TextBoxColorPickerCodeSnippet.Text = currentColorPickerCodeSnippet;
+
+               string snippetTemplate = App.UserSettings.Snippet;
+               string updatedSnippet = InterpolateUserSnippet(snippetTemplate, currentColorPickerCodeSnippetColor);
+
+               TextBoxColorPickerCodeSnippet.Text = updatedSnippet;
+          }
+
+          private string InterpolateUserSnippet( string template, Windows.UI.Color color )
+          {
+               return template
+                    .Replace("$a", color.A.ToString())
+                    .Replace("$r", color.R.ToString())
+                    .Replace("$g", color.G.ToString())
+                    .Replace("$b", color.B.ToString());
           }
 
           private void CopyColorPickerHex_Click( object sender, RoutedEventArgs e )
@@ -699,12 +712,8 @@ namespace ColorPaletteBuilder
 
           private void CopyColorPickerCodeSnippet_Click( object sender, RoutedEventArgs e )
           {
-               //TODO: Get from settings which language is selected
-               //for now it is default C# code snippet
-               //TODO: this is set in CustomColorPicker ColorChanged event handler
-
                var dataPackage = new DataPackage();
-               dataPackage.SetText(currentColorPickerCodeSnippet);
+               dataPackage.SetText(TextBoxColorPickerCodeSnippet.Text);
                Clipboard.SetContent(dataPackage);
 
                TitleBarMessage.Text = "Copied Code Snippet to Clipboard";
