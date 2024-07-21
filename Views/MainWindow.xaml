@@ -234,10 +234,6 @@
             </StackPanel>
             <!--  Separator -->
 
-            <!-- ListView Options -->
-            <CheckBox x:Name="WordWrapTextBox" Content="Word Wrap" Margin="10,0,0,0" 
-                      IsChecked="{x:Bind MainViewModel.WrapNoteBox, Mode=TwoWay}"/>
-
         </StackPanel>
 
 

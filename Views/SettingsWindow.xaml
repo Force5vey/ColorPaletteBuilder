@@ -58,7 +58,6 @@
 
                 <TextBlock Text="Default Setting on App Open"/>
                 <CheckBox x:Name="EnableWrapNoteBoxCheckBox" IsChecked="{x:Bind settingsViewModel.WrapNoteBox, Mode=TwoWay}" Content="Wrap Text"/>
-                <TextBlock Text="Toggle temp action in tool bar" FontSize="10"/>
 
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
