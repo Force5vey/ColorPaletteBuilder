@@ -65,13 +65,8 @@ namespace ColorPaletteBuilder
           private void SaveSettings_Click( object sender, RoutedEventArgs e )
           {
                settingsViewModel.SaveSettings();
-          }
-
-          private void CloseSettingsWindow_Click( object sender, RoutedEventArgs e )
-          {
                this.Close();
           }
-
 
           private void SettingsWindow_Changed( Microsoft.UI.Windowing.AppWindow sender, object args )
           {

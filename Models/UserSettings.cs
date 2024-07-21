@@ -114,15 +114,17 @@ namespace ColorPaletteBuilder
           public UserSettings()
           {
                Theme = ApplicationTheme.Dark;
+               WrapNoteBox = true;
                AutoSave = true;
-               AutoSaveInterval = 60;
+               AutoSaveInterval = 30;
+               BackupSave = true;
                BackupSaveInterval = 60;
                PreferredPaletteSaveFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                CopyWithHashtag = true;
-               SnippetLanguage = AppConstants.SnippetLanguage.CSharp;
+               SnippetLanguage = AppConstants.SnippetLanguage.Custom;
 
                // Initialize default snippets
-               SnippetCustom = "/* Custom snippet here */";
+               SnippetCustom = "// Example:\n new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));\n\n// Use $a for Alpha, $r for Red, $g for Green, and $b for Blue values.";
                SnippetCSharp = "new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));";
                SnippetJavascript = "const color = `rgba($r, $g, $b, ${$a / 255})`;";
                SnippetPython = "from PIL import ImageColor\n\ncolor = ImageColor.getrgb(f'rgba($r, $g, $b, {$a / 255})')";

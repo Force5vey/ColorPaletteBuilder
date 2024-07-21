@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 
 namespace ColorPaletteBuilder
@@ -25,7 +26,7 @@ namespace ColorPaletteBuilder
      {
           // View Model
           private MainViewModel MainViewModel { get; set; }
-       
+
           // Window and UI Elements
           private SettingsWindow settingsWindow;
           private ColorSelectorWindow colorSelectorWindow;
@@ -52,17 +53,15 @@ namespace ColorPaletteBuilder
 
 
           // Timers
-          private DispatcherTimer titleBarMessageTimer = new DispatcherTimer();
+          private readonly DispatcherTimer titleBarMessageTimer = new DispatcherTimer();
           private int messageTimerInterval = 3; // seconds
 
-          private DispatcherTimer autoSaveIndicatorTimer = new DispatcherTimer();
+          private readonly DispatcherTimer autoSaveIndicatorTimer = new DispatcherTimer();
           private int autoSaveIndicatorInterval = 2;
 
-          private DispatcherTimer autoSaveTimer = new DispatcherTimer();
-          private int autoSaveInterval = 60; // seconds
+          private readonly DispatcherTimer autoSaveTimer = new DispatcherTimer();
 
-          private DispatcherTimer backupSaveTimer = new DispatcherTimer();
-          private int backupSaveInterval = 20;
+          private readonly DispatcherTimer backupSaveTimer = new DispatcherTimer();
 
           public MainWindow()
           {
@@ -85,6 +84,7 @@ namespace ColorPaletteBuilder
 
                // Timers
                InitializeTimers();
+               ConfigureTimers();
           }
 
           // Initialization Methods
@@ -193,19 +193,48 @@ namespace ColorPaletteBuilder
 
           private void InitializeTimers()
           {
-               autoSaveTimer.Interval = TimeSpan.FromSeconds(autoSaveInterval);
+               autoSaveTimer.Interval = TimeSpan.FromSeconds(App.UserSettings.AutoSaveInterval);
                autoSaveTimer.Tick += AutoSaveTimer_Tick;
-               autoSaveTimer.Start();
+               if ( App.UserSettings.AutoSave )
+               {
+                    autoSaveTimer.Start();
+               }
 
-               backupSaveTimer.Interval = TimeSpan.FromSeconds(backupSaveInterval);
+               backupSaveTimer.Interval = TimeSpan.FromSeconds(App.UserSettings.BackupSaveInterval);
                backupSaveTimer.Tick += AutoSaveBackupTimer_Tick;
-               backupSaveTimer.Start();
+               if ( App.UserSettings.BackupSave )
+               {
+                    backupSaveTimer.Start();
+               }
 
                titleBarMessageTimer.Interval = TimeSpan.FromSeconds(messageTimerInterval);
                titleBarMessageTimer.Tick += TitleMessageTimer_Tick;
 
                autoSaveIndicatorTimer.Interval = TimeSpan.FromSeconds(autoSaveIndicatorInterval);
                autoSaveIndicatorTimer.Tick += AutoSaveProgressRingTimer_Tick;
+          }
+
+          private void ConfigureTimers()
+          {
+               if ( App.UserSettings.AutoSave )
+               {
+                    autoSaveTimer.Interval = TimeSpan.FromSeconds(App.UserSettings.AutoSaveInterval);
+                    autoSaveTimer.Start();
+               }
+               else
+               {
+                    autoSaveTimer.Stop();
+               }
+
+               if ( App.UserSettings.BackupSave )
+               {
+                    backupSaveTimer.Interval = TimeSpan.FromSeconds(App.UserSettings.BackupSaveInterval);
+                    backupSaveTimer.Start();
+               }
+               else
+               {
+                    backupSaveTimer.Stop();
+               }
           }
 
           private void AutoSaveProgressRingTimer_Tick( object sender, object e )
@@ -235,6 +264,11 @@ namespace ColorPaletteBuilder
                          break;
                          case AppConstants.ReturnCode.GeneralFailure:
                          TitleBarMessage.Text = "Auto-Save Failed";
+                         titleBarMessageTimer.Start();
+                         break;
+
+                         case AppConstants.ReturnCode.FileNotFound:
+                         TitleBarMessage.Text = "Save File to Enable Auto-Save";
                          titleBarMessageTimer.Start();
                          break;
                     }
@@ -364,13 +398,10 @@ namespace ColorPaletteBuilder
           // Button Click Event Handlers - Clipboard Actions
           private void CopyHexCode_Click( object sender, RoutedEventArgs e )
           {
-               //TODO: User setting for including # or not
                var button = sender as Button;
                if ( button != null && button.DataContext is ColorEntry colorEntry )
                {
-                    var dataPackage = new DataPackage();
-                    dataPackage.SetText(colorEntry.HexCode);
-                    Clipboard.SetContent(dataPackage);
+                    MainViewModel.CopyToClipbard(colorEntry.HexCode);
 
                     TitleBarMessage.Text = "Copied to Clipboard";
                     titleBarMessageTimer.Start();
@@ -678,8 +709,7 @@ namespace ColorPaletteBuilder
                     .Replace("$b", color.B.ToString());
           }
 
-
-          private string GetSnippetForCurrentLanguage(AppConstants.SnippetLanguage language)
+          private string GetSnippetForCurrentLanguage( AppConstants.SnippetLanguage language )
           {
                return language switch
                {
@@ -690,31 +720,9 @@ namespace ColorPaletteBuilder
                };
           }
 
-          //private void SetSnippetForCurrentLanguage( string value )
-          //{
-          //     switch ( _userSettings.SnippetLanguage )
-          //     {
-          //          case AppConstants.SnippetLanguage.CSharp:
-          //          _userSettings.SnippetCSharp = value;
-          //          break;
-          //          case AppConstants.SnippetLanguage.Javascript:
-          //          _userSettings.SnippetJavascript = value;
-          //          break;
-          //          case AppConstants.SnippetLanguage.Python:
-          //          _userSettings.SnippetPython = value;
-          //          break;
-          //          default:
-          //          _userSettings.SnippetCustom = value;
-          //          break;
-          //     }
-          //}
-
           private void CopyColorPickerHex_Click( object sender, RoutedEventArgs e )
           {
-               //TODO: Needs user settings to set if it includes the # tag.
-               var dataPackage = new DataPackage();
-               dataPackage.SetText(currentColorPickerHex);
-               Clipboard.SetContent(dataPackage);
+               MainViewModel.CopyToClipbard(currentColorPickerHex);
 
                TitleBarMessage.Text = "Copied Hex to Clipboard";
                titleBarMessageTimer.Start();
@@ -722,10 +730,7 @@ namespace ColorPaletteBuilder
 
           private void CopyColorPickerHexNoAlpha_Click( object sender, RoutedEventArgs e )
           {
-               //TODO: needs user settings to select if it includes the # tag
-               var dataPackage = new DataPackage();
-               dataPackage.SetText(currentColorPickerHexNoAlpha);
-               Clipboard.SetContent(dataPackage);
+               MainViewModel.CopyToClipbard(currentColorPickerHexNoAlpha);
 
                TitleBarMessage.Text = "Copied Hex w/o Alpha to Clipboard";
                titleBarMessageTimer.Start();
@@ -733,10 +738,7 @@ namespace ColorPaletteBuilder
 
           private void CopyColorPickerRGB_Click( object sender, RoutedEventArgs e )
           {
-               //TODO: user setting for this format.
-               var dataPackage = new DataPackage();
-               dataPackage.SetText(currentColorPickerRGB);
-               Clipboard.SetContent(dataPackage);
+               MainViewModel.CopyToClipbard(currentColorPickerRGB);
 
                TitleBarMessage.Text = "Copied RGB to Clipboard";
                titleBarMessageTimer.Start();
@@ -744,9 +746,7 @@ namespace ColorPaletteBuilder
 
           private void CopyColorPickerCodeSnippet_Click( object sender, RoutedEventArgs e )
           {
-               var dataPackage = new DataPackage();
-               dataPackage.SetText(TextBoxColorPickerCodeSnippet.Text);
-               Clipboard.SetContent(dataPackage);
+               MainViewModel.CopyToClipbard(TextBoxColorPickerCodeSnippet.Text);
 
                TitleBarMessage.Text = "Copied Code Snippet to Clipboard";
                titleBarMessageTimer.Start();
@@ -758,6 +758,7 @@ namespace ColorPaletteBuilder
           private void SettingsWindow_Closed( object sender, WindowEventArgs e )
           {
                settingsWindow = null;
+               ConfigureTimers();
           }
 
           // ColorSelectorWindow Event Handlers

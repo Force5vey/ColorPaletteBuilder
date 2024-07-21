@@ -13,7 +13,7 @@ namespace ColorPaletteBuilder
      internal static class SettingsService
      {
           //User Settings
-          internal static async Task SerializeUserSettings_Async( )
+          internal static async Task SerializeUserSettings_Async()
           {
                try
                {
@@ -33,20 +33,29 @@ namespace ColorPaletteBuilder
 
           public static bool DeserializeUserSettings()
           {
-               try
+               if ( File.Exists(AppConstants.UserSettingsLocation) )
                {
-                    var json = File.ReadAllText(AppConstants.UserSettingsLocation);
-                    App.UserSettings = JsonSerializer.Deserialize<UserSettings>(json);
+                    try
+                    {
+                         var json = File.ReadAllText(AppConstants.UserSettingsLocation);
+                         App.UserSettings = JsonSerializer.Deserialize<UserSettings>(json);
 
-                    return true;
+                         return true;
+                    }
+                    catch ( Exception ex )
+                    {
+                         Debug.WriteLine($"Error loading settings: {ex.Message}");
+                         return false;
+                    }
                }
-               catch ( Exception ex )
+               else
                {
-                    Debug.WriteLine($"Error loading settings: {ex.Message}");
-                    return false;
+                    SerializeUserSettings_Async();
+                    return true;
                }
           }
 
      }
 }
+
 

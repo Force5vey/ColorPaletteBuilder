@@ -71,9 +71,10 @@ namespace ColorPaletteBuilder
 
           public enum SnippetLanguage
           {
+               Custom,
                CSharp,
-               Python,
-               Javascript
+               Javascript,
+               Python
           }
 
      }

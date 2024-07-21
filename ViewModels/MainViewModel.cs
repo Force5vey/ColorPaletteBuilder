@@ -66,17 +66,41 @@ namespace ColorPaletteBuilder
                var picker = new FileOpenPicker();
                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
                WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-               picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-               picker.FileTypeFilter.Add(".cpb");
 
-               StorageFile file = await picker.PickSingleFileAsync();
-               if ( file != null )
+               // Check if the preferred save folder is set and use it
+               if ( !string.IsNullOrEmpty(App.UserSettings.PreferredPaletteSaveFolder) )
                {
-                    await LoadPalette_Async(file.Path);
+                    StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(App.UserSettings.PreferredPaletteSaveFolder);
+                    picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary; // This is required but won't affect our custom folder
+                    picker.FileTypeFilter.Add(".cpb");
 
-                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+                    // Open the picker and set the custom start location
+                    var openPickerWithCustomLocation = folder.CreateFileQuery().GetFilesAsync().AsTask();
+                    await openPickerWithCustomLocation; // Ensures the folder is accessible before showing the picker
 
-                    return AppConstants.ReturnCode.Success;
+                    // Open the file picker from the custom location
+                    var file = await picker.PickSingleFileAsync();
+
+                    if ( file != null )
+                    {
+                         await LoadPalette_Async(file.Path);
+                         localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+                         return AppConstants.ReturnCode.Success;
+                    }
+               }
+               else
+               {
+                    // Use default location if preferred folder is not set
+                    picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+                    picker.FileTypeFilter.Add(".cpb");
+                    StorageFile file = await picker.PickSingleFileAsync();
+
+                    if ( file != null )
+                    {
+                         await LoadPalette_Async(file.Path);
+                         localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+                         return AppConstants.ReturnCode.Success;
+                    }
                }
 
                return AppConstants.ReturnCode.FileNotFound;
@@ -155,22 +179,47 @@ namespace ColorPaletteBuilder
                     var picker = new FileSavePicker();
                     var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
                     WinRT.Interop.InitializeWithWindow.Initialize(picker, hwnd);
-                    picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-                    picker.FileTypeChoices.Add("Color Palette Builder", new List<string> { ".cpb" });
-                    picker.DefaultFileExtension = ".cpb";
 
-                    StorageFile file = picker.PickSaveFileAsync().AsTask().Result;
-                    if ( file != null )
+                    // Check if the preferred save folder is set and use it
+                    if ( !string.IsNullOrEmpty(App.UserSettings.PreferredPaletteSaveFolder) )
                     {
-                         ColorPaletteData.FullFilePath = file.Path;
-                         ColorPaletteData.FileName = file.Name;
+                         StorageFolder folder = await StorageFolder.GetFolderFromPathAsync(App.UserSettings.PreferredPaletteSaveFolder);
+                         picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary; // This is required but won't affect our custom folder
+                         picker.FileTypeChoices.Add("Color Palette Builder", new List<string> { ".cpb" });
+                         picker.DefaultFileExtension = ".cpb";
 
-                         await SavePaletteToFile_Async();
-                         return AppConstants.ReturnCode.Success;
+                         // Set the initial directory to the preferred save folder
+                         var savePickerWithCustomLocation = folder.CreateFileQuery().GetFilesAsync().AsTask();
+                         await savePickerWithCustomLocation; // Ensures the folder is accessible before showing the picker
+
+                         // Open the save picker from the custom location
+                         StorageFile file = await picker.PickSaveFileAsync();
+
+                         if ( file != null )
+                         {
+                              ColorPaletteData.FullFilePath = file.Path;
+                              ColorPaletteData.FileName = file.Name;
+
+                              await SavePaletteToFile_Async();
+                              return AppConstants.ReturnCode.Success;
+                         }
                     }
                     else
                     {
-                         return AppConstants.ReturnCode.FileNotFound;
+                         // Use default location if preferred folder is not set
+                         picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+                         picker.FileTypeChoices.Add("Color Palette Builder", new List<string> { ".cpb" });
+                         picker.DefaultFileExtension = ".cpb";
+                         StorageFile file = await picker.PickSaveFileAsync();
+
+                         if ( file != null )
+                         {
+                              ColorPaletteData.FullFilePath = file.Path;
+                              ColorPaletteData.FileName = file.Name;
+
+                              await SavePaletteToFile_Async();
+                              return AppConstants.ReturnCode.Success;
+                         }
                     }
                }
                catch
@@ -178,24 +227,30 @@ namespace ColorPaletteBuilder
                     //TODO: Add additional return codes for null, etc.
                     return AppConstants.ReturnCode.GeneralFailure;
                }
+
+               return AppConstants.ReturnCode.FileNotFound;
           }
 
           public async Task<AppConstants.ReturnCode> SavePaletteToFile_Async()
           {
-               StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.FullFilePath);
-               if ( file != null )
+               if ( File.Exists(ColorPaletteData.FullFilePath) )
                {
-                    ColorPaletteData.IsSaved = true;
-                    await FileService.SerializePalette_Async(file.Path, ColorPaletteData);
+                    StorageFile file = await StorageFile.GetFileFromPathAsync(ColorPaletteData.FullFilePath);
+                    if ( file != null )
+                    {
+                         ColorPaletteData.IsSaved = true;
+                         await FileService.SerializePalette_Async(file.Path, ColorPaletteData);
 
-                    localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
-                    return AppConstants.ReturnCode.Success;
+                         localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
+                         return AppConstants.ReturnCode.Success;
+                    }
+                    else
+                    {
+                         ColorPaletteData.IsSaved = false;
+                         return AppConstants.ReturnCode.GeneralFailure;
+                    }
                }
-               else
-               {
-                    ColorPaletteData.IsSaved = false;
-                    return AppConstants.ReturnCode.GeneralFailure;
-               }
+               return AppConstants.ReturnCode.FileNotFound;
           }
 
 
@@ -442,6 +497,19 @@ namespace ColorPaletteBuilder
                }
 
                return returnCode;
+          }
+
+          public void CopyToClipbard( string text )
+          {
+               if ( !App.UserSettings.CopyWithHashtag && text.StartsWith("#") )
+               {
+                    text = text.Substring(1);
+               }
+
+               var datapackage = new DataPackage();
+               datapackage.SetText(text);
+               Clipboard.SetContent(datapackage);
+
           }
 
           #region // Property Change Events

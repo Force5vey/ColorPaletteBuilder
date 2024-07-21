@@ -129,17 +129,7 @@
 
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
-                <!-- Backup and Restore -->
-                <TextBlock Text="Backup and Restore" FontWeight="Bold" Margin="0,30,0,5"/>
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="Backup" Margin="0,0,10,0"/>
-                    <Button Content="Restore"/>
-                </StackPanel>
-                <TextBlock Text="Backup File Location:" Margin="0,10,0,5"/>
-                <TextBox x:Name="LocalFolderPathTextbox" IsReadOnly="True" HorizontalAlignment="Stretch" Margin="0,0,10,0"/>
-
-                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
-
+           
                 
                 
                 <!-- Language Preference -->
@@ -159,7 +149,23 @@
                 <TextBox x:Name="CodeSnippetEditBox" Margin="0,10,0,0" TextWrapping="Wrap" Height="100" AcceptsReturn="True"
                          Text="{x:Bind settingsViewModel.Snippet, Mode=TwoWay}"/>
                 </ScrollViewer>
+
+                <TextBlock FontSize="12" Text="Use $a, $r, $g, and $b symbols to insert the 
+                           corresponding Alpha, Red, Green, and Blue values.
+                           You can edit any of the snippets to whichever code you prefer."
+                           TextWrapping="Wrap" Width="350" HorizontalAlignment="Left"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
                 
+                <!-- Backup and Restore -->
+                <TextBlock Text="Backup and Restore" FontWeight="Bold" Margin="0,30,0,5"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Restore"/>
+                    <TextBlock x:Name="BackUpFileInfoTextBlock" Text="Last Backup File: " Margin="30,5,0,0"/>
+                </StackPanel>
+                <TextBlock Text="Backup File Location:" Margin="0,10,0,5"/>
+                <TextBox x:Name="LocalFolderPathTextbox" IsReadOnly="True" HorizontalAlignment="Stretch" Margin="0,0,10,0"/>
+
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
             </StackPanel>
@@ -170,8 +176,7 @@
         <!-- Save Button -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"
                         Grid.Row="2">
-            <Button Content="Save" Click="SaveSettings_Click" Margin="0,0,0,10" Width="100"/>
-            <Button Content="Close" Click="CloseSettingsWindow_Click" Margin="10,0,0,0" Width="100"/>
+            <Button Content="Save and Close" Click="SaveSettings_Click" Margin="0,0,0,10" Width="150" Style="{StaticResource AccentButtonStyle}"/>
         </StackPanel>
 
     </Grid>

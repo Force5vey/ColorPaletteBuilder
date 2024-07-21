@@ -22,7 +22,7 @@ namespace ColorPaletteBuilder
           internal static Color ColorSelectorColor;
 
           //private static UserSettings _userSettings;
-          internal static UserSettings UserSettings { get; set; }
+          internal static UserSettings UserSettings { get; set; } = new UserSettings();
 
           /// <summary>
           /// Initializes the singleton application object.  This is the first line of authored code
