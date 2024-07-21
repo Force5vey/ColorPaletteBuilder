@@ -31,3 +31,23 @@ the settings should have a list of backups.
 the entire backup system should be a list that maxes at like five so that there can be some recover file history.
 
 opening a file doesn't load the colorselector image, it does when first opening the app though. so it isn't calling the correct image load method on manually opening but it is on app open. 
+
+
+
+
+
+app images:
+
+lockscreenlogo.scale200
+
+splashscreen.scale-200
+
+square 150x150 scale 200
+
+square 44x44
+
+square 44x44 targetsize 24
+
+storelogo
+
+wide 310x150
