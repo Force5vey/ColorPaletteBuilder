@@ -24,8 +24,8 @@ namespace ColorPaletteBuilder
      public sealed partial class MainWindow :Window
      {
           // View Model
-          private MainViewModel MainViewModel { get; set; } = new MainViewModel();
-
+          private MainViewModel MainViewModel { get; set; }
+       
           // Window and UI Elements
           private SettingsWindow settingsWindow;
           private ColorSelectorWindow colorSelectorWindow;
@@ -68,6 +68,7 @@ namespace ColorPaletteBuilder
           {
                // Initialization
                this.InitializeComponent();
+               MainViewModel = new MainViewModel(App.UserSettings);
                InitializeAsync();
 
                // Setting Default Values
@@ -662,7 +663,7 @@ namespace ColorPaletteBuilder
                TextBoxColorPickerHexNoAlpha.Text = currentColorPickerHexNoAlpha;
                TextBoxColorPickerRGB.Text = currentColorPickerRGB;
 
-               string snippetTemplate = App.UserSettings.Snippet;
+               string snippetTemplate = GetSnippetForCurrentLanguage(App.UserSettings.SnippetLanguage);
                string updatedSnippet = InterpolateUserSnippet(snippetTemplate, currentColorPickerCodeSnippetColor);
 
                TextBoxColorPickerCodeSnippet.Text = updatedSnippet;
@@ -676,6 +677,37 @@ namespace ColorPaletteBuilder
                     .Replace("$g", color.G.ToString())
                     .Replace("$b", color.B.ToString());
           }
+
+
+          private string GetSnippetForCurrentLanguage(AppConstants.SnippetLanguage language)
+          {
+               return language switch
+               {
+                    AppConstants.SnippetLanguage.CSharp => App.UserSettings.SnippetCSharp,
+                    AppConstants.SnippetLanguage.Javascript => App.UserSettings.SnippetJavascript,
+                    AppConstants.SnippetLanguage.Python => App.UserSettings.SnippetPython,
+                    _ => App.UserSettings.SnippetCustom,
+               };
+          }
+
+          //private void SetSnippetForCurrentLanguage( string value )
+          //{
+          //     switch ( _userSettings.SnippetLanguage )
+          //     {
+          //          case AppConstants.SnippetLanguage.CSharp:
+          //          _userSettings.SnippetCSharp = value;
+          //          break;
+          //          case AppConstants.SnippetLanguage.Javascript:
+          //          _userSettings.SnippetJavascript = value;
+          //          break;
+          //          case AppConstants.SnippetLanguage.Python:
+          //          _userSettings.SnippetPython = value;
+          //          break;
+          //          default:
+          //          _userSettings.SnippetCustom = value;
+          //          break;
+          //     }
+          //}
 
           private void CopyColorPickerHex_Click( object sender, RoutedEventArgs e )
           {

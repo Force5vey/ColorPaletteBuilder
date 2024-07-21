@@ -53,6 +53,15 @@
 
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
+                <!-- Word Wrap -->
+                <TextBlock Text="Color Entries Options" FontWeight="Bold" Margin="0,10,0,5"/>
+
+                <TextBlock Text="Default Setting on App Open"/>
+                <CheckBox x:Name="EnableWrapNoteBoxCheckBox" IsChecked="{x:Bind settingsViewModel.WrapNoteBox, Mode=TwoWay}" Content="Wrap Text"/>
+                <TextBlock Text="Toggle temp action in tool bar" FontSize="10"/>
+
+                <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
+
                 <!-- Enable Auto-save -->
                 <TextBlock Text="Auto-Save" FontWeight="Bold" Margin="0,10,0,5"/>
                 <CheckBox x:Name="EnableAutoSaveCheckBox" IsChecked="{x:Bind settingsViewModel.AutoSave, Mode=TwoWay}" Content="Enable Auto-save"/>
@@ -132,16 +141,21 @@
 
                 <Line Stroke="SteelBlue" X1="0" Y1="0" X2="500" Y2="3" StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Left" Margin="0,40,0,0"/>
 
+                
+                
                 <!-- Language Preference -->
-                <TextBlock Text="Code Snippet" FontWeight="Bold" Margin="0,10,0,5"/>
+                <TextBlock Text="Pre-defined Code Snippets" FontWeight="Bold" Margin="0,10,0,5"/>
+                
+                <TextBlock Text="Snippet Language" FontWeight="Bold" Margin="0,10,0,5"/>
                 <ComboBox x:Name="LanguageComboBox" Width="200"
                           SelectedIndex="{x:Bind settingsViewModel.SnippetLanguage, Mode=TwoWay}">
                     <ComboBoxItem Content="Custom"/>
-                    <ComboBoxItem Content="C#" />
+                    <ComboBoxItem Content="CSharp" />
                     <ComboBoxItem Content="Javascript" />
                     <ComboBoxItem Content="Python" />
                 </ComboBox>
 
+                <TextBlock Text="Code Snippet" FontWeight="Bold" Margin="0,10,0,5"/>
                 <ScrollViewer Height="100" VerticalScrollBarVisibility="Auto">
                 <TextBox x:Name="CodeSnippetEditBox" Margin="0,10,0,0" TextWrapping="Wrap" Height="100" AcceptsReturn="True"
                          Text="{x:Bind settingsViewModel.Snippet, Mode=TwoWay}"/>
@@ -152,6 +166,8 @@
             </StackPanel>
         </ScrollViewer>
 
+        
+        
         <!-- Save Button -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"
                         Grid.Row="2">

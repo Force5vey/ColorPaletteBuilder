@@ -9,6 +9,11 @@
     Title="Color Palette Builder">
 
     <Grid>
+
+        <Grid.Resources>
+            <local:MinutesToStringConverter x:Key="BoolToTextWrappingConverter"/>
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="Auto" />
@@ -229,6 +234,10 @@
             </StackPanel>
             <!--  Separator -->
 
+            <!-- ListView Options -->
+            <CheckBox x:Name="WordWrapTextBox" Content="Word Wrap" Margin="10,0,0,0" 
+                      IsChecked="{x:Bind MainViewModel.WrapNoteBox, Mode=TwoWay}"/>
+
         </StackPanel>
 
 
@@ -313,11 +322,11 @@
                             </StackPanel>
 
                             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0,0,0,5">
-                                
+
                                 <ScrollViewer Height="50" VerticalScrollBarVisibility="Visible">
                                     <TextBox x:Name="TextBoxColorPickerCodeSnippet" Width="275" Height="100" TextWrapping="Wrap" IsReadOnly="True" />
                                 </ScrollViewer>
-                                
+
                                 <Button Width="35" Height="30" Margin="5,0,0,0" Click="CopyColorPickerCodeSnippet_Click">
                                     <Button.Content>
                                         <FontIcon Glyph="&#xe8c8;" FontSize="12"/>
@@ -425,7 +434,11 @@
 
                 <ListView.Header>
 
-                    <Grid>
+                    <Grid x:Name="ListViewHeaderGrid" HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
@@ -437,70 +450,77 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Spacer Element -->
-                        <TextBlock Grid.Column="0" Width="30"/>
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <TextBlock Grid.Column="0" Width="30"/>
 
-                        <Button x:Name="ButtonSortElementIndex" Click="ButtonSortElementIndex_Click" 
+                            <Button x:Name="ButtonSortElementIndex" Click="ButtonSortElementIndex_Click" 
                                 Grid.Column="1" Margin="0,10,0,0" Height="25">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="Add Order" FontSize="11" Margin="0,-2,36,0"/>
-                                    <FontIcon x:Name="FontIconSortElementIndex" Glyph="&#xe70d;" FontSize="10"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Add Order" FontSize="11" Margin="0,-2,36,0"/>
+                                        <FontIcon x:Name="FontIconSortElementIndex" Glyph="&#xe70d;" FontSize="10"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
 
-                        <Button x:Name="ButtonSortElementName" Click="ButtonSortElementName_Click" 
+                            <Button x:Name="ButtonSortElementName" Click="ButtonSortElementName_Click" 
                                 Grid.Column="2" Margin="10,10,0,0" Height="25">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="ElementName" FontSize="11" Margin="0,-2,97,0"/>
-                                    <FontIcon x:Name="FontIconSortElementName" Glyph="&#xe70d;" FontSize="10"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="ElementName" FontSize="11" Margin="0,-2,97,0"/>
+                                        <FontIcon x:Name="FontIconSortElementName" Glyph="&#xe70d;" FontSize="10"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
 
-                        <Button x:Name="ButtonSortElementState" Click="ButtonSortElementState_Click" 
+                            <Button x:Name="ButtonSortElementState" Click="ButtonSortElementState_Click" 
                                 Grid.Column="3" Margin="5,10,0,0" Height="25">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="Element State" FontSize="11" Margin="0,-2,50,0"/>
-                                    <FontIcon x:Name="FontIconSortElementState" Glyph="&#xe70d;" FontSize="10"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Element State" FontSize="11" Margin="0,-2,50,0"/>
+                                        <FontIcon x:Name="FontIconSortElementState" Glyph="&#xe70d;" FontSize="10"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
 
-                        <Button x:Name="ButtonSortElementGroup" Click="ButtonSortElementGroup_Click" 
+                            <Button x:Name="ButtonSortElementGroup" Click="ButtonSortElementGroup_Click" 
                                 Grid.Column="4" Margin="10,10,0,0" Height="25">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="Element Group" FontSize="11" Margin="0,-2,43,0"/>
-                                    <FontIcon x:Name="FontIconSortElementGroup" Glyph="&#xe70d;" FontSize="10"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="Element Group" FontSize="11" Margin="0,-2,43,0"/>
+                                        <FontIcon x:Name="FontIconSortElementGroup" Glyph="&#xe70d;" FontSize="10"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
 
-                        <Button x:Name="ButtonSortColor" Click="ButtonSortColor_Click" 
+                            <Button x:Name="ButtonSortColor" Click="ButtonSortColor_Click" 
                                 Grid.Column="5" Margin="10,10,0,0" Height="25">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="ColorCode" FontSize="11" Margin="0,-2,23,0"/>
-                                    <FontIcon x:Name="FontIconSortColor" Glyph="&#xe70d;" FontSize="10"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="ColorCode" FontSize="11" Margin="0,-2,23,0"/>
+                                        <FontIcon x:Name="FontIconSortColor" Glyph="&#xe70d;" FontSize="10"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
 
-                        <Button x:Name="ButtonSortNote" Click="ButtonSortNote_Click" 
+                            <Button x:Name="ButtonSortNote" Click="ButtonSortNote_Click" 
                                 Grid.Column="6" Margin="10,10,23,0" Height="25" HorizontalAlignment="Stretch">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                    <TextBlock Text="Entry Note" FontSize="11" Margin="0,-2,23,0"/>
-                                    <FontIcon x:Name="FontIconSortNote" Glyph="&#xe70d;" FontSize="10"/>
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                        <TextBlock Text="Entry Note" FontSize="11" Margin="0,-2,23,0"/>
+                                        <FontIcon x:Name="FontIconSortNote" Glyph="&#xe70d;" FontSize="10"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+
+                        </StackPanel>
+
+                        <Line Grid.Row="1" Stroke="SteelBlue" X1="0" Y1="0"
+                              X2="915"
+                              Y2="3" 
+                          StrokeThickness="3" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
 
                     </Grid>
-
                 </ListView.Header>
 
                 <!-- ===================================================================================================================== -->
@@ -555,8 +575,9 @@
 
                             <TextBox Grid.Column="6" Text="{x:Bind HexCode, Mode=TwoWay}" VerticalAlignment="Center" Width="115" ToolTipService.ToolTip="Either a 6 or 8 digit Hexidecimal Code"/>
 
-                            <TextBox Grid.Column="7" Text="{x:Bind Note, Mode=TwoWay}" VerticalAlignment="Center" TextWrapping="Wrap" 
-                                     MinWidth="150" ToolTipService.ToolTip="Custom Note for this Color Entry" Margin="5,0,0,0"/>
+                            <TextBox Grid.Column="7" Text="{x:Bind Note, Mode=TwoWay}" VerticalAlignment="Center" 
+                                     TextWrapping="Wrap"
+                                     MinWidth="150" ToolTipService.ToolTip="Custom Note for this Color Entry" Margin="5,0,0,0" AcceptsReturn="True"/>
 
                         </Grid>
                     </DataTemplate>

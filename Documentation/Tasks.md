@@ -6,30 +6,17 @@
 
 #### General Notes
 
-- **Update the title bar file name**: When a palette is saved, ensure the title bar updates.
 - **Improve color picker file handling**: Add better checks for file loads and handle improper image files by presenting buttons to browse or drag/drop a file.
-- **Thumbnail of current image in toolbar**: Consider removing the file name in favor of a thumbnail.
-- **Scroll functionality**: Implement proper scrolling for the color picker column and overall application.
 - **Title bar message for filter selections**: Format as `Filter: state & group`, e.g., `Filter: Enabled & Any`.
-- **Note item for Color Entry**: Add a note field to color entries.
 - **Backup file handling**: Ensure the application prompts to save as a new file if a backup is loaded.
-- **Hex code validation**: Ensure the hex code in color entries follows the proper pattern, with an option to override if necessary.
-- **Review auto-save and save on close**: Address scenarios where saving prompts are inconsistent.
-- *complete* ColorPicker needs a clear image button
+- when grabbing hexcode from color entry to send to colorpicker, implement the error handling for it not being a valid hex code. I want to maintain the ability for the user to manually change the hex code but it needs to be handled if the color picker can't accept a messed up hex.
+  - the error is going to be at != 8 characters. as well as if one of the characters is not in a valid range.
 - Color hex codes button shortcuts need a user settings option to decide if it includes the hashtag or not --- double clicking to highight and paste over works better without including the hashtag.
-- Auto-save doesn't seem to be triggering. noticed case: app loads and loads last file. doesn't trigger it.
-  - Ok, so it is triggered, its just that it is only saving the backupfile. This can be reviewed because it autosaves a backup but not the current file an this could be beneficial to give the option to make a bunch of changes, do a save as, and preserve the original file from when it was last saved. think of MS Word, and it autosaves all the time and then when you realized you wanted to keep the original and save a copy it is messd up from the autosave.
-
 - clearing colorselector doesn't update the color selector window
   - maybe it should be clear and close
 
-- Clicking new, then adding and then saving doesn't set the title bar to the file name.
-
 #### Settings Notes
 
-- **Save and load settings**: Implement functionality to save and use settings.
-- **Theme selection**: Add proper theme selection options.
-- **Color format preference**: Allow users to set their preferred color format for saved entries, including an option to include/exclude the hashtag for hex codes.
 - **Word wrap in ListView**: Add a setting to toggle word wrap for name and note fields.
 
 ### Features Notes

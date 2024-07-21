@@ -17,6 +17,8 @@ namespace ColorPaletteBuilder
           bool _copyWithHashtag;
           string _preferredPaletteSaveFolder;
 
+          bool _wrapNoteBox;
+
           AppConstants.SnippetLanguage _snippetLanguage;
           string _snippet;
           string _snippetCustom;
@@ -66,6 +68,12 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _preferredPaletteSaveFolder, value);
           }
 
+          public bool WrapNoteBox
+          {
+               get => _wrapNoteBox;
+               set => SetProperty(ref _wrapNoteBox, value);
+          }
+
           public AppConstants.SnippetLanguage SnippetLanguage
           {
                get => _snippetLanguage;
@@ -112,7 +120,12 @@ namespace ColorPaletteBuilder
                PreferredPaletteSaveFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                CopyWithHashtag = true;
                SnippetLanguage = AppConstants.SnippetLanguage.CSharp;
-               Snippet = "new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));";
+
+               // Initialize default snippets
+               SnippetCustom = "/* Custom snippet here */";
+               SnippetCSharp = "new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));";
+               SnippetJavascript = "const color = `rgba($r, $g, $b, ${$a / 255})`;";
+               SnippetPython = "from PIL import ImageColor\n\ncolor = ImageColor.getrgb(f'rgba($r, $g, $b, {$a / 255})')";
           }
 
 

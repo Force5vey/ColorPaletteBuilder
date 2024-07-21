@@ -19,13 +19,14 @@ using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Windows.Security.Authentication.Web.Core;
+using System.ComponentModel;
 
 namespace ColorPaletteBuilder
 {
-     internal class MainViewModel
+     internal class MainViewModel :INotifyPropertyChanged
      {
           public ColorPalette ColorPaletteData = new ColorPalette();
-
+          private UserSettings _userSettings;
 
           public string SelectedState { get; set; }
           public string SelectedGroup { get; set; }
@@ -34,13 +35,31 @@ namespace ColorPaletteBuilder
           internal WriteableBitmap DefaultColorSelectorImage { get; private set; }
 
 
-          public MainViewModel()
+          public MainViewModel( UserSettings userSettings )
           {
+               _userSettings = userSettings;
+
                // Initialize default values
                SelectedState = AppConstants.DefaultComboBoxText;
                SelectedGroup = AppConstants.DefaultComboBoxText;
           }
 
+          #region // Color Entries Options
+
+          public bool WrapNoteBox
+          {
+               get => _userSettings.WrapNoteBox;
+               set
+               {
+                    if ( _userSettings.WrapNoteBox != value )
+                    {
+                         _userSettings.WrapNoteBox = value;
+                         OnPropertyChanged();
+                    }
+               }
+          }
+
+          #endregion
 
           public async Task<AppConstants.ReturnCode> OpenPalette_Async( Window window )
           {
@@ -424,5 +443,26 @@ namespace ColorPaletteBuilder
 
                return returnCode;
           }
+
+          #region // Property Change Events
+
+          public event PropertyChangedEventHandler PropertyChanged;
+
+          protected bool SetProperty<T>( ref T storage, T value, [CallerMemberName] string propertyName = null )
+          {
+               if ( Equals(storage, value) )
+                    return false;
+
+               storage = value;
+               OnPropertyChanged(propertyName);
+               return true;
+          }
+
+          protected void OnPropertyChanged( [CallerMemberName] string propertyName = null )
+          {
+               PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+          }
+
+          #endregion
      }
 }
