@@ -50,7 +50,7 @@ namespace ColorPaletteBuilder
                }
                else
                {
-                    SerializeUserSettings_Async();
+                    SerializeUserSettings_Async().GetAwaiter().GetResult();
                     return true;
                }
           }

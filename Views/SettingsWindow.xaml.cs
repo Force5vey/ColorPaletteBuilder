@@ -64,7 +64,7 @@ namespace ColorPaletteBuilder
 
           private void SaveSettings_Click( object sender, RoutedEventArgs e )
           {
-               settingsViewModel.SaveSettings();
+               settingsViewModel.SaveSettings().GetAwaiter().GetResult();
                this.Close();
           }
 
