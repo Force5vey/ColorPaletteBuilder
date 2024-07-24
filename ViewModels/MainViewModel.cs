@@ -46,24 +46,6 @@ namespace ColorPaletteBuilder
 
           #region // Color Entries Options
 
-          public TextWrapping WrapNoteBox
-          {
-               get => _userSettings.WrapNoteBox;
-               set
-               {
-                    if ( _userSettings.WrapNoteBox != value )
-                    {
-                         _userSettings.WrapNoteBox = value;
-
-                         foreach (var entry in ColorPaletteData.ColorEntries)
-                         {
-                              entry.NoteWrap = value;
-                         }
-
-                         OnPropertyChanged();
-                    }
-               }
-          }
 
           #endregion
 

@@ -17,8 +17,6 @@ namespace ColorPaletteBuilder
           bool _copyWithHashtag;
           string _preferredPaletteSaveFolder;
 
-          TextWrapping _wrapNoteBox;
-
           AppConstants.SnippetLanguage _snippetLanguage;
           string _snippet;
           string _snippetCustom;
@@ -70,12 +68,6 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _preferredPaletteSaveFolder, value);
           }
 
-          public TextWrapping WrapNoteBox
-          {
-               get => _wrapNoteBox;
-               set => SetProperty(ref _wrapNoteBox, value);
-          }
-
           public AppConstants.SnippetLanguage SnippetLanguage
           {
                get => _snippetLanguage;
@@ -122,7 +114,6 @@ namespace ColorPaletteBuilder
           public UserSettings()
           {
                Theme = ApplicationTheme.Dark;
-               WrapNoteBox = TextWrapping.NoWrap;
                AutoSave = true;
                AutoSaveInterval = 30;
                BackupSave = true;
