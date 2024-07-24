@@ -19,7 +19,13 @@
 - Clicking new, then adding and then saving doesn't set the title bar to the file name.
 - **Title bar message for filter selections**: Format as `Filter: state & group`, e.g., `Filter: Enabled & Any`.
 - **Assign color to color picker**: Add functionality to set the color picker to a color entry's color for adjustments.
-- 
+- **Settings** are saved but need to be implemented in logic to use them.
+- **Improve color picker file handling**: Add better checks for file loads and handle improper image files by presenting buttons to browse or drag/drop a file.
+- Color hex codes button shortcuts need a user settings option to decide if it includes the hashtag or not --- double clicking to highight and paste over works better without including the hashtag.
+- clearing colorselector doesn't update the color selector window
+- **Backup file handling**: Ensure the application prompts to save as a new file if a backup is loaded.
+  - this works as long as the file was a new file and not prior to saving, then 
+
 
 Settings
 

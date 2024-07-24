@@ -17,7 +17,7 @@ namespace ColorPaletteBuilder
           bool _copyWithHashtag;
           string _preferredPaletteSaveFolder;
 
-          bool _wrapNoteBox;
+          TextWrapping _wrapNoteBox;
 
           AppConstants.SnippetLanguage _snippetLanguage;
           string _snippet;
@@ -25,6 +25,8 @@ namespace ColorPaletteBuilder
           string _snippetCSharp;
           string _snippetJavascript;
           string _snippetPython;
+
+          ObservableCollection<string> _recentFiles;
 
 
           public ApplicationTheme Theme
@@ -68,7 +70,7 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _preferredPaletteSaveFolder, value);
           }
 
-          public bool WrapNoteBox
+          public TextWrapping WrapNoteBox
           {
                get => _wrapNoteBox;
                set => SetProperty(ref _wrapNoteBox, value);
@@ -110,11 +112,17 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _snippetPython, value);
           }
 
+          public ObservableCollection<string> RecentFiles
+          {
+               get => _recentFiles;
+               set => SetProperty(ref _recentFiles, value);
+          }
+
           // Constructor
           public UserSettings()
           {
                Theme = ApplicationTheme.Dark;
-               WrapNoteBox = true;
+               WrapNoteBox = TextWrapping.NoWrap;
                AutoSave = true;
                AutoSaveInterval = 30;
                BackupSave = true;
@@ -128,6 +136,8 @@ namespace ColorPaletteBuilder
                SnippetCSharp = "new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));";
                SnippetJavascript = "const color = `rgba($r, $g, $b, ${$a / 255})`;";
                SnippetPython = "from PIL import ImageColor\n\ncolor = ImageColor.getrgb(f'rgba($r, $g, $b, {$a / 255})')";
+
+               RecentFiles = new ObservableCollection<string>();
           }
 
 

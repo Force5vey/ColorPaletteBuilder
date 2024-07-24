@@ -44,8 +44,14 @@ namespace ColorPaletteBuilder
                ScreenshotImage.Source = App.ColorSelectorBitmap;
 
                this.Closed += ColorSelectorWindow_Closed;
+               this._mainWindow.ColorSelectorImageCleared += ColorSelectorImageCleared;
 
                LoadWindowSizeAndLocation();
+          }
+
+          private void ColorSelectorImageCleared(object sender, EventArgs e )
+          {
+               ScreenshotImage.Source = App.ColorSelectorBitmap;
           }
 
           private void ColorSelectorWindow_Closed( object sender, WindowEventArgs args )
@@ -112,8 +118,8 @@ namespace ColorPaletteBuilder
           private void ScreenShotImage_PointerMoved( object sender, PointerRoutedEventArgs e )
           {
                var position = e.GetCurrentPoint(ScreenshotImage).Position;
-               XCoord.Content = $"X: {position.X}";
-               YCoord.Content = $"Y: {position.Y}";
+               XCoord.Content = $"X: {position.X:F2}";
+               YCoord.Content = $"Y: {position.Y:F2}";
 
                HoverColor.Background = ColorConverter.ConvertToSolidColorBrush(GetColorAtPosition((int)position.X, (int)position.Y));
           }

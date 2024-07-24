@@ -191,15 +191,41 @@ namespace ColorPaletteBuilder
 
           #region // Color Entries Options
 
-          public bool WrapNoteBox
+          public TextWrapping WrapNoteBox
           {
                get => _userSettings.WrapNoteBox;
                set
                {
-                    if (_userSettings.WrapNoteBox != value)
+                    if ( _userSettings.WrapNoteBox != value )
                     {
                          _userSettings.WrapNoteBox = value;
                          OnPropertyChanged();
+                    }
+               }
+          }
+
+          public bool WrapNoteToBool
+          {
+               get
+               {
+                    if(WrapNoteBox == TextWrapping.Wrap)
+                    {
+                         return true;
+                    }     
+                    else
+                    {
+                         return false;
+                    }
+               }
+               set
+               {
+                    if (value == true)
+                    {
+                         WrapNoteBox = TextWrapping.Wrap;
+                    }
+                    else
+                    {
+                         WrapNoteBox = TextWrapping.NoWrap;
                     }
                }
           }

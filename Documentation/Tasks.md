@@ -6,14 +6,6 @@
 
 #### General Notes
 
-- **Settings** are saved but need to be implemented in logic to use them.
-- **Improve color picker file handling**: Add better checks for file loads and handle improper image files by presenting buttons to browse or drag/drop a file.
-- **Backup file handling**: Ensure the application prompts to save as a new file if a backup is loaded.
-- when grabbing hexcode from color entry to send to colorpicker, implement the error handling for it not being a valid hex code. I want to maintain the ability for the user to manually change the hex code but it needs to be handled if the color picker can't accept a messed up hex.
-  - the error is going to be at != 8 characters. as well as if one of the characters is not in a valid range.
-- Color hex codes button shortcuts need a user settings option to decide if it includes the hashtag or not --- double clicking to highight and paste over works better without including the hashtag.
-- clearing colorselector doesn't update the color selector window
-  - maybe it should be clear and close
 - **Wrap Text:** wrap text usersetting is declared but needs to be integrated into the listview dispaly to change the wrap text. typical binding is not working and it seems it needs to be propagated down to the color entry items individually as a TextWrapping type so it can set the textbox for each row.
 
 #### Settings Notes

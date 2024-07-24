@@ -13,7 +13,7 @@
         <Grid.Resources>
             <local:MinutesToStringConverter x:Key="BoolToTextWrappingConverter"/>
         </Grid.Resources>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="Auto" />
@@ -63,6 +63,10 @@
                         <KeyboardAccelerator Modifiers="Control" Key="O"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+
+                <MenuFlyoutSubItem x:Name="MenuFlyoutRecent" Text="Recent...">
+                    <!-- Items Added Programatically -->
+                </MenuFlyoutSubItem>
 
                 <MenuFlyoutSeparator/>
 
@@ -572,7 +576,7 @@
                             <TextBox Grid.Column="6" Text="{x:Bind HexCode, Mode=TwoWay}" VerticalAlignment="Center" Width="115" ToolTipService.ToolTip="Either a 6 or 8 digit Hexidecimal Code"/>
 
                             <TextBox Grid.Column="7" Text="{x:Bind Note, Mode=TwoWay}" VerticalAlignment="Center" 
-                                     TextWrapping="Wrap"
+                                     TextWrapping="{x:Bind NoteWrap, Mode=OneWay}"
                                      MinWidth="150" ToolTipService.ToolTip="Custom Note for this Color Entry" Margin="5,0,0,0" AcceptsReturn="True"/>
 
                         </Grid>

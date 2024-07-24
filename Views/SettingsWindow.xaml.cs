@@ -62,15 +62,14 @@ namespace ColorPaletteBuilder
                LocalFolderPathTextbox.Text = ApplicationData.Current.LocalFolder.Path;
           }
 
-          private void SaveSettings_Click( object sender, RoutedEventArgs e )
+          private async void SaveSettings_Click( object sender, RoutedEventArgs e )
           {
-               settingsViewModel.SaveSettings().GetAwaiter().GetResult();
+               await settingsViewModel.SaveSettings();
                this.Close();
           }
 
           private void SettingsWindow_Changed( Microsoft.UI.Windowing.AppWindow sender, object args )
           {
-
                if ( sender.Size.Width < settingsWindowMinWidth )
                {
                     this.AppWindow.Resize(new Windows.Graphics.SizeInt32(settingsWindowMinWidth, (int)sender.Size.Height));

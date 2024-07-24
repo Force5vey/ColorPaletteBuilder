@@ -46,7 +46,7 @@ namespace ColorPaletteBuilder
 
           #region // Color Entries Options
 
-          public bool WrapNoteBox
+          public TextWrapping WrapNoteBox
           {
                get => _userSettings.WrapNoteBox;
                set
@@ -54,6 +54,12 @@ namespace ColorPaletteBuilder
                     if ( _userSettings.WrapNoteBox != value )
                     {
                          _userSettings.WrapNoteBox = value;
+
+                         foreach (var entry in ColorPaletteData.ColorEntries)
+                         {
+                              entry.NoteWrap = value;
+                         }
+
                          OnPropertyChanged();
                     }
                }
@@ -241,6 +247,8 @@ namespace ColorPaletteBuilder
                          ColorPaletteData.IsSaved = true;
                          await FileService.SerializePalette_Async(file.Path, ColorPaletteData);
 
+                         AddSaveFileToRecentList(file);
+
                          localSettings.Values[AppConstants.LastOpenedFilePath] = file.Path;
                          return AppConstants.ReturnCode.Success;
                     }
@@ -251,6 +259,26 @@ namespace ColorPaletteBuilder
                     }
                }
                return AppConstants.ReturnCode.FileNotFound;
+          }
+
+          private async void AddSaveFileToRecentList( StorageFile file )
+          {
+               string filePath = file.Path;
+               var recentFiles = App.UserSettings.RecentFiles;
+
+               if ( recentFiles.Contains(filePath) )
+               {
+                    recentFiles.Remove(filePath);
+               }
+
+               recentFiles.Insert(0, filePath);
+
+               if ( recentFiles.Count > 5 )
+               {
+                    recentFiles.RemoveAt(recentFiles.Count - 1);
+               }
+
+               await SettingsService.SerializeUserSettings_Async();
           }
 
 

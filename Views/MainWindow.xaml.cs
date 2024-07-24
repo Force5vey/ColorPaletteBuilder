@@ -18,6 +18,7 @@ using System.Data;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
+using Windows.Devices.Bluetooth.Background;
 
 
 namespace ColorPaletteBuilder
@@ -40,6 +41,9 @@ namespace ColorPaletteBuilder
 
           // Events
           public event EventHandler SetColorSelectorImage;
+
+          public delegate void ColorSelectorImageCleared_EventHandler( object sender, EventArgs e );
+          public event ColorSelectorImageCleared_EventHandler ColorSelectorImageCleared;
 
           // Private Fields
           private string currentColorPickerHex = string.Empty;
@@ -85,6 +89,39 @@ namespace ColorPaletteBuilder
                // Timers
                InitializeTimers();
                ConfigureTimers();
+
+               //Recent List
+               PopulateRecentFilesMenu();
+               App.UserSettings.RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
+          }
+
+          private void PopulateRecentFilesMenu()
+          {
+               MenuFlyoutRecent.Items.Clear();
+
+               foreach ( var filePath in App.UserSettings.RecentFiles )
+               {
+                    var menuItem = new MenuFlyoutItem
+                    {
+                         Text = filePath
+                    };
+
+                    menuItem.Click += ( sender, e ) => OpenRecentPalette(filePath);
+
+                    MenuFlyoutRecent.Items.Add(menuItem);
+               }
+
+          }
+
+          private void RecentFiles_CollectionChanged( object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e )
+          {
+               PopulateRecentFilesMenu();
+          }
+
+          private async void OpenRecentPalette( string filePath )
+          {
+               await MainViewModel.SavePaletteToFile_Async();
+               await MainViewModel.LoadPalette_Async(filePath);
           }
 
           // Initialization Methods
@@ -568,11 +605,19 @@ namespace ColorPaletteBuilder
                LoadColorSelectorImage(MainViewModel.ColorPaletteData.ColorSelectorSource);
           }
 
+
+
           private void ColorSelectorClearImage_Click( object sender, RoutedEventArgs e )
           {
                ColorSelectorImage.Source = MainViewModel.DefaultColorSelectorImage;
                App.ColorSelectorBitmap = MainViewModel.DefaultColorSelectorImage;
                MainViewModel.ColorPaletteData.ColorSelectorSource = string.Empty;
+               OnColorSelectorImageCleared(EventArgs.Empty);
+          }
+
+          private void OnColorSelectorImageCleared( EventArgs e )
+          {
+               ColorSelectorImageCleared?.Invoke(this, e);
           }
 
           #endregion // Button Click Event Handlers
@@ -808,6 +853,7 @@ namespace ColorPaletteBuilder
 
                     colorSelectorWindow.Closed += ColorSelectorWindow_Closed;
                     colorSelectorWindow.DataSelected += ColorSelectorWindow_DataSelected;
+
                     colorSelectorWindow.Activate();
                }
                else

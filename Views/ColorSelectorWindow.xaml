@@ -22,9 +22,13 @@
             </AppBarButton.KeyboardAccelerators>
         </AppBarButton>
 
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">
+        <Button x:Name="XCoord" Content="X Coord" Margin="0,0,0,0" />
+        <Button x:Name="YCoord" Content="Y Coord" Margin="10,0,0,0"/>
+        </StackPanel>
+
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0">
-            <Button x:Name="XCoord" Content="X Coord" />
-            <Button x:Name="YCoord" Content="Y Coord" Margin="5,0,0,0"/>
+          
             <Button x:Name="HoverColor" Width="100" Height="30"/>
         </StackPanel>
 

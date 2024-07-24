@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
@@ -22,6 +23,7 @@ namespace ColorPaletteBuilder
           private string changeColor; // This is a placeholder for listview to add a button to change color
           private string sendColor; // This is a placeholder for listview to add a button to send color to color picker
           private string note;
+          private TextWrapping noteWrap;
 
           public ColorEntry()
           {
@@ -35,6 +37,7 @@ namespace ColorPaletteBuilder
                ChangeColor = string.Empty;
                SendColor = string.Empty;
                Note = string.Empty;
+               NoteWrap = TextWrapping.NoWrap;
                ElementIndex = 0;
           }
 
@@ -96,6 +99,12 @@ namespace ColorPaletteBuilder
           {
                get => note;
                set => SetProperty(ref note, value);
+          }
+
+          public TextWrapping NoteWrap
+          {
+               get => noteWrap;
+               set => SetProperty(ref noteWrap, value);
           }
 
           public event PropertyChangedEventHandler PropertyChanged;
