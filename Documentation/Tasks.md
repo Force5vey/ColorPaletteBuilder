@@ -9,6 +9,8 @@
 - When no usersettings.json file is present, the application hangs. closing it then opening again ti is good because a usersettings file is there (i'm thinking) looks like it has something to do with the await aspect.
   - its happening in the 'else' bracket of settingsService.DeserializeUserSettings();
 - colorselector window: gui zoom in / out buttons.
+- Adding a new entry auto sets state and group based on current filter. Not only for entry convenience but when a filter is on and an entry is added it is initially hidden.
+- It starts to get pretty laggy after about 20 colors
 
 ### Features Notes
 
