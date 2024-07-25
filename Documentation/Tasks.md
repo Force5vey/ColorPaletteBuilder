@@ -6,11 +6,9 @@
 
 #### General Notes
 
-- **Wrap Text:** wrap text usersetting is declared but needs to be integrated into the listview dispaly to change the wrap text. typical binding is not working and it seems it needs to be propagated down to the color entry items individually as a TextWrapping type so it can set the textbox for each row.
-
-#### Settings Notes
-
-- **Word wrap in ListView**: Add a setting to toggle word wrap for name and note fields.
+- When no usersettings.json file is present, the application hangs. closing it then opening again ti is good because a usersettings file is there (i'm thinking) looks like it has something to do with the await aspect.
+  - its happening in the 'else' bracket of settingsService.DeserializeUserSettings();
+- colorselector window: gui zoom in / out buttons.
 
 ### Features Notes
 
@@ -23,7 +21,6 @@
 
 ### User Interface Enhancements
 
-- **Adaptive layout**: Implement an adaptive layout for different screen sizes and resolutions.
 - **Tooltips**: Add tooltips for all interactive elements.
 - Theme: For none system colors, need to ensure the light theme is set (example TitleBarMessage Color)
 - Theme: Light theme is having some issues with some of the built in features like minimize / maximize buttons, need to look over anywhere I have custom brushes or colors set.
@@ -32,13 +29,7 @@
 
 #### Recent Palettes
 
-- **List of recently opened palettes**: Display recently opened palettes for quick access.
 - **Clear recent palettes history**: Implement functionality to clear the history.
-
-#### Export Options
-
-- **Default export formats**: Provide options for default export formats (e.g., JSON, XML, CSV).
-- **Export options in settings**: Add these options in the settings window.
 
 #### Backup and Restore
 

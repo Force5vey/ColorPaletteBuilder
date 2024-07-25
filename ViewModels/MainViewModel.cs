@@ -111,6 +111,7 @@ namespace ColorPaletteBuilder
 
                          foreach ( var entry in colorPalette.ColorEntries )
                          {
+                              entry.WrapText = App.UserSettings.WrapText;
                               ColorPaletteData.ColorEntries.Add(entry);
                          }
                          foreach ( var group in colorPalette.ElementGroups )
@@ -324,6 +325,14 @@ namespace ColorPaletteBuilder
                     {
                          ColorPaletteData.FilteredColorEntries.Add(colorEntry);
                     }
+               }
+          }
+
+          public void ApplyColorEntrySettings()
+          {
+               foreach ( var item in ColorPaletteData.ColorEntries )
+               {
+                    item.WrapText = App.UserSettings.WrapText;
                }
           }
 

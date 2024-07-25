@@ -804,6 +804,7 @@ namespace ColorPaletteBuilder
           {
                settingsWindow = null;
                ConfigureTimers();
+               MainViewModel.ApplyColorEntrySettings();
           }
 
           // ColorSelectorWindow Event Handlers

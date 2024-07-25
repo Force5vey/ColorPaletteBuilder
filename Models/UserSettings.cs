@@ -26,6 +26,30 @@ namespace ColorPaletteBuilder
 
           ObservableCollection<string> _recentFiles;
 
+          TextWrapping _wrapText;
+
+          // Constructor
+          public UserSettings()
+          {
+               Theme = ApplicationTheme.Dark;
+               AutoSave = true;
+               AutoSaveInterval = 30;
+               BackupSave = true;
+               BackupSaveInterval = 60;
+               PreferredPaletteSaveFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+               CopyWithHashtag = true;
+               SnippetLanguage = AppConstants.SnippetLanguage.Custom;
+
+               // Initialize default snippets
+               SnippetCustom = "// Example:\n new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));\n\n// Use $a for Alpha, $r for Red, $g for Green, and $b for Blue values.";
+               SnippetCSharp = "new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));";
+               SnippetJavascript = "const color = `rgba($r, $g, $b, ${$a / 255})`;";
+               SnippetPython = "from PIL import ImageColor\n\ncolor = ImageColor.getrgb(f'rgba($r, $g, $b, {$a / 255})')";
+
+               RecentFiles = new ObservableCollection<string>();
+
+               WrapText = TextWrapping.Wrap;
+          }
 
           public ApplicationTheme Theme
           {
@@ -110,25 +134,10 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref _recentFiles, value);
           }
 
-          // Constructor
-          public UserSettings()
+         public TextWrapping WrapText
           {
-               Theme = ApplicationTheme.Dark;
-               AutoSave = true;
-               AutoSaveInterval = 30;
-               BackupSave = true;
-               BackupSaveInterval = 60;
-               PreferredPaletteSaveFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-               CopyWithHashtag = true;
-               SnippetLanguage = AppConstants.SnippetLanguage.Custom;
-
-               // Initialize default snippets
-               SnippetCustom = "// Example:\n new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));\n\n// Use $a for Alpha, $r for Red, $g for Green, and $b for Blue values.";
-               SnippetCSharp = "new SolidColorBrush(Color.FromArgb($a, $r, $g, $b));";
-               SnippetJavascript = "const color = `rgba($r, $g, $b, ${$a / 255})`;";
-               SnippetPython = "from PIL import ImageColor\n\ncolor = ImageColor.getrgb(f'rgba($r, $g, $b, {$a / 255})')";
-
-               RecentFiles = new ObservableCollection<string>();
+               get => _wrapText;
+               set => SetProperty(ref _wrapText, value);
           }
 
 

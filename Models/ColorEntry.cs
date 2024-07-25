@@ -12,17 +12,19 @@ namespace ColorPaletteBuilder
 
      public class ColorEntry :INotifyPropertyChanged
      {
-          private Guid id;
+          Guid id;
 
-          private int elementIndex; // This will be static to the order it was added to the color palette.
-          private string elementName;
-          private string elementState;
-          private string elementGroup;
-          private string hexCode;
-          private string displayColor; // This is a placeholder for displaying the color visually.
-          private string changeColor; // This is a placeholder for listview to add a button to change color
-          private string sendColor; // This is a placeholder for listview to add a button to send color to color picker
-          private string note;
+          int elementIndex; // This will be static to the order it was added to the color palette.
+          string elementName;
+          string elementState;
+          string elementGroup;
+          string hexCode;
+          string displayColor; // This is a placeholder for displaying the color visually.
+          string changeColor; // This is a placeholder for listview to add a button to change color
+          string sendColor; // This is a placeholder for listview to add a button to send color to color picker
+          string note;
+
+          TextWrapping _wrapText;
 
           public ColorEntry()
           {
@@ -37,6 +39,8 @@ namespace ColorPaletteBuilder
                SendColor = string.Empty;
                Note = string.Empty;
                ElementIndex = 0;
+
+               WrapText = TextWrapping.Wrap;
           }
 
           public Guid Id
@@ -99,6 +103,12 @@ namespace ColorPaletteBuilder
                set => SetProperty(ref note, value);
           }
 
+          public TextWrapping WrapText
+          {
+               get => _wrapText;
+               set => SetProperty(ref _wrapText, value);
+          }
+
           public event PropertyChangedEventHandler PropertyChanged;
 
           protected bool SetProperty<T>( ref T storage, T value, [CallerMemberName] string propertyName = null )
@@ -116,6 +126,6 @@ namespace ColorPaletteBuilder
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
           }
 
-          
+
      }
 }

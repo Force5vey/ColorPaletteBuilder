@@ -53,6 +53,47 @@ namespace ColorPaletteBuilder
 
           #endregion
 
+          public TextWrapping WrapText
+          {
+               get => _userSettings.WrapText;
+               set
+               {
+                    if ( _userSettings.WrapText != value )
+                    {
+                         _userSettings.WrapText = value;
+                         OnPropertyChanged();
+                         OnPropertyChanged(nameof(WrapText));
+                    }
+               }
+          }
+
+
+          public bool IsTextWrap
+          {
+               get
+               {
+                    return WrapText switch
+                    {
+                         TextWrapping.Wrap => true,
+                         TextWrapping.NoWrap => false,
+                         TextWrapping.WrapWholeWords => false,
+                         _ => false
+                    };
+               }
+               set
+               {
+                    if ( value == true )
+                    {
+                         WrapText = TextWrapping.Wrap;
+                    }
+                    else
+                    {
+                         WrapText = TextWrapping.NoWrap;
+                    }
+
+               }
+          }
+
           #region // Auto Save and BackupSave ...
 
           public bool AutoSave
@@ -191,7 +232,7 @@ namespace ColorPaletteBuilder
 
           #region // Color Entries Options
 
-          
+
 
           #endregion
 

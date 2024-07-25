@@ -562,7 +562,7 @@
                                 </Button.Content>
                             </Button>
 
-                            <TextBox Grid.Column="3" Text="{x:Bind ElementName, Mode=TwoWay}" VerticalAlignment="Center" TextWrapping="Wrap" Width="200" ToolTipService.ToolTip="Name of the Element" />
+                            <TextBox Grid.Column="3" Text="{x:Bind ElementName, Mode=TwoWay}" VerticalAlignment="Center" TextWrapping="{x:Bind WrapText, Mode=OneWay}" Width="200" ToolTipService.ToolTip="Name of the Element" />
                             <ComboBox Grid.Column="4" SelectedItem="{x:Bind ElementState, Mode=TwoWay}" VerticalAlignment="Center" Width="150" Margin="5,0,5,0"
                                       Loaded="ElementStateComboBox_Loaded" ToolTipService.ToolTip="Select an Element State for the Element"/>
 
@@ -572,7 +572,7 @@
                             <TextBox Grid.Column="6" Text="{x:Bind HexCode, Mode=TwoWay}" VerticalAlignment="Center" Width="115" ToolTipService.ToolTip="Either a 6 or 8 digit Hexidecimal Code"/>
 
                             <TextBox Grid.Column="7" Text="{x:Bind Note, Mode=TwoWay}" VerticalAlignment="Center" 
-                                     TextWrapping="Wrap"
+                                     TextWrapping="{x:Bind WrapText, Mode=OneWay}"
                                      MinWidth="150" ToolTipService.ToolTip="Custom Note for this Color Entry" Margin="5,0,0,0" AcceptsReturn="True"/>
 
                         </Grid>
