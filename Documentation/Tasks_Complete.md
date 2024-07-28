@@ -26,7 +26,7 @@
 - **Backup file handling**: Ensure the application prompts to save as a new file if a backup is loaded.
   - this works as long as the file was a new file and not prior to saving, then 
 - **Wrap Text:** wrap text usersetting is declared but needs to be integrated into the listview dispaly to change the wrap text. typical binding is not working and it seems it needs to be propagated down to the color entry items individually as a TextWrapping type so it can set the textbox for each row.
-- 
+- Add new color entry adds it with whichever is the current state and group.
 
 
 Settings

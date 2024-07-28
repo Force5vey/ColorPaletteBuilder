@@ -386,8 +386,8 @@ namespace ColorPaletteBuilder
                {
                     ElementIndex = MainViewModel.ColorPaletteData.HighestEntryIndex++,
                     ElementName = "Name",
-                    ElementGroup = MainViewModel.ColorPaletteData.ElementGroups.FirstOrDefault(),
-                    ElementState = MainViewModel.ColorPaletteData.ElementStates.FirstOrDefault(),
+                    ElementGroup = MainViewModel.SelectedGroup,
+                    ElementState = MainViewModel.SelectedState,
                     HexCode = currentColorPickerHex
                };
 
