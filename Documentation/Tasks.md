@@ -19,6 +19,7 @@
 - **Paste from clipboard**: Allow users to paste from the clipboard, such as screenshots.
 - Camera interface to take photo and assign to colorselector
 - add a browser (webview2) to get image for color selector
+- add a search function to show a color entry that any element contains the search criteria.
 
 ### User Interface Enhancements
 
