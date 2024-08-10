@@ -2,6 +2,8 @@
 using System.Drawing;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using Microsoft.UI.Xaml.Media;
 
 
 // To learn more about WinUI, the WinUI project structure,
@@ -16,12 +18,9 @@ namespace ColorPaletteBuilder
      {
           private Window m_window;
 
-          //private const string ThemeSettingKey = "AppTheme";
-
           internal static WriteableBitmap ColorSelectorBitmap;
           internal static Color ColorSelectorColor;
 
-          //private static UserSettings _userSettings;
           internal static UserSettings UserSettings { get; set; } = new UserSettings();
 
           /// <summary>
@@ -31,9 +30,9 @@ namespace ColorPaletteBuilder
           public App()
           {
                this.InitializeComponent();
-
-               SettingsService.DeserializeUserSettings();
-
+          
+               InitializeApp_Async();
+               
                RequestedTheme = UserSettings.Theme;
 
           }
@@ -47,10 +46,17 @@ namespace ColorPaletteBuilder
                m_window = new MainWindow();
                m_window.ExtendsContentIntoTitleBar = true;
 
-
-
                m_window.Activate();
           }
+
+          private async void InitializeApp_Async()
+          {
+               bool settingsLoaded = await SettingsService.DeserializeUserSettings_Async();
+            if ( !settingsLoaded)
+            {
+                    Debug.WriteLine("Failed to load User Settings, in app.xaml.cs in InitializeApp_Async");
+            }
+        }
 
      }
 }

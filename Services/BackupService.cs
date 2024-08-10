@@ -13,7 +13,7 @@ namespace ColorPaletteBuilder
         
         private static async Task<StorageFile> GetBackupFileAsync()
         {
-            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+               StorageFolder localFolder = await StorageFolder.GetFolderFromPathAsync(AppConstants.ApplicationPath);
             StorageFolder backupFolder = await localFolder.CreateFolderAsync("BackupFiles", CreationCollisionOption.OpenIfExists);
             StorageFile backupFile = await backupFolder.CreateFileAsync(AppConstants.BackupFileName, CreationCollisionOption.ReplaceExisting);
             return backupFile;

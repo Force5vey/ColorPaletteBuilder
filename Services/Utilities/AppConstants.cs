@@ -2,18 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using System.IO;
+
 
 namespace ColorPaletteBuilder
 {
      public static class AppConstants
      {
-          internal static readonly string UserSettingsLocation = ApplicationData.Current.LocalFolder.Path + "\\UserSettings.json";
+          internal static readonly string ApplicationPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+          internal static readonly string UserSettingsLocation = ApplicationPath + "\\UserSettings.cpd";
 
           public const string BackupFileName = "backup.cpb";
-          public static string BackupFilePath = ApplicationData.Current.LocalFolder.Path;
+          //public static string BackupFilePath = ApplicationPath;
 
 
           internal static string LastColorPickerHex = "LastColorPickerHex";

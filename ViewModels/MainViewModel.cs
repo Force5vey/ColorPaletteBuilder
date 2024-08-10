@@ -501,7 +501,7 @@ namespace ColorPaletteBuilder
                     else
                     {
                          //TODO: Error handling back to CodeBehind
-                         Debug.WriteLine($"File does not exist: {imagePath}");
+                         Debug.WriteLine($"\n\n Color Selector Image File does not exist: {imagePath}");
 
                          App.ColorSelectorBitmap = DefaultColorSelectorImage;
                          ColorPaletteData.ColorSelectorSource = string.Empty;

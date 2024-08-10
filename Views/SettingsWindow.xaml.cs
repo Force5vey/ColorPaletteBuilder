@@ -59,7 +59,7 @@ namespace ColorPaletteBuilder
 
           private void LoadLocalFilePath()
           {
-               LocalFolderPathTextbox.Text = ApplicationData.Current.LocalFolder.Path;
+               LocalFolderPathTextbox.Text = AppConstants.ApplicationPath;
           }
 
           private async void SaveSettings_Click( object sender, RoutedEventArgs e )

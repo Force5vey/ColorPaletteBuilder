@@ -31,26 +31,28 @@ namespace ColorPaletteBuilder
                }
           }
 
-          public static bool DeserializeUserSettings()
+          public static async Task<bool> DeserializeUserSettings_Async()
           {
                if ( File.Exists(AppConstants.UserSettingsLocation) )
                {
                     try
                     {
-                         var json = File.ReadAllText(AppConstants.UserSettingsLocation);
+                         var json = await File.ReadAllTextAsync(AppConstants.UserSettingsLocation);
                          App.UserSettings = JsonSerializer.Deserialize<UserSettings>(json);
 
                          return true;
                     }
                     catch ( Exception ex )
                     {
-                         Debug.WriteLine($"Error loading settings: {ex.Message}");
+                         Debug.WriteLine($"\n\nError loading settings: {ex.Message}\n\n");
                          return false;
                     }
                }
                else
                {
-                    SerializeUserSettings_Async().GetAwaiter().GetResult();
+                    await SerializeUserSettings_Async();
+
+                    Debug.WriteLine($"\n\n Used default settings and resaved.\n\n");
                     return true;
                }
           }

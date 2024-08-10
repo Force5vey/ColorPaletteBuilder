@@ -2,10 +2,25 @@
 
 ## Ongoing and Upcoming Tasks
 
+
+
+Notes From Testers:
+
+- import and export
+  - excel spread sheet
+  - other popular systems
+- Templates
+- Customize name of the state and group to allow for user defined understanding (element state for example was not clear what that mant)
+  - Templates for layout and naming conventions, customizable but give an initial 'load out'.
+- 
+
+
+
 ### Main Page Features
 
 #### General Notes
 
+- I thought I updated so check, but when adding a new entry it should be auto set to the current filter state and group so it shows up in the filtered results.
 - When no usersettings.json file is present, the application hangs. closing it then opening again ti is good because a usersettings file is there (i'm thinking) looks like it has something to do with the await aspect.
   - its happening in the 'else' bracket of settingsService.DeserializeUserSettings();
 - colorselector window: gui zoom in / out buttons.
