@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="b4c7c35a-8586-4cea-8e18-137c8c0d0414"
-    Publisher="CN=edmon"
-    Version="2.1.2.0" />
+    Name="39370FirstFloorForLife.ColorPaletteBuilder"
+    Publisher="CN=9B319895-7433-4002-9861-6ADBB6AA3F2D"
+    Version="2.1.6.0" />
 
-  <mp:PhoneIdentity PhoneProductId="b4c7c35a-8586-4cea-8e18-137c8c0d0414" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="f3fc595b-0dd4-4e51-b0e5-41e9737847ca" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>ColorPaletteBuilder</DisplayName>
-    <PublisherDisplayName>Force5 Development</PublisherDisplayName>
+    <DisplayName>Color Palette Builder</DisplayName>
+    <PublisherDisplayName>Force5Dev</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -34,7 +34,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="ColorPaletteBuilder"
+        DisplayName="Color Palette Builder"
         Description="ColorPaletteBuilder"
         BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile  ShortName="CPBuilder" Square71x71Logo="Assets\SmallTile.png" Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png">
@@ -50,7 +50,6 @@
       </uap:VisualElements>
     </Application>
   </Applications>
-
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
   </Capabilities>

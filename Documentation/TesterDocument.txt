@@ -1,0 +1,106 @@
+Color Palette Builder
+Tester Instruction Sheet
+
+
+
+//Answers for isntructino set building
+
+1. Go with beta since it is primarily functional but some features visible in settings are not implemented.
+   Elaborate on teh intro text further to explain what all of what is discussed means. assume non technical people.
+   Also, I would like an explanation that with beta versions, the primary goal is to ensure the application is solving 
+   a task users will want or need. so avoid getting caught up in finding features that aren't fully functional and 
+   concentrate on the overall concept of the application and how it may be useful.
+
+   Additionally, I want a section explaining the overall use of the tool (application) for those who otherwise would
+   not need an application such as this. Which is primarily geared towards programming, such as web design, game development, etc. at 
+   its current state. The goal is to allow one central location to track the color codes (hex values, RGB values, etc) in a searchable list.
+   Then make it easy to extract those values to be inserted into your project whether it be the hex value, or a pre structured
+   code snippet of your choice.
+
+   Testing purpose:
+    I'm primarily looking for usability of the application and its level of intuitiveness. Then I want functional bugs and usability issues.
+    I do want them to try and use it in unusual ways and edge cases, etc.
+    I am open to feature suggestions but not my goal, but existing feature improvement ideas are most welcome.
+
+2. Detailed Feedback Examples
+        this example is well done and It will work for the time being.
+
+3. Starter Testing Tasks
+
+Here is the core functionalities (and tasks I want tried and reviewed)
+
+Finding the application on windows store.
+a few search term options such as 'Color Palette' and some others to see if it can be located. ( i will also provide a direct link)
+Installation experience.
+Store front explanation of the product and imagery.
+
+Add a new color to the color palette from the color picker.
+Name the color.
+Save the color palette to disk.
+Add at least 10 unique colors to the palette.
+Name each of the colors in the list.
+Create filtering categories. Named Element States and Element Groups.
+Assign colors to various states and groups that you created.
+Sort the list according to different columns.
+Apply a filter to only show certain groups, or elements, or both.
+Clear the filter to show all colors.
+
+Modify an existing color element color.
+Reassign the modified color to the element.
+Copy hex value using provided shortcuts.
+Copy hex value without alpha value
+copy rgb value with alpha.
+copy code snippet.
+
+save color palette.
+
+create new color palette.
+
+Extract colors from an existing picture.
+Drag and drop a picture from your computer on to color selector 
+clear the image from the color selector.
+Use the browse location to load an image for the color selector.
+
+Launch color selector tool.
+
+Select colors from pixels on the image, save those colors in the new palette.
+
+Settings
+Theme - only dark theme is implemented
+Color Entries Options:
+    Wrap Text
+       Specifically for the entry note field, this will control whether a long note is one line or wrapped onto multi-lines. Test out both on and off
+       with long notes (use example notes from the appendix of this document if you don't want to come up with your own)
+
+Auto-Save
+    Try out different intervals. When autosaving the application shows an icon in the title bar. Make some changes, wait for the auto save, then close
+    the program without first clicking manual save. reopen program and open your colorpalette and see if changes were auto saved.
+
+Back-up save. - this works the same as auto-save but for a built in backup file, as of now, outside of manually finding the file and copying it and renaming to what you want, there is no built in method to recover a file from the back-up save. 
+
+Copy Short Cut Settings
+Check box - copy hashtag with Hex Code. Test copying hex codes from the provided shortcuts with this checked and unchecked and observe the differences.
+
+Default Palette Location
+This is non-functional. The intent would be to designate where your file picker opens when saving a palette for the first time. or opening a colorpalette.
+
+Pre-defined Code Snippets
+
+Test each pre - defined code snippet selection. ensure that the code snippet updates in the main window when selecting a color.
+
+Make your own custom code snippet. Using the provided instructions. provide any feedback on the quality of the instructions, if you were able to
+make your own custom snippet.
+
+Backup and Restore
+Restore button is non functional. any suggestions on how that would work (the user experience of retrieving the backupfile) are appreciated.
+
+Backup file location:
+This displays the location on your computer where the BackupFiles directory is saved, inside that directory is the backup.cpb file.
+Locate this file using the provided directory. Can you find the backupfile? if so, Open the file in color palette builder.
+Did it load properly?
+Use Save As to 'restore' the backup to the file name and location you want.
+
+
+
+
+
