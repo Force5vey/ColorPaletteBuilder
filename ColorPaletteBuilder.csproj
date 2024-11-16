@@ -23,6 +23,10 @@
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Never</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <Title>ColorPaletteBuilder</Title>
+    <Company>Force5Dev</Company>
+    <Authors>EJ Leaveck</Authors>
+    <Copyright>Copyright 2024 Force5Dev - All rights reserved.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
